@@ -1,2 +1,2 @@
-# Criminal-Acts-OpenData
+# Crimes-api
 A Web service that provides information about crimes. 
