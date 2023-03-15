@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 15, 2023 at 01:06 AM
+-- Generation Time: Mar 15, 2023 at 01:25 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -20,7 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `crimes-api`
 --
-
+DROP DATABASE IF EXISTS `crimes-api`;
+CREATE DATABASE `crimes-api`;
+Use `crimes-api`;
 -- --------------------------------------------------------
 
 --
@@ -156,7 +158,7 @@ CREATE TABLE `offenders` (
   `age` int(4) NOT NULL,
   `marital_status` enum('single','married') NOT NULL,
   `arrest_date` date NOT NULL,
-  `arrest_timestamp` date NOT NULL,
+  `arrest_timestamp` time NOT NULL,
   `defendant_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -243,13 +245,15 @@ ALTER TABLE `cases`
 -- Indexes for table `cases_offenses`
 --
 ALTER TABLE `cases_offenses`
-  ADD KEY `cases_offenses` (`case_id`,`offense_id`);
+  ADD KEY `cases_offenses` (`case_id`,`offense_id`),
+  ADD KEY `offense_id` (`offense_id`);
 
 --
 -- Indexes for table `cases_victims`
 --
 ALTER TABLE `cases_victims`
-  ADD KEY `cases_victims_composite` (`case_id`,`victim_id`);
+  ADD KEY `cases_victims_composite` (`case_id`,`victim_id`),
+  ADD KEY `victim_id` (`victim_id`);
 
 --
 -- Indexes for table `courts`
@@ -415,6 +419,20 @@ ALTER TABLE `victims`
 ALTER TABLE `cases`
   ADD CONSTRAINT `cases_crime_scenes_fk` FOREIGN KEY (`crime_sceneID`) REFERENCES `crime_scenes` (`crime_sceneID`) ON DELETE CASCADE,
   ADD CONSTRAINT `cases_investigator_id_fk` FOREIGN KEY (`investigator_id`) REFERENCES `investigators` (`investigator_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `cases_offenses`
+--
+ALTER TABLE `cases_offenses`
+  ADD CONSTRAINT `case_id_index` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `offense_id` FOREIGN KEY (`offense_id`) REFERENCES `offenses` (`offense_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `cases_victims`
+--
+ALTER TABLE `cases_victims`
+  ADD CONSTRAINT `case_id` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `victim_id` FOREIGN KEY (`victim_id`) REFERENCES `victims` (`victim_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `courts`
