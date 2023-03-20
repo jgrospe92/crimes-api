@@ -4,9 +4,7 @@ namespace Vanier\Api\middleware;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Slim\Exception\HttpNotFoundException;
 use Slim\Psr7\Response;
 
 
@@ -31,7 +29,6 @@ class  ContentNegotiationMiddleware implements MiddlewareInterface
      */
     public function process(Request $request, RequestHandler $handler): Response
     {
-
         // Get the accept header
         $accept = $request->getHeaderLine("Accept");
     
