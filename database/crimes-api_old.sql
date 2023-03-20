@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2023 at 05:45 AM
+-- Generation Time: Mar 15, 2023 at 01:25 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -23,7 +23,6 @@ SET time_zone = "+00:00";
 DROP DATABASE IF EXISTS `crimes-api`;
 CREATE DATABASE `crimes-api`;
 Use `crimes-api`;
-
 -- --------------------------------------------------------
 
 --
@@ -40,17 +39,6 @@ CREATE TABLE `cases` (
   `court_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `cases`
---
-
-INSERT INTO `cases` (`case_id`, `description`, `date_reported`, `misdemeanor`, `crime_sceneID`, `investigator_id`, `court_id`) VALUES
-(1, 'On April 6th, 2004, Jeremy Elbertson committed arson at the National Park of Las Vegas. Later found within Toronto living as a streamer on the streaming platform \'Twitch\', he has been arrested and will be trialed in court.', '2020-01-30 13:04:18', 0, 2, 1, 1),
-(2, 'On September 21st, 2012, Rick Moranis was arrested for raping 25 year old Mario Mario in New York, where the victim was walking home with a sandwich he had just bought from a bodega.', '2014-09-23 10:39:16', 0, 3, 5, 5),
-(3, 'On April 1st, 2022, Andrew Tate murdered his best friend LeRock Johnson in an April Fools prank gone wrong.', '2023-03-17 00:26:51', 0, 1, 2, 3),
-(4, 'On November 9th, 2009, Cirno Fairy murdered Okuyasu Nijimura and Josuke Higashikata by freezing them to death in an industrial freezer.', '2009-11-10 10:56:24', 0, 5, 4, 3),
-(5, 'On February 14th, 2023, Doug Bowser was found dead in his house with a parasol in the back of his head. His murderer: Peach Toadstool.', '2023-02-14 22:08:49', 0, 4, 3, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -61,17 +49,6 @@ CREATE TABLE `cases_offenses` (
   `case_id` int(11) NOT NULL,
   `offense_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cases_offenses`
---
-
-INSERT INTO `cases_offenses` (`case_id`, `offense_id`) VALUES
-(1, 1),
-(2, 3),
-(3, 5),
-(4, 5),
-(5, 5);
 
 -- --------------------------------------------------------
 
@@ -84,17 +61,6 @@ CREATE TABLE `cases_victims` (
   `victim_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `cases_victims`
---
-
-INSERT INTO `cases_victims` (`case_id`, `victim_id`) VALUES
-(1, 6),
-(2, 4),
-(3, 3),
-(4, 1),
-(5, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -105,22 +71,11 @@ CREATE TABLE `courts` (
   `court_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `date` date NOT NULL,
-  `time` TIMESTAMP(0)  NOT NULL,
+  `time` date NOT NULL,
   `address_id` int(11) NOT NULL,
   `judge_id` int(11) NOT NULL,
   `verdict_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `courts`
---
-
-INSERT INTO `courts` (`court_id`, `name`, `date`, `time`, `address_id`, `judge_id`, `verdict_id`) VALUES
-(1, 'Toronto Courthouse', '2023-04-15', '06:00:00', 1, 1, 1),
-(2, 'Court of Appeal', '2023-04-17', '11:00:00', 2, 2, 2),
-(3, 'Supreme Court of Canada', '2023-04-18', '12:00:00', 3, 3, 3),
-(4, 'Provincial Court of Alberta', '2023-04-19', '13:00:00', 4, 4, 4),
-(5, 'Courts Administration Service', '2023-04-20', '14:00:00', 5, 5, 5);
 
 -- --------------------------------------------------------
 
@@ -132,20 +87,8 @@ CREATE TABLE `court_addresses` (
   `address_id` int(11) NOT NULL,
   `city` varchar(100) NOT NULL,
   `street` varchar(100) NOT NULL,
-  `postal_code` varchar(15) NOT NULL,
   `building_#` varchar(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `courts_addresses`
---
-
-INSERT INTO `court_addresses` (`address_id`, `city`, `street`, `postal_code`, `building_#`) VALUES
-(1, 'Toronto', ' University Ave', 'M5G 1T3','361'),
-(2, 'Vancouver', 'Smithe St', 'V6Z 2E1','800'),
-(3, 'Ottawa', 'Wellington St', 'K1A 0J1','301 '),
-(4, 'Calgary', '5 St SW', 'T2P 5P7','601'),
-(5, 'Montreal', 'Mcgill St.', 'H2Y 3Z7','30');
 
 -- --------------------------------------------------------
 
@@ -161,17 +104,6 @@ CREATE TABLE `crime_scenes` (
   `building_number` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `crime_scenes`
---
-
-INSERT INTO `crime_scenes` (`crime_sceneID`, `province`, `city`, `street`, `building_number`) VALUES
-(1, 'Quebec', 'Trois-Riviere', 'Idontknow Street', '0923'),
-(2, 'Ontario', 'Kingston', 'Green Dolphin Street', '0012'),
-(3, 'New York', 'New York', 'Time Square', 'Outside'),
-(4, 'New Mexico', 'Albuquerque', 'Negra Arroyo Lane', '308'),
-(5, 'Washington', 'Washington D.C', 'Pennsylvania Avenue NW', '1600');
-
 -- --------------------------------------------------------
 
 --
@@ -185,17 +117,6 @@ CREATE TABLE `defendants` (
   `age` int(4) NOT NULL,
   `specialization` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `defendants`
---
-
-INSERT INTO `defendants` (`defendant_id`, `first_name`, `last_name`, `age`, `specialization`) VALUES
-(1, 'John', 'Silva', 31, 'Criminal Law'),
-(2, 'Maria', 'Doe', 27, 'Family Law'),
-(3, 'Michael', 'Smith', 45, 'Corporate Law'),
-(4, 'Emily', 'Browning', 38, 'Immigration Law'),
-(5, 'David', 'Bowsmitchdt', 47, 'Environmental Law');
 
 -- --------------------------------------------------------
 
@@ -211,17 +132,6 @@ CREATE TABLE `investigators` (
   `rank` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `investigators`
---
-
-INSERT INTO `investigators` (`investigator_id`, `badge_number`, `first_name`, `last_name`, `rank`) VALUES
-(1, '1585', 'Hank', 'Shrader', 'Chief of Police'),
-(2, '1802', 'Jessie', 'James', 'Police Captain'),
-(3, '6521', 'Gustavo', 'Fring', 'Police Detective'),
-(4, '0421', 'Cole', 'Phelps', 'Police Detective'),
-(5, '9091', 'Chad Jeff', 'Bezos', 'Police Lieutenant');
-
 -- --------------------------------------------------------
 
 --
@@ -234,17 +144,6 @@ CREATE TABLE `judges` (
   `last_name` varchar(100) NOT NULL,
   `age` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `judges`
---
-
-INSERT INTO `judges` (`judge_id`, `first_name`, `last_name`, `age`) VALUES
-(1, 'Jayce', 'Smith', 45),
-(2, 'Leonard', 'Fisher', 50),
-(3, 'David', 'Mitch', 55),
-(4, 'Karen', 'Matheson', 48),
-(5, 'Judy', 'Brown', 60);
 
 -- --------------------------------------------------------
 
@@ -263,17 +162,6 @@ CREATE TABLE `offenders` (
   `defendant_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `offenders`
---
-
-INSERT INTO `offenders` (`offender_id`, `first_name`, `last_name`, `age`, `marital_status`, `arrest_date`, `arrest_timestamp`, `defendant_id`) VALUES
-(3, 'Jeremy', 'Elbertson', 36, 'single', '2020-01-30', '12:07:57', 3),
-(4, 'Andrew', 'Tate', 41, 'married', '2022-04-01', '16:56:57', 1),
-(5, 'Peach', 'Toadstool', 24, 'married', '2023-02-14', '23:56:57', 4),
-(6, 'Rick', 'Moranis', 54, 'married', '2014-09-24', '15:02:01', 5),
-(7, 'Cirno', 'Fairy', 60, 'single', '2009-11-09', '21:04:56', 3);
-
 -- --------------------------------------------------------
 
 --
@@ -285,17 +173,6 @@ CREATE TABLE `offender_details` (
   `case_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `offender_details`
---
-
-INSERT INTO `offender_details` (`offender_id`, `case_id`) VALUES
-(3, 1),
-(6, 2),
-(4, 3),
-(7, 4),
-(5, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -306,19 +183,8 @@ CREATE TABLE `offenses` (
   `offense_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
-  `classification` varchar(100) NOT NULL
+  `classification` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `offenses`
---
-
-INSERT INTO `offenses` (`offense_id`, `name`, `description`, `classification`) VALUES
-(1, 'Arson', 'The willful and malicious burning of property or nature.', 'Felony'),
-(2, 'Domestic Violence', 'Violent or abusive acts towards ones spouse, offspring or close relatives.', 'Misdemeanor'),
-(3, 'Rape', 'Sexual acts towards a non-consenting victim.', 'Misdemeanor'),
-(4, 'Fraud', 'Intentional deception to gain something of value, usually money.', 'Misdemeanor'),
-(5, 'Homicide', 'The act of killing another person, whether intentionally or accidentally.', 'Felony');
 
 -- --------------------------------------------------------
 
@@ -334,17 +200,6 @@ CREATE TABLE `prosecutors` (
   `specialization` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `prosecutors`
---
-
-INSERT INTO `prosecutors` (`prosecutor_id`, `first_name`, `last_name`, `age`, `specialization`) VALUES
-(1, 'LeBronze', 'Age', 44, 'Criminal Law'),
-(2, 'LeBomb', 'Bay', 61, 'Admiralty Law'),
-(3, 'Taughtthe', 'Laws', 35, 'First Amendment Law'),
-(4, 'Minster', 'Beech', 29, 'Business Law'),
-(5, 'James Morgan', 'McGill', 48, 'Criminal Law');
-
 -- --------------------------------------------------------
 
 --
@@ -353,21 +208,10 @@ INSERT INTO `prosecutors` (`prosecutor_id`, `first_name`, `last_name`, `age`, `s
 
 CREATE TABLE `verdicts` (
   `verdict_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
+  `name` int(100) NOT NULL,
   `description` text NOT NULL,
   `fine` int(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `verdicts`
---
-
-INSERT INTO `verdicts` (`verdict_id`, `name`, `description`, `fine`) VALUES
-(1, 'Guilty', 'The defendant has been found guilty of the crime.', 1000),
-(2, 'Not Guilty', 'The defendant has been found not guilty of the crime.', 0),
-(3, 'Partially Guilty', 'The defendant has been found partially guilty of the crime.', 500),
-(4, 'Innocent', 'The defendant has been proven to be innocent of the crime.', 0),
-(5, 'Mistrial', 'The trial has ended without a verdict due to a mistrial.', 0);
 
 -- --------------------------------------------------------
 
@@ -383,18 +227,6 @@ CREATE TABLE `victims` (
   `marital_status` enum('single','married','divorced','') NOT NULL,
   `prosecutor_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `victims`
---
-
-INSERT INTO `victims` (`victim_id`, `first_name`, `last_name`, `age`, `marital_status`, `prosecutor_id`) VALUES
-(1, 'Josuke', 'Higashikata', 16, 'single', 1),
-(2, 'Okuyasu', 'Nijimura', 16, 'single', NULL),
-(3, 'LeRock', 'Johnson', 57, 'married', 4),
-(4, 'Mario', 'Mario', 25, 'single', 5),
-(5, 'Doug', 'Bowser Koopa', 41, 'divorced', 3),
-(6, 'No', 'One', 0, 'single', NULL);
 
 --
 -- Indexes for dumped tables
@@ -509,73 +341,73 @@ ALTER TABLE `victims`
 -- AUTO_INCREMENT for table `cases`
 --
 ALTER TABLE `cases`
-  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `courts`
 --
 ALTER TABLE `courts`
-  MODIFY `court_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `court_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `court_addresses`
 --
 ALTER TABLE `court_addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `crime_scenes`
 --
 ALTER TABLE `crime_scenes`
-  MODIFY `crime_sceneID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `crime_sceneID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `defendants`
 --
 ALTER TABLE `defendants`
-  MODIFY `defendant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `defendant_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `investigators`
 --
 ALTER TABLE `investigators`
-  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `judges`
 --
 ALTER TABLE `judges`
-  MODIFY `judge_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `judge_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `offenders`
 --
 ALTER TABLE `offenders`
-  MODIFY `offender_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `offender_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `offenses`
 --
 ALTER TABLE `offenses`
-  MODIFY `offense_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `offense_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `prosecutors`
 --
 ALTER TABLE `prosecutors`
-  MODIFY `prosecutor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `prosecutor_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `verdicts`
 --
 ALTER TABLE `verdicts`
-  MODIFY `verdict_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `verdict_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `victims`
 --
 ALTER TABLE `victims`
-  MODIFY `victim_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `victim_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -603,10 +435,32 @@ ALTER TABLE `cases_victims`
   ADD CONSTRAINT `victim_id` FOREIGN KEY (`victim_id`) REFERENCES `victims` (`victim_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `courts`
+--
+ALTER TABLE `courts`
+  ADD CONSTRAINT `courts_address_if_fk` FOREIGN KEY (`address_id`) REFERENCES `court_addresses` (`address_id`),
+  ADD CONSTRAINT `courts_case_id_fk` FOREIGN KEY (`court_id`) REFERENCES `cases` (`court_id`),
+  ADD CONSTRAINT `courts_judge_id_fk` FOREIGN KEY (`judge_id`) REFERENCES `judges` (`judge_id`),
+  ADD CONSTRAINT `courts_verdict_id_fk` FOREIGN KEY (`verdict_id`) REFERENCES `verdicts` (`verdict_id`);
+
+--
 -- Constraints for table `offenders`
 --
 ALTER TABLE `offenders`
   ADD CONSTRAINT `offenders_defendant_id_fk` FOREIGN KEY (`defendant_id`) REFERENCES `defendants` (`defendant_id`);
+
+--
+-- Constraints for table `offender_details`
+--
+ALTER TABLE `offender_details`
+  ADD CONSTRAINT `offender_detail_case_id_fk` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`),
+  ADD CONSTRAINT `offender_details_offender_id_fk` FOREIGN KEY (`offender_id`) REFERENCES `offenders` (`offender_id`);
+
+--
+-- Constraints for table `victims`
+--
+ALTER TABLE `victims`
+  ADD CONSTRAINT `victims_prosecutors_index` FOREIGN KEY (`prosecutor_id`) REFERENCES `prosecutors` (`prosecutor_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
