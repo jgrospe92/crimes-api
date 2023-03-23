@@ -37,10 +37,13 @@ class VerdictsModel extends BaseModel
             $sql .= " AND fine LIKE CONCAT(:fine, '%') ";
             $query_values[":fine"] = $filters["fine"];
         }
-
-
-
         return $this->paginate($sql, $query_values);
+    }
+
+    public function handleGetVerdictById(String $verdict_id)
+    {
+        $sql2 = "SELECT * FROM verdicts WHERE verdict_id = :verdict_id ";
+        return $this->run($sql2, ["verdict_id"=> $verdict_id])->fetch();
     }
 
 

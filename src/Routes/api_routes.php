@@ -17,6 +17,9 @@ $app->get('/', [AboutController::class, 'handleAboutApi']);
 
 //Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
+$app->get('/verdicts/{verdict_id}', [VerdictsController::class,'handleGetVerdictById']);
+$app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdict']);
+
 
 // ROUTE: /hello
 $app->get('/hello', function (Request $request, Response $response, $args) {
