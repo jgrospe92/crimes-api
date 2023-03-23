@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class BaseController
 {
+
     protected function prepareOkResponse(Response $response, array $data, int $status_code = 200)
     {
         // var_dump($data);
