@@ -13,9 +13,9 @@ class CasesModel extends BaseModel
         parent::__construct();
     }
 
-    public function getCaseById($table, $id)
+    public function getCaseById($table, $filters)
     {
-        return $this->getById($table, $id);
+        return $this->getById($table, $filters);
     }
 
     
