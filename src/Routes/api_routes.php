@@ -22,7 +22,11 @@ $app->get('/cases/{case_id}', [CasesController::class, 'handleGetCaseById']);
 //Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 $app->get('/verdicts/{verdict_id}', [VerdictsController::class,'handleGetVerdictById']);
-$app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdict']);
+$app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdicts']);
+/* 
+    able to create verdicts and see them on the phpmyadmin. however not able to 
+    see new verdicts when calling GET localhost/crimes-api/verdicts or handleGetAllVerdicts
+*/
 
 
 // ROUTE: /hello

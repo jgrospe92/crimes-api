@@ -46,6 +46,10 @@ class VerdictsModel extends BaseModel
         return $this->run($sql2, ["verdict_id"=> $verdict_id])->fetch();
     }
 
+    public function handleCreateVerdicts(array $verdict)
+    {
+        return $this->insert($this->table_name, $verdict);
+    }
 
 
 

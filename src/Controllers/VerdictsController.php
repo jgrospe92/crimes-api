@@ -6,12 +6,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
 use Vanier\Api\Models\VerdictsModel;
 
-
 class VerdictsController extends BaseController
 {
     private $verdicts_model = null;
 
-    public function __contruct()
+    public function __construct()
     {
         $this->verdicts_model = new VerdictsModel();
     }
@@ -34,6 +33,16 @@ class VerdictsController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
+    public function handleCreateVerdicts(Request $request, Response $response)
+    {
+        $verdicts_data = $request->getParsedBody();
+        foreach($verdicts_data as $key =>$verdict){
+            $this->verdicts_model->handleCreateVerdicts($verdict);
+            //var_dump($this->verdicts_model->handleCreateVerdicts($verdict));
+            //echo "hi";exit;
+        }
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+    }
 
 
 
