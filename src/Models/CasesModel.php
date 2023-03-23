@@ -18,5 +18,17 @@ class CasesModel extends BaseModel
         return $this->getById($table, $filters);
     }
 
+    public function getAll(array $filters)
+    {
+         // Queries the DB and return the list of all films
+         $query_values = [];
+         
+         $sql = "SELECT * FROM " . $this->table_name;
+
+
+         $cases = $this->paginate($sql, $query_values);
+         return $cases;
+    }
+
     
 }
