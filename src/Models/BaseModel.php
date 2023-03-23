@@ -115,25 +115,6 @@ class BaseModel
 
         return $stmt;
     }
-    protected function paginate(String $sql, array $filters)
-    {
-        // step 1) get the number of rows/row count.
-        $row_count = $this->count($sql, $filters);
-        // step 2) Instantiate the paginationhelper
-        $paginator = new PaginationHelper($this->current_page, $this->records_per_page, $row_count);
-        // step 3) get the computed offset from the paginator
-        $offset = $paginator->getOffset();
-        // step 4) constrain the number of records there should be in the result set.
-        $sql .= " LIMIT $offset , $this->records_per_page ";
-        // step 5) include the pagination info om tje results.
-        $data = $paginator->getPaginationInfo();
-        // step 6) query the table 
-        $data["data"] = $this->run($sql,$filters)->fetchAll();
-        return $data;
-    }
-
-
-
 
 
     /**

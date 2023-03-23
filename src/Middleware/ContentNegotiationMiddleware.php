@@ -35,7 +35,7 @@ class  ContentNegotiationMiddleware implements MiddlewareInterface
 
         // verify if the request content type is application/json
         // if not, return a error response
-        if (!str_contains(APP_MEDIA_TYPE_JSON, $accept)){
+        if (!str_contains(APP_MEDIA_TYPE_JSON, $accept) && $accept != "*/*"){
 
             $error_status = ["statuscode: " => StatusCodeInterface::STATUS_UNSUPPORTED_MEDIA_TYPE, "Message: " => "Invalid Media Type", "Description"=>"Request needs to be a json type" ];
             $payload = json_encode($error_status, JSON_PRETTY_PRINT);
