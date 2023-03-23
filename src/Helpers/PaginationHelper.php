@@ -91,9 +91,9 @@ class PaginationHelper {
      */
     public function getPaginationInfo() {
         return Array(
-            "count" => $this->total_records,
+            "total Pages" => $this->total_records,
             "offset" => $this->getOffset(),
-            "page" => $this->current_page,
+            "current page" => $this->current_page,
             "page_size" => $this->records_per_page,
             "last_page" => $this->total_pages,
         );

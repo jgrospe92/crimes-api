@@ -31,6 +31,13 @@ class BaseModel
     private $records_per_page = 5;
 
     /**
+     * The total number of records contained in the fetched result set 
+     * to be paginated.
+     * @var int
+     */
+    private $total_records;
+
+    /**
      * Instantiates the BaseModel.
      * @global array $db_options    database connection options.
      * @param array $options        Optional array of PDO options
@@ -342,5 +349,41 @@ class BaseModel
     {
         $this->current_page = $current_page;
         $this->records_per_page = $records_per_page;
+    }
+
+    protected function paginate(string $sql, array $filters)
+    {
+        // Step 1/ Get the number of rows/row counts
+        $row_counts = $this->count($sql, $filters);
+
+        // Step 2. Instantiate
+        $paginator = new PaginationHelper($this->current_page, $this->records_per_page, $row_counts);
+
+        // Step 3 Make the logic of paginator
+        $offset = $paginator->getOffset();
+
+        // step 4 add the limit / constraint
+        $sql .= " LIMIT $offset, $this->records_per_page";
+
+        // Step 5 Include the pagination info in the result
+        $data = $paginator->getPaginationInfo();
+
+        // Step 6 Run the query and retrieve the partial result / the requested page
+        $data["data"] = $this->run($sql, $filters)->fetchAll();
+
+        return $data;
+    }
+
+    /**
+     * Summary of getTotaPage
+     * @return int
+     */
+    protected function getTotaPage() : int{
+
+        if (!empty($this->total_records)) {
+            // Calculate the total number of pages.
+            return (int) ceil($this->total_records / $this->records_per_page);
+        }
+        return 0; 
     }
 }
