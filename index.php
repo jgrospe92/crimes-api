@@ -5,7 +5,6 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use Vanier\Api\exceptions\HttpErrorHandler;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
 
-
 require __DIR__ . '/vendor/autoload.php';
  // Include the file that contains the application's global configuration settings,
  // database credentials, etc.

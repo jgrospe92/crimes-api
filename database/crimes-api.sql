@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2023 at 05:45 AM
+-- Generation Time: Mar 23, 2023 at 03:26 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -19,6 +19,9 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `crimes-api`
+DROP DATABASE IF EXISTS `crimes-api`;
+CREATE DATABASE `crimes-api`;
+Use `crimes-api`;
 --
 DROP DATABASE IF EXISTS `crimes-api`;
 CREATE DATABASE `crimes-api`;
@@ -105,7 +108,7 @@ CREATE TABLE `courts` (
   `court_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `date` date NOT NULL,
-  `time` TIMESTAMP(0)  NOT NULL,
+  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `address_id` int(11) NOT NULL,
   `judge_id` int(11) NOT NULL,
   `verdict_id` int(11) NOT NULL
@@ -355,6 +358,7 @@ CREATE TABLE `verdicts` (
   `verdict_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
+  `sentence` varchar(150) DEFAULT NULL,
   `fine` int(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -362,12 +366,12 @@ CREATE TABLE `verdicts` (
 -- Dumping data for table `verdicts`
 --
 
-INSERT INTO `verdicts` (`verdict_id`, `name`, `description`, `fine`) VALUES
-(1, 'Guilty', 'The defendant has been found guilty of the crime.', 1000),
-(2, 'Not Guilty', 'The defendant has been found not guilty of the crime.', 0),
-(3, 'Partially Guilty', 'The defendant has been found partially guilty of the crime.', 500),
-(4, 'Innocent', 'The defendant has been proven to be innocent of the crime.', 0),
-(5, 'Mistrial', 'The trial has ended without a verdict due to a mistrial.', 0);
+INSERT INTO `verdicts` (`verdict_id`, `name`, `description`, `sentence`, `fine`) VALUES
+(1, 'Guilty', 'The defendant has been found guilty of the crime.', '25 years in prison', 1000),
+(2, 'Not Guilty', 'The defendant has been found not guilty of the crime.', 'None', 0),
+(3, 'Partially Guilty', 'The defendant has been found partially guilty of the crime.', '5 years in prison', 500),
+(4, 'Innocent', 'The defendant has been proven to be innocent of the crime.', 'None', 0),
+(5, 'Mistrial', 'The trial has ended without a verdict due to a mistrial.', 'None', 0);
 
 -- --------------------------------------------------------
 

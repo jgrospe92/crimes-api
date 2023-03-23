@@ -3,6 +3,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Vanier\Api\Controllers\AboutController;
+use Vanier\Api\Controllers\VerdictsController;
 
 // Import the app instance into this file's scope.
 global $app;
@@ -13,6 +14,9 @@ global $app;
 
 // ROUTE: /
 $app->get('/', [AboutController::class, 'handleAboutApi']); 
+
+//Routes for Verdicts
+$app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 
 // ROUTE: /hello
 $app->get('/hello', function (Request $request, Response $response, $args) {
