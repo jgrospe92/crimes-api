@@ -27,9 +27,9 @@ class CasesController extends BaseController
     public function handleGetCaseById(Request $request, Response $response, array $uri_args){
 
         $case_id = $uri_args['case_id'];
-        $data = $this->case_model->getCaseById($this->CASES_TABLE, $case_id);
-        var_dump($data);
-        exit;
+        $filter = ['case_id' => $case_id];
+        $data['data'] = $this->case_model->getCaseById($this->CASES_TABLE, $filter);
+        return $this->prepareResponse($response, $data);
         
     }
 }

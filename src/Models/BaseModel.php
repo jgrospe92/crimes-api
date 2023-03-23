@@ -153,9 +153,11 @@ class BaseModel
      * @param  object $fetchMode set return mode ie object or array
      * @return object            returns single record
      */
-    protected function getById($table, $id, $fetchMode = PDO::FETCH_ASSOC)
+    protected function getById($table, $filter, $fetchMode = PDO::FETCH_ASSOC)
     {
-        return $this->run("SELECT * FROM $table WHERE id = ?", [$id])->fetch($fetchMode);
+        $column_name = key($filter);
+        $id = $filter[$column_name];
+        return $this->run("SELECT * FROM $table WHERE ". $column_name ." = ?", [$id])->fetch($fetchMode);
     }
 
     /**
@@ -359,7 +361,7 @@ class BaseModel
      * Summary of getTotaPage
      * @return int
      */
-    protected function getTotaPage() : int{
+    protected function getTotalPage() : int{
 
         if (!empty($this->total_records)) {
             // Calculate the total number of pages.
