@@ -28,6 +28,7 @@ class CasesController extends BaseController
 
         $case_id = $uri_args['case_id'];
         $filter = ['case_id' => $case_id];
+        
         $data['data'] = $this->case_model->getCaseById($this->CASES_TABLE, $filter);
         return $this->prepareResponse($response, $data);
         

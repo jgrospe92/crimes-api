@@ -153,11 +153,18 @@ class BaseModel
      * @param  object $fetchMode set return mode ie object or array
      * @return object            returns single record
      */
-    protected function getById($table, $filter, $fetchMode = PDO::FETCH_ASSOC)
+    protected function getById($table, $whereClause, $fetchMode = PDO::FETCH_ASSOC)
     {
-        $column_name = key($filter);
-        $id = $filter[$column_name];
-        return $this->run("SELECT * FROM $table WHERE ". $column_name ." = ?", [$id])->fetch($fetchMode);
+
+        $query_values = [];
+        $column_name = key($whereClause);
+        $id = $whereClause[$column_name];
+
+        $sql = "SELECT * FROM $table WHERE 1";
+        $sql .= " AND " . $column_name . " = :id";
+        $query_values['id'] = $id;
+        
+        return $this->run($sql, $query_values)->fetch($fetchMode);
     }
 
     /**
