@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 23, 2023 at 03:26 PM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Host: localhost
+-- Generation Time: Mar 23, 2023 at 03:56 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -19,9 +19,6 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `crimes-api`
-DROP DATABASE IF EXISTS `crimes-api`;
-CREATE DATABASE `crimes-api`;
-Use `crimes-api`;
 --
 DROP DATABASE IF EXISTS `crimes-api`;
 CREATE DATABASE `crimes-api`;
@@ -41,7 +38,7 @@ CREATE TABLE `cases` (
   `crime_sceneID` int(11) NOT NULL,
   `investigator_id` int(11) NOT NULL,
   `court_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `cases`
@@ -63,7 +60,7 @@ INSERT INTO `cases` (`case_id`, `description`, `date_reported`, `misdemeanor`, `
 CREATE TABLE `cases_offenses` (
   `case_id` int(11) NOT NULL,
   `offense_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `cases_offenses`
@@ -85,7 +82,7 @@ INSERT INTO `cases_offenses` (`case_id`, `offense_id`) VALUES
 CREATE TABLE `cases_victims` (
   `case_id` int(11) NOT NULL,
   `victim_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `cases_victims`
@@ -108,22 +105,22 @@ CREATE TABLE `courts` (
   `court_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `date` date NOT NULL,
-  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `time` time DEFAULT NULL,
   `address_id` int(11) NOT NULL,
   `judge_id` int(11) NOT NULL,
   `verdict_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `courts`
 --
 
 INSERT INTO `courts` (`court_id`, `name`, `date`, `time`, `address_id`, `judge_id`, `verdict_id`) VALUES
-(1, 'Toronto Courthouse', '2023-04-15', '06:00:00', 1, 1, 1),
-(2, 'Court of Appeal', '2023-04-17', '11:00:00', 2, 2, 2),
-(3, 'Supreme Court of Canada', '2023-04-18', '12:00:00', 3, 3, 3),
-(4, 'Provincial Court of Alberta', '2023-04-19', '13:00:00', 4, 4, 4),
-(5, 'Courts Administration Service', '2023-04-20', '14:00:00', 5, 5, 5);
+(1, 'Toronto Courthouse', '2023-04-15', '06:11:14', 1, 1, 1),
+(2, 'Court of Appeal', '2023-04-17', '11:15:02', 2, 2, 2),
+(3, 'Supreme Court of Canada', '2023-04-18', '17:08:13', 3, 3, 3),
+(4, 'Provincial Court of Alberta', '2023-04-19', '07:06:00', 4, 4, 4),
+(5, 'Courts Administration Service', '2023-04-20', '15:22:00', 5, 5, 5);
 
 -- --------------------------------------------------------
 
@@ -137,18 +134,18 @@ CREATE TABLE `court_addresses` (
   `street` varchar(100) NOT NULL,
   `postal_code` varchar(15) NOT NULL,
   `building_#` varchar(7) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `courts_addresses`
+-- Dumping data for table `court_addresses`
 --
 
 INSERT INTO `court_addresses` (`address_id`, `city`, `street`, `postal_code`, `building_#`) VALUES
-(1, 'Toronto', ' University Ave', 'M5G 1T3','361'),
-(2, 'Vancouver', 'Smithe St', 'V6Z 2E1','800'),
-(3, 'Ottawa', 'Wellington St', 'K1A 0J1','301 '),
-(4, 'Calgary', '5 St SW', 'T2P 5P7','601'),
-(5, 'Montreal', 'Mcgill St.', 'H2Y 3Z7','30');
+(1, 'Toronto', ' University Ave', 'M5G 1T3', '361'),
+(2, 'Vancouver', 'Smithe St', 'V6Z 2E1', '800'),
+(3, 'Ottawa', 'Wellington St', 'K1A 0J1', '301 '),
+(4, 'Calgary', '5 St SW', 'T2P 5P7', '601'),
+(5, 'Montreal', 'Mcgill St.', 'H2Y 3Z7', '30');
 
 -- --------------------------------------------------------
 
@@ -162,7 +159,7 @@ CREATE TABLE `crime_scenes` (
   `city` varchar(100) NOT NULL,
   `street` varchar(100) NOT NULL,
   `building_number` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `crime_scenes`
@@ -187,7 +184,7 @@ CREATE TABLE `defendants` (
   `last_name` varchar(100) NOT NULL,
   `age` int(4) NOT NULL,
   `specialization` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `defendants`
@@ -212,7 +209,7 @@ CREATE TABLE `investigators` (
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `rank` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `investigators`
@@ -236,7 +233,7 @@ CREATE TABLE `judges` (
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `age` int(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `judges`
@@ -264,7 +261,7 @@ CREATE TABLE `offenders` (
   `arrest_date` date NOT NULL,
   `arrest_timestamp` time NOT NULL,
   `defendant_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `offenders`
@@ -286,7 +283,7 @@ INSERT INTO `offenders` (`offender_id`, `first_name`, `last_name`, `age`, `marit
 CREATE TABLE `offender_details` (
   `offender_id` int(11) NOT NULL,
   `case_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `offender_details`
@@ -310,7 +307,7 @@ CREATE TABLE `offenses` (
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `classification` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `offenses`
@@ -335,7 +332,7 @@ CREATE TABLE `prosecutors` (
   `last_name` varchar(100) NOT NULL,
   `age` int(7) DEFAULT NULL,
   `specialization` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `prosecutors`
@@ -360,7 +357,7 @@ CREATE TABLE `verdicts` (
   `description` text NOT NULL,
   `sentence` varchar(150) DEFAULT NULL,
   `fine` int(7) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `verdicts`
@@ -386,7 +383,7 @@ CREATE TABLE `victims` (
   `age` int(7) NOT NULL,
   `marital_status` enum('single','married','divorced','') NOT NULL,
   `prosecutor_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `victims`
