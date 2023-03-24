@@ -538,4 +538,20 @@ class ValidateHelper
         return true;
 
     }
+
+    /**
+     * Summary of validateParams
+     * @param array $param
+     * @param array $params
+     * @return bool
+     */
+    public static function validateParams($param, array $params)
+    {
+        if (in_array($param, $params))
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
