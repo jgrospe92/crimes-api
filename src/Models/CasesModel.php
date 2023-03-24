@@ -5,6 +5,9 @@ use Vanier\Api\Models\BaseModel;
 use Vanier\Api\models\ActorsModel;
 use Exception;
 
+/**
+ * Summary of CasesModel
+ */
 class CasesModel extends BaseModel
 {
     private $table_name = "cases";
@@ -13,6 +16,12 @@ class CasesModel extends BaseModel
         parent::__construct();
     }
 
+    /**
+     * Summary of getCaseById
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return object
+     */
     public function getCaseById($table, $whereClause)
     {
         $case = $this->getById($table, $whereClause);
@@ -45,6 +54,12 @@ class CasesModel extends BaseModel
         {
             $sql .= " AND description LIKE CONCAT('%', :description, '%')";
             $query_values['description'] = $filters['description'];
+        }
+        if (isset($filters['date_from']) && isset($filters['date_to']))
+        {
+            $sql .= " AND DATE(date_reported) BETWEEN :date_from AND :date_to ";
+            $query_values['date_from'] = $filters['date_from'];
+            $query_values['date_to'] = $filters['date_to'];
         }
 
        
