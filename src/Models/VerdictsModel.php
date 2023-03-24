@@ -37,6 +37,7 @@ class VerdictsModel extends BaseModel
             $sql .= " AND fine LIKE CONCAT(:fine, '%') ";
             $query_values[":fine"] = $filters["fine"];
         }
+        
         return $this->paginate($sql, $query_values);
     }
 
