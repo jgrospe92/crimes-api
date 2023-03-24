@@ -155,7 +155,6 @@ class BaseModel
      */
     protected function getById($table, $whereClause, $fetchMode = PDO::FETCH_ASSOC)
     {
-
         $query_values = [];
         $column_name = key($whereClause);
         $id = $whereClause[$column_name];
