@@ -25,7 +25,6 @@ class CasesController extends BaseController
     private array $filter_params = ['description', 'date','date_reported', 'misdemeanor',
     'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by' , 'page', 'pageSize'];
 
-
     public function __construct()
     {
         $this->case_model = new CasesModel();
@@ -101,9 +100,6 @@ class CasesController extends BaseController
 
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
-
-
-
 
     }
 }
