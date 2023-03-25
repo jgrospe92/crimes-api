@@ -6,12 +6,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
 use Vanier\Api\Models\VictimsModel;
+use Vanier\Api\exceptions\HttpErrorHandler;
 
 class VictimsController extends BaseController
 {
     private $victims_model = null;
 
-    public function __contruct()
+    public function __construct()
     {
         $this->victims_model = new VictimsModel();
     }
@@ -31,8 +32,6 @@ class VictimsController extends BaseController
         $victims_model = new VictimsModel();
 
         $data = $victims_model->handleGetVictimById($victim_id);
-
-        $json_data = json_encode($data);
 
         return $this->prepareOkResponse($response, $data);
 
