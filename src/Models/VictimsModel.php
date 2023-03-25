@@ -106,7 +106,7 @@ class VictimsModel extends BaseModel
      *
      * @param int $victim_id The ID of the victim to fetch
      *
-     * @return array An array containing the victim and prosecutor data, or null if the prosecutor is not found
+     * @return array An array containing the victim and prosecutor data
      */
     public function handleGetVictimById($victim_id) {
         $victim_query = "SELECT * FROM $this->table_name WHERE victim_id = :victim_id";
