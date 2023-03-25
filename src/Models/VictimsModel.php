@@ -12,14 +12,23 @@ class VictimsModel extends BaseModel
         parent::__construct();
     }
 
+     /**
+     * Handle retrieving all victims from the database based on provided filters
+     * 
+     * @param array $filters - An array of filters to apply to the query
+     * @return array - An array containing the paginated victims data along with their respective prosecutors
+     */
     public function handleGetAllVictims(array $filters = [])
     {
         $query_values = [];
-        $sql = "SELECT v.victim_id, v.first_name, v.last_name, v.age, v.marital_status, p.prosecutor_id, p.specialization 
+        $sql = "SELECT v.victim_id, v.first_name AS victim_first_name, v.last_name AS victim_last_name, v.age AS victim_age, 
+               v.marital_status, p.prosecutor_id, p.first_name AS prosecutor_first_name, p.last_name AS prosecutor_last_name, 
+               p.age AS prosecutor_age, p.specialization
                 FROM victims v 
                 LEFT JOIN prosecutors p ON v.prosecutor_id = p.prosecutor_id 
                 WHERE 1";
         
+        //Filtering 
         if(isset($filters["last_name"])){
             $sql .= " AND v.last_name LIKE CONCAT(:last_name,'%') ";
             $query_values[":last_name"] = $filters["last_name"]."%";
@@ -45,6 +54,7 @@ class VictimsModel extends BaseModel
             $query_values[":prosecutor_id"] = $filters["prosecutor_id"]."%";
         }
 
+        // Sorting the table values, a better way of filtering
         if(isset($filters["sort_by"])){
             $sort_by = $filters["sort_by"];
             if($sort_by == "first_name"){
@@ -58,23 +68,25 @@ class VictimsModel extends BaseModel
             }
         }
 
+         // Paginate the results
         $result = $this->paginate($sql, $query_values);
 
+        //mapping the data to a victims json objects that is the parent of victim and prosecutor json objects
         $victims = [];
         foreach($result["data"] as $row){
             $victim = [
                 "victim_id" => $row["victim_id"],
-                "first_name" => $row["first_name"],
-                "last_name" => $row["last_name"],
-                "age" => $row["age"],
+                "first_name" => $row["victim_first_name"],
+                "last_name" => $row["victim_last_name"],
+                "age" => $row["victim_age"],
                 "marital_status" => $row["marital_status"]
             ];
-
+        
             $prosecutor = [
                 "prosecutor_id" => $row["prosecutor_id"],
-                "first_name" => $row["first_name"],
-                "last_name" => $row["last_name"],
-                "age" => $row["age"],
+                "first_name" => $row["prosecutor_first_name"],
+                "last_name" => $row["prosecutor_last_name"],
+                "age" => $row["prosecutor_age"],
                 "specialization" => $row["specialization"]
             ];
 
@@ -89,20 +101,33 @@ class VictimsModel extends BaseModel
     
     }
 
+    /**
+     * Fetches a victim and their associated prosecutor by ID
+     *
+     * @param int $victim_id The ID of the victim to fetch
+     *
+     * @return array An array containing the victim and prosecutor data, or null if the prosecutor is not found
+     */
     public function handleGetVictimById($victim_id) {
         $victim_query = "SELECT * FROM $this->table_name WHERE victim_id = :victim_id";
         $victim_params = [":victim_id" => $victim_id];
         $victim = $this->run($victim_query, $victim_params)->fetchAll();
     
         $prosecutor_id = $victim[0]['prosecutor_id'];
-        $prosecutor_query = "SELECT * FROM prosecutors WHERE prosecutor_id = :prosecutor_id";
-        $prosecutor_params = [":prosecutor_id" => $prosecutor_id];
-        $prosecutor = $this->run($prosecutor_query, $prosecutor_params)->fetchAll();
     
+        // Only fetch prosecutor data if it exists
+        if ($prosecutor_id) {
+            $sql = "SELECT * FROM prosecutors WHERE prosecutor_id = :prosecutor_id";
+            $prosecutor_params = [":prosecutor_id" => $prosecutor_id];
+            $prosecutor = $this->run($sql, $prosecutor_params)->fetchAll();
+            $prosecutor_data = $prosecutor[0];
+        } else {
+            $prosecutor_data = null;
+        }
+    
+        // removing prosecutor id from victim json object
         $victim_data = $victim[0];
         unset($victim_data['prosecutor_id']);
-    
-        $prosecutor_data = $prosecutor ? $prosecutor[0] : null;
     
         return ['Victim' => $victim_data, 'Prosecutor' => $prosecutor_data];
     }
