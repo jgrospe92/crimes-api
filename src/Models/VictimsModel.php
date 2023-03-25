@@ -58,13 +58,53 @@ class VictimsModel extends BaseModel
             }
         }
 
-        return $this->paginate($sql, $query_values);
+        $result = $this->paginate($sql, $query_values);
+
+        $victims = [];
+        foreach($result["data"] as $row){
+            $victim = [
+                "victim_id" => $row["victim_id"],
+                "first_name" => $row["first_name"],
+                "last_name" => $row["last_name"],
+                "age" => $row["age"],
+                "marital_status" => $row["marital_status"]
+            ];
+
+            $prosecutor = [
+                "prosecutor_id" => $row["prosecutor_id"],
+                "first_name" => $row["first_name"],
+                "last_name" => $row["last_name"],
+                "age" => $row["age"],
+                "specialization" => $row["specialization"]
+            ];
+
+            $victims[] = [
+                "victim" => $victim,
+                "prosecutor" => $prosecutor
+            ];
+        }
+    
+        $result["data"] = $victims;
+        return $result;
+    
     }
 
     public function handleGetVictimById($victim_id) {
-        $sql = " SELECT * FROM $this->table_name WHERE victim_id = :victim_id";
-        $querry_value[":victim_id"] = $victim_id;
-        return $this->run($sql, $querry_value)->fetchAll();
+        $victim_query = "SELECT * FROM $this->table_name WHERE victim_id = :victim_id";
+        $victim_params = [":victim_id" => $victim_id];
+        $victim = $this->run($victim_query, $victim_params)->fetchAll();
+    
+        $prosecutor_id = $victim[0]['prosecutor_id'];
+        $prosecutor_query = "SELECT * FROM prosecutors WHERE prosecutor_id = :prosecutor_id";
+        $prosecutor_params = [":prosecutor_id" => $prosecutor_id];
+        $prosecutor = $this->run($prosecutor_query, $prosecutor_params)->fetchAll();
+    
+        $victim_data = $victim[0];
+        unset($victim_data['prosecutor_id']);
+    
+        $prosecutor_data = $prosecutor ? $prosecutor[0] : null;
+    
+        return ['Victim' => $victim_data, 'Prosecutor' => $prosecutor_data];
     }
 
 }

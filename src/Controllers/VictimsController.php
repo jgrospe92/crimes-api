@@ -25,15 +25,16 @@ class VictimsController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
-    public function handleGetVictimById(Request $request, Response $response, array $uri_args) {
-        
+    public function handleGetVictimById(Request $request, Response $response, array $uri_args) {     
         $victim_id = $uri_args ["victim_id"];
-
         $victims_model = new VictimsModel();
-
         $data = $victims_model->handleGetVictimById($victim_id);
-
-        return $this->prepareOkResponse($response, $data);
-
+        $victim_data = $data['Victim'];
+        $prosecutor_data = $data['Prosecutor'];
+        $response_data = [
+            'Victim' => $victim_data,
+            'Prosecutor' => $prosecutor_data
+        ];
+        return $this->prepareOkResponse($response, $response_data);
     }
 }
