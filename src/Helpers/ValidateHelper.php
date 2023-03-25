@@ -155,10 +155,11 @@ class ValidateHelper
     {
         // Validate a single value.
         // The value must be passed as an array. 
-        $value = $data['length'];
+        $key = array_key_first($data);
+        $value = $data[$key];
 
-        $validator = new Validator(['length' => $value]);
-        $validator->rule('min', 'length', 1);
+        $validator = new Validator($data);
+        $validator->rule('numeric', $key);
         if ($validator->validate()) {
             return true;
         } else {

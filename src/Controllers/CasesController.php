@@ -68,6 +68,11 @@ class CasesController extends BaseController
                 }
             }
         }
+     
+        if (!ValidateHelper::validateNumericInput(['misdemeanor'=>$filters['misdemeanor']]))
+        {
+            throw new HttpBadRequest($request, "expected numeric but received alpha");
+        }
 
         // verify if client added a page and pageSize params
         // if client didn't add a page and pageSize params, paginate using the default values
