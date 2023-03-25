@@ -37,6 +37,7 @@ $app->get('/court_addresses/{address_id}',[CourtAddressesController::class, 'han
 
 // Routes for Courts
 $app->get('/courts',[CourtsController::class, 'handleGetAllCourts']);
+$app->get('/courts/{court_id}',[CourtsController::class, 'handleGetCourtById']);
 
 
 

@@ -35,7 +35,11 @@ class CourtsModel extends BaseModel
         return $this->paginate($sql, $query_values);
     }
 
-
+    public function handleGetCourtById(String $court_id)
+    {
+        $sql = "SELECT * FROM $this->table_name WHERE court_id = :court_id ";
+        return $this->run($sql,["court_id"=>$court_id])->fetch();
+    }
 
 
 }

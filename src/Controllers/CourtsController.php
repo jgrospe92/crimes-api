@@ -23,5 +23,14 @@ class CourtsController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
-    
+    public function handleGetCourtById(Request $request, Response $response, array $args)
+    {
+        //echo "hi";exit;
+        $filters = $request->getQueryParams();
+        $courts_model = new CourtsModel();
+        $court_id = $args["court_id"];
+        $data = $courts_model->handleGetCourtById($court_id);
+        
+        return $this->prepareOkResponse($response, $data);
+    }
 }
