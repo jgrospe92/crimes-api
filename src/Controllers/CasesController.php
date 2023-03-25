@@ -47,6 +47,27 @@ class CasesController extends BaseController
 
     }
 
+    public function handleOffensesByCase(Request $request, Response $response, array $uri_args)
+    {
+        $case_id = $uri_args['case_id'];
+        echo $case_id;    exit;
+        if (!ValidateHelper::validateNumericInput(['case_id'=>$case_id]))
+        {
+            throw new HttpBadRequest($request, "expected numeric but received alpha");
+        }
+    
+        //return $this->preparedResponse($response, $data);
+    }
+
+    /**
+     * Summary of handleGetCases
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpUnprocessableContent
+     * @throws HttpBadRequest
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleGetCases(Request $request, Response $response)
     {
         // constant values
