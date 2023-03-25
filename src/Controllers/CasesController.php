@@ -22,7 +22,7 @@ class CasesController extends BaseController
 {
     private $case_model = null;
     private string $CASES_TABLE = 'cases';
-    private array $filter_params = ['description', 'date','date_reported', 'misdemeanor',
+    private array $filter_params = ['description', 'misdemeanor',
     'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by' , 'page', 'pageSize'];
 
     public function __construct()
@@ -55,14 +55,14 @@ class CasesController extends BaseController
 
         // filter by title
         $filters = $request->getQueryParams();
-
+     
         // validate filters
         if ($filters){
             foreach($filters as $key => $value)
             {
                 if (!ValidateHelper::validateParams($key, $this->filter_params)){
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
-                } elseif (empty($value))
+                } elseif (strlen($value)  == 0)
                 {
                     throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
                 }

@@ -12,8 +12,6 @@ use Exception;
  */
 class CasesModel extends BaseModel
 {
-    private $table_name = "cases";
-
     public function __construct()
     {
         parent::__construct();
@@ -43,6 +41,14 @@ class CasesModel extends BaseModel
         return $case;
     }
 
+    /**
+     * Summary of getAll
+     * @param array $filters
+     * ? sort_by = {anyColumn.asc|desc}
+     * ? supported filters ['description','date_from','date_to', 'misdemeanor]
+     * @return array
+     * 
+     */
     public function getAll(array $filters)
     {
         // Queries the DB and return the list of all films
@@ -59,11 +65,19 @@ class CasesModel extends BaseModel
             $sql .= " AND description LIKE CONCAT('%', :description, '%')";
             $query_values['description'] = $filters['description'];
         }
+
+        if (isset($filters['misdemeanor'])){
+            $sql .= " AND misdemeanor =:misdemeanor";
+            $query_values['misdemeanor'] = $filters['misdemeanor'];
+        }
+
         if (isset($filters['date_from']) && isset($filters['date_to'])) {
             $sql .= " AND DATE(date_reported) BETWEEN :date_from AND :date_to ";
             $query_values['date_from'] = $filters['date_from'];
             $query_values['date_to'] = $filters['date_to'];
         }
+
+
 
         // If sort_by filters are added
         if (isset($filters['sort_by'])) {
