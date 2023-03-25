@@ -62,8 +62,25 @@ class CasesModel extends BaseModel
             $query_values['date_to'] = $filters['date_to'];
         }
 
-       
+        // If sort_by filters are added
+        if (isset($filters['sort_by']))
+        {
+            $sql .= ' GROUP BY cases.case_id';
 
+            if (!empty($filters['sort_by']))
+            {
+                $keyword = explode(".", $filters['sort_by']);
+                $column = $keyword[0] ?? "";
+                $order_by = $keyword[1] ?? "";
+
+                $sql .= " ORDER BY " .   $column . " " .  $order_by;
+            }
+        }
+        
+        // if sort_by doesn't exists then append GROUP BY AT THE END 
+        if (!isset($filters["sort_by"])){
+            $sql .= " GROUP BY cases.case_id ";
+        }
 
          $cases = $this->paginate($sql, $query_values);
          return $cases;

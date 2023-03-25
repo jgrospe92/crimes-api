@@ -23,7 +23,7 @@ class CasesController extends BaseController
     private $case_model = null;
     private string $CASES_TABLE = 'cases';
     private array $filter_params = ['description', 'date','date_reported', 'misdemeanor',
-    'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'page', 'pageSize'];
+    'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by' , 'page', 'pageSize'];
 
 
     public function __construct()
