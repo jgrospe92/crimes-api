@@ -6,10 +6,18 @@ class OffendersModel extends BaseModel
 {
     private $sql = 
         "SELECT 
-            offenders.*,
-            defendants.*
+            offenders.offender_id,  
+            offenders.first_name        AS offender_first_name,       
+            offenders.last_name         AS offender_last_name,
+            offenders.age               AS offender_age,
+            offenders.marital_status,
+            defendants.defendant_id,
+            defendants.first_name       AS defendant_first_name,
+            defendants.last_name        AS defendant_last_name, 
+            defendants.age              AS defendant_age,
+            defendants.specialization
         FROM offenders
-        INNER JOIN defendants ON offenders.defendant_id = defendants.defendant_id
+        LEFT JOIN defendants ON offenders.defendant_id = defendants.defendant_id
         WHERE 1 ";
 
     public function __construct() 
@@ -20,8 +28,29 @@ class OffendersModel extends BaseModel
     public function getOffenderById($offender_id) 
     {
         $this->sql .= "AND offender_id = :offender_id ";
-        $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
-        return $result;
+        $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll()[0];
+
+        $offender = 
+        [
+            "offender_id"       => $result["offender_id"],
+            "first_name"        => $result["offender_first_name"],
+            "last_name"         => $result["offender_last_name"],
+            "age"               => $result["offender_age"],
+            "marital_status"    => $result["marital_status"]
+        ];
+    
+        $defendant = 
+        [
+            "defendant_id"      => $result["defendant_id"],
+            "first_name"        => $result["defendant_first_name"],
+            "last_name"         => $result["defendant_last_name"],
+            "age"               => $result["defendant_age"],
+            "specialization"    => $result["specialization"]
+        ];
+
+        $offenders[] = [ "offender" => $offender, "defendant" => $defendant ];
+
+        return $offenders;
     }
 
     public function getAllOffenders(array $filters = []) 
@@ -100,6 +129,31 @@ class OffendersModel extends BaseModel
         }
 
         $result = $this->paginate($this->sql, $query_values);
+
+        foreach($result["data"] as $row)
+        {
+            $offender = 
+            [
+                "offender_id"       => $row["offender_id"],
+                "first_name"        => $row["offender_first_name"],
+                "last_name"         => $row["offender_last_name"],
+                "age"               => $row["offender_age"],
+                "marital_status"    => $row["marital_status"]
+            ];
+        
+            $defendant = 
+            [
+                "defendant_id"      => $row["defendant_id"],
+                "first_name"        => $row["defendant_first_name"],
+                "last_name"         => $row["defendant_last_name"],
+                "age"               => $row["defendant_age"],
+                "specialization"    => $row["specialization"]
+            ];
+
+            $offenders[] = [ "offender" => $offender, "defendant" => $defendant ];
+        }
+
+        $result['data'] = $offenders;
         return $result;
     }
 }
