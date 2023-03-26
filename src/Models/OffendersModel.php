@@ -2,6 +2,9 @@
 
 namespace Vanier\Api\Models;
 
+/**
+ * Summary of OffendersModel
+ */
 class OffendersModel extends BaseModel
 {
     private $sql = 
@@ -11,6 +14,8 @@ class OffendersModel extends BaseModel
             offenders.last_name         AS offender_last_name,
             offenders.age               AS offender_age,
             offenders.marital_status,
+            offenders.arrest_date,
+            offenders.arrest_timestamp,
             defendants.defendant_id,
             defendants.first_name       AS defendant_first_name,
             defendants.last_name        AS defendant_last_name, 
@@ -25,18 +30,26 @@ class OffendersModel extends BaseModel
         parent::__construct();
     }
 
+    /**
+     * Summary of getOffenderById
+     * @param mixed $offender_id
+     * @return array<array>
+     */
     public function getOffenderById($offender_id) 
     {
         $this->sql .= "AND offender_id = :offender_id ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll()[0];
 
+        // Put each person's data in an associative array
         $offender = 
         [
             "offender_id"       => $result["offender_id"],
             "first_name"        => $result["offender_first_name"],
             "last_name"         => $result["offender_last_name"],
             "age"               => $result["offender_age"],
-            "marital_status"    => $result["marital_status"]
+            "marital_status"    => $result["marital_status"],
+            "arrest_date"       => $result["arrest_date"],
+            "arrest_timestamp"  => $result["arrest_timestamp"]
         ];
     
         $defendant = 
@@ -53,6 +66,12 @@ class OffendersModel extends BaseModel
         return $offenders;
     }
 
+    /**
+     * Summary of getAllOffenders
+     * @param array $filters
+     * @return array
+     * Supported filters for ID, first_name, last_name, age, marital_status, date, and time
+     */
     public function getAllOffenders(array $filters = []) 
     {
         $query_values = [];
@@ -117,6 +136,7 @@ class OffendersModel extends BaseModel
             $query_values[":time_max"] = $filters["time-max"];
         }
 
+        // Sorting filters
         if(isset($filters["sort"]))
         {
             $sort = $filters["sort"];
@@ -130,6 +150,7 @@ class OffendersModel extends BaseModel
 
         $result = $this->paginate($this->sql, $query_values);
 
+        // Put each person's data in an associative array
         foreach($result["data"] as $row)
         {
             $offender = 
@@ -138,7 +159,9 @@ class OffendersModel extends BaseModel
                 "first_name"        => $row["offender_first_name"],
                 "last_name"         => $row["offender_last_name"],
                 "age"               => $row["offender_age"],
-                "marital_status"    => $row["marital_status"]
+                "marital_status"    => $row["marital_status"],
+                "arrest_date"       => $row["arrest_date"],
+                "arrest_timestamp"  => $row["arrest_timestamp"]
             ];
         
             $defendant = 
@@ -153,6 +176,7 @@ class OffendersModel extends BaseModel
             $offenders[] = [ "offender" => $offender, "defendant" => $defendant ];
         }
 
+        // Replace 'data' with $offenders instead of returning $offenders directly for pagination details in JSON
         $result['data'] = $offenders;
         return $result;
     }
