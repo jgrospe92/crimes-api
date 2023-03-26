@@ -21,35 +21,6 @@ class OffendersModel extends BaseModel
     {
         $this->sql .= "AND offender_id = :offender_id ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
-
-        $table = [];
-        $offender = 
-        [
-            "offender_id"       => $result[0]["offender_id"],
-            "first_name"        => $result[0]["first_name"],
-            "last_name"         => $result[0]["last_name"],
-            "age"               => $result[0]["age"],
-            "marital_status"    => $result[0]["marital_status"],
-            "arrest_date"       => $result[0]["arrest_date"],
-            "arrest_timestamp"  => $result[0]["arrest_timestamp"]
-        ];
-    
-        $defendant = 
-        [
-            "defendant_id"      => $result[0]["defendant_id"],
-            "first_name"        => $result[0]["first_name"],
-            "last_name"         => $result[0]["last_name"],
-            "age"               => $result[0]["age"],
-            "specialization"    => $result[0]["specialization"]
-        ];
-
-        $table[] = 
-        [
-            "offender"          => $offender,
-            "defendant"         => $defendant
-        ];
-
-        $result = $table;
         return $result;
     }
 
@@ -63,16 +34,16 @@ class OffendersModel extends BaseModel
             $query_values[":offender_id"] = $filters["id"];
         }
         
-        if(isset($filters["firstName"]))
+        if(isset($filters["first-name"]))
         {
             $this->sql .= " AND first_name LIKE CONCAT(:first_name,'%') ";
-            $query_values[":first_name"] = $filters["firstName"]."%";
+            $query_values[":first_name"] = $filters["first-name"]."%";
         }
 
-        if(isset($filters["lastName"]))
+        if(isset($filters["last-name"]))
         {
             $this->sql .= " AND last_name LIKE CONCAT(:last_name,'%') ";
-            $query_values[":last_name"] = $filters["lastName"]."%";
+            $query_values[":last_name"] = $filters["last-name"]."%";
         }
 
         if(isset($filters["age"]))
@@ -81,93 +52,54 @@ class OffendersModel extends BaseModel
             $query_values[":age"] = $filters["age"];
         }
 
-        if(isset($filters["marital"]))
+        if(isset($filters["marital-status"]))
         {
             $this->sql .= " AND marital_status LIKE CONCAT(:marital_status, '%') ";
-            $query_values[":marital_status"] = $filters["marital"] . "%";
+            $query_values[":marital_status"] = $filters["marital-status"] . "%";
         }
 
-        if(isset($filters["dateMin"]))
+        if(isset($filters["date-min"]) && isset($filters["date-max"]))  // Between 2 dates
         {
-            $this->sql .= " AND arrest_date > :arrest_date ";
-            $query_values[":arrest_date"] = $filters["dateMin"];
-        }
-
-        if(isset($filters["dateMax"]))
+            $this->sql .= " AND arrest_date BETWEEN :date_min AND :date_max ";
+            $query_values[":date_min"] = $filters["date-min"];
+            $query_values[":date_max"] = $filters["date-max"];
+        } elseif (isset($filters["date-min"]))                          // From this date and later   
         {
-            $this->sql .= " AND arrest_date < :arrest_date ";
-            $query_values[":arrest_date"] = $filters["dateMax"];
+            $this->sql .= " AND arrest_date > :date_min ";
+            $query_values[":date_min"] = $filters["date-min"];
+        } elseif (isset($filters["date-max"]))                          // From this date and earlier                
+        {
+            $this->sql .= " AND arrest_date < :date_max ";
+            $query_values[":date_max"] = $filters["date-max"];
         }
         
-        if(isset($filters["timeMin"]))
+        if(isset($filters["time-min"]) && isset($filters["time-max"]))  // Between 2 times
         {
-            $this->sql .= " AND arrest_timestamp >= :arrest_timestamp ";
-            $query_values[":arrest_timestamp"] = $filters["timeMin"];
-        }
-
-        if(isset($filters["timeMax"]))
+            $this->sql .= " AND arrest_timestamp BETWEEN :time_min AND :time_max ";
+            $query_values[":time_min"] = $filters["time-min"];
+            $query_values[":time_max"] = $filters["time-max"];
+        } elseif (isset($filters["time-min"]))                          // From this time and later   
         {
-            $this->sql .= " AND arrest_timestamp <= :arrest_timestamp ";
-            $query_values[":arrest_timestamp"] = $filters["timeMax"];
+            $this->sql .= " AND arrest_timestamp > :time_min ";
+            $query_values[":time_min"] = $filters["time-min"];
+        } elseif (isset($filters["time-max"]))                          // From this time and earlier                
+        {
+            $this->sql .= " AND arrest_timestamp < :time_max ";
+            $query_values[":time_max"] = $filters["time-max"];
         }
 
         if(isset($filters["sort"]))
         {
             $sort = $filters["sort"];
-            if($sort == "first_name")
-            {
-                $this->sql .= " ORDER BY offenders.first_name";
-            } elseif($sort == "last_name")
-            {
-                $this->sql .= " ORDER BY offenders.last_name";
-            } elseif($sort == "age")
-            {
-                $this->sql .= " ORDER BY offenders.age";
-            } elseif($sort == "marital_status")
-            {
-                $this->sql .= " ORDER BY offenders.marital_status";
-            } elseif($sort == "date")
-            {
-                $this->sql .= " ORDER BY offenders.arrest_date";
-            } elseif($sort == "time")
-            {
-                $this->sql .= " ORDER BY offenders.arrest_timestamp";
-            }
+            if($sort == "first_name")           { $this->sql .= " ORDER BY offenders.first_name"; } 
+            elseif($sort == "last_name")        { $this->sql .= " ORDER BY offenders.last_name"; } 
+            elseif($sort == "age")              { $this->sql .= " ORDER BY offenders.age"; }
+            elseif($sort == "marital_status")   { $this->sql .= " ORDER BY offenders.marital_status"; } 
+            elseif($sort == "date")             { $this->sql .= " ORDER BY offenders.arrest_date"; } 
+            elseif($sort == "time")             { $this->sql .= " ORDER BY offenders.arrest_timestamp"; }
         }
 
         $result = $this->paginate($this->sql, $query_values);
-
-        $table = [];
-        foreach($result['data'] as $row)
-        {
-            $offender = 
-            [
-                "offender_id"       => $row["offender_id"],
-                "first_name"        => $row["first_name"],
-                "last_name"         => $row["last_name"],
-                "age"               => $row["age"],
-                "marital_status"    => $row["marital_status"],
-                "arrest_date"       => $row["arrest_date"],
-                "arrest_timestamp"  => $row["arrest_timestamp"]
-            ];
-        
-            $defendant = 
-            [
-                "defendant_id"      => $row["defendant_id"],
-                "first_name"        => $row["first_name"],
-                "last_name"         => $row["last_name"],
-                "age"               => $row["age"],
-                "specialization"    => $row["specialization"]
-            ];
-
-            $table[] = 
-            [
-                "offender" => $offender,
-                "defendant" => $defendant
-            ];
-        }
-
-        $result["data"] = $table;
         return $result;
     }
 }
