@@ -97,7 +97,7 @@ class CasesController extends BaseController
         }
 
         $offensesObj = new OffensesModel();
-        $offenses = $offensesObj->getOffenses($case_id, $filters);
+        $offenses = $offensesObj->getOffensesById($case_id, $filters);
         if (!$offenses) {
             throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
         }
