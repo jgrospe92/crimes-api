@@ -2,21 +2,35 @@
 
 namespace Vanier\Api\Models;
 
+/**
+ * Summary of DefendantsModel
+ */
 class DefendantsModel extends BaseModel
 {
-    private $sql = "SELECT first_name, last_name, age, specialization FROM defendants WHERE 1 ";
+    private $sql = "SELECT * FROM defendants WHERE 1 ";
 
     public function __construct() 
     {
         parent::__construct();
     }
 
+    /**
+     * Summary of getDefendantById
+     * @param mixed $defendant_id
+     * @return mixed
+     */
     public function getDefendantById($defendant_id) 
     {
         $this->sql .= "AND defendant_id = :defendant_id ";
         return $this->run($this->sql, [':defendant_id' => $defendant_id])->fetchAll();
     }
 
+    /**
+     * Summary of getAllDefendants
+     * @param array $filters
+     * @return array
+     * Supports filters for ID, first_name, last_name, age, and specialization
+     */
     public function getAllDefendants(array $filters = []) 
     {
         $query_values = [];
@@ -27,16 +41,16 @@ class DefendantsModel extends BaseModel
             $query_values[":defendant_id"] = $filters["id"];
         }
         
-        if(isset($filters["firstName"]))
+        if(isset($filters["first-name"]))
         {
             $this->sql .= " AND first_name LIKE CONCAT(:first_name,'%') ";
-            $query_values[":first_name"] = $filters["firstName"]."%";
+            $query_values[":first_name"] = $filters["first-name"]."%";
         }
 
-        if(isset($filters["lastName"]))
+        if(isset($filters["last-name"]))
         {
             $this->sql .= " AND last_name LIKE CONCAT(:last_name,'%') ";
-            $query_values[":last_name"] = $filters["lastName"]."%";
+            $query_values[":last_name"] = $filters["last-name"]."%";
         }
 
         if(isset($filters["age"]))
@@ -49,6 +63,14 @@ class DefendantsModel extends BaseModel
         {
             $this->sql .= " AND specialization LIKE CONCAT(:specialization, '%') ";
             $query_values[":specialization"] = $filters["specialization"] . "%";
+        }
+
+        if(isset($filters["sort"])){
+            $sort = $filters["sort"];
+            if($sort == "first-name")           { $this->sql .= " ORDER BY first_name"; } 
+            elseif($sort == "last-name")        { $this->sql .= " ORDER BY last_name"; } 
+            elseif($sort == "age")              { $this->sql .= " ORDER BY age"; } 
+            elseif($sort == "specialization")   { $this->sql .= " ORDER BY specialization"; }
         }
 
         return $this->paginate($this->sql, $query_values);
