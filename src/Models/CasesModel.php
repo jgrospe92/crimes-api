@@ -213,16 +213,18 @@ class CasesModel extends BaseModel
 
             $cases['data'][$key]['crime_scene'] = $crime_scene;
 
-            if ($investigator) {
-                $cases['data'][$key]['investigator'] = $investigator;
-            } else {
-                $cases['data'][$key]['investigator'] = '';
-            }
-            if ($courts) {
-                $cases['data'][$key]['court'] = $courts;
-            } else {
-                $cases['data'][$key]['court'] = '';
-            }
+            $offenses = $this->offenses($cases['data'][$key]['case_id']);
+            $victims = $this->victims($cases['data'][$key]['case_id']);
+            $offenders = $this->offenders($cases['data'][$key]['case_id']);
+
+        
+            
+            $cases['data'][$key]['investigator'] = $investigator ?? '';
+            $cases['data'][$key]['court'] = $courts ?? '';
+            $cases['data'][$key]['offenses'] =  $offenses ?? '';
+            $cases['data'][$key]['victims'] =  $victims ?? '';
+            $cases['data'][$key]['offenders'] =  $offenders ?? '';
+            
            
         }
 
