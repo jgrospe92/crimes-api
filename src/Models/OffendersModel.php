@@ -191,4 +191,52 @@ class OffendersModel extends BaseModel
         $result['data'] = $offenders;
         return $result;
     }
+
+    public function getDefendantOfOffender($offender_id) {
+        $this->sql .= "AND offender_id = :offender_id ";
+        $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
+
+        // If $result is not empty, put the person's defendant's data in an associative array
+        if ($result)
+        {
+            $result = $result[0];
+            $defendant = 
+                [
+                    "defendant_id"      => $result["defendant_id"],
+                    "first_name"        => $result["defendant_first_name"],
+                    "last_name"         => $result["defendant_last_name"],
+                    "age"               => $result["defendant_age"],
+                    "specialization"    => $result["specialization"]
+                ];
+            return $defendant;    
+        } else
+        {   
+            // else return an empty array, will throw exception in controller method
+            return [];
+        }
+    }
+
+    public function getCaseOfOffender($offender_id) {
+        $this->sql .= "AND offender_id = :offender_id ";
+        $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
+
+        // If $result is not empty, put the person's defendant's data in an associative array
+        if ($result)
+        {
+            $result = $result[0];
+            $defendant = 
+                [
+                    "defendant_id"      => $result["defendant_id"],
+                    "first_name"        => $result["defendant_first_name"],
+                    "last_name"         => $result["defendant_last_name"],
+                    "age"               => $result["defendant_age"],
+                    "specialization"    => $result["specialization"]
+                ];
+            return $defendant;    
+        } else
+        {   
+            // else return an empty array, will throw exception in controller method
+            return [];
+        }
+    }
 }

@@ -29,8 +29,10 @@ $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 // Offenders Routes
 $app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);
 $app->get('/offenders/{offender_id}', [OffendersController::class, 'handleGetOffenderById']);
+$app->get('/offenders/{offender_id}/defendants', [OffendersController::class, 'handleGetDefendantOfOffender']);
+$app->get('/offenders/{offender_id}/cases', [OffendersController::class, 'handleGetCaseOfOffender']);
 
-// Prosecutor Routes
+// Prosecutors Routes
 $app->get('/prosecutors', [ProsecutorsController::class, 'handleGetAllProsecutors']);
 $app->get('/prosecutors/{prosecutor_id}', [ProsecutorsController::class, 'handleGetProsecutorById']);
 

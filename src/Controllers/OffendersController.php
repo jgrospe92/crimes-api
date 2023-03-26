@@ -56,4 +56,24 @@ class OffendersController extends BaseController
         $data = $this->offenders_model->getAllOffenders($filters);
         return $this->prepareOkResponse($response, $data);
     }
+
+    public function handleGetDefendantOfOffender(Request $request, Response $response, array $uri_args) 
+    {
+        $offender_id = $uri_args['offender_id'];
+        $data = $this->offenders_model->getDefendantOfOffender($offender_id);
+
+        if (!$data) { throw new HttpNotFoundException($request); }
+
+        return $this->prepareOkResponse($response, $data);
+    }
+
+    public function handleGetCaseOfOffender(Request $request, Response $response, array $uri_args) 
+    {
+        $offender_id = $uri_args['offender_id'];
+        $data = $this->offenders_model->getCaseOfOffender($offender_id);
+
+        if (!$data) { throw new HttpNotFoundException($request); }
+
+        return $this->prepareOkResponse($response, $data);
+    }
 }
