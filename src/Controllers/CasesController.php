@@ -23,7 +23,7 @@ class CasesController extends BaseController
 {
     private $case_model = null;
     private string $CASES_TABLE = 'cases';
-    private array $filter_params = [
+    private array $FILTER_PARAMS = [
         'description', 'misdemeanor', 'classification', 'name',
         'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize'
     ];
@@ -77,7 +77,7 @@ class CasesController extends BaseController
         // validate filters
         if ($filters) {
             foreach ($filters as $key => $value) {
-                if (!ValidateHelper::validateParams($key, $this->filter_params)) {
+                if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
                 } elseif (strlen($value)  == 0) {
                     throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
@@ -128,7 +128,7 @@ class CasesController extends BaseController
         // validate filters
         if ($filters) {
             foreach ($filters as $key => $value) {
-                if (!ValidateHelper::validateParams($key, $this->filter_params)) {
+                if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
                 } elseif (strlen($value)  == 0) {
                     throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');

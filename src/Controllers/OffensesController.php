@@ -20,7 +20,7 @@ class OffensesController extends BaseController
 
     private $offenses_model = null;
 
-    private array $filter_params = [
+    private array $FILTER_PARAMS = [
         'description', 'classification', 'name',
         'sort_by', 'page', 'pageSize',
     ];
@@ -42,7 +42,7 @@ class OffensesController extends BaseController
         // validate filters
         if ($filters) {
             foreach ($filters as $key => $value) {
-                if (!ValidateHelper::validateParams($key, $this->filter_params)) {
+                if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
                 } elseif (strlen($value)  == 0) {
                     throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
