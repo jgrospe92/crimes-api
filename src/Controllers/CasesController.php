@@ -14,6 +14,7 @@ use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
 // models
 use Vanier\Api\models\CasesModel;
+use Vanier\Api\models\OffensesModel;
 
 /**
  * Summary of CasesController
@@ -22,8 +23,10 @@ class CasesController extends BaseController
 {
     private $case_model = null;
     private string $CASES_TABLE = 'cases';
-    private array $filter_params = ['description', 'misdemeanor',
-    'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by' , 'page', 'pageSize'];
+    private array $filter_params = [
+        'description', 'misdemeanor', 'classification', 'name',
+        'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize'
+    ];
 
     public function __construct()
     {
@@ -43,20 +46,53 @@ class CasesController extends BaseController
         $case_id = $uri_args['case_id'];
         $whereClause = ['case_id' => $case_id];
         $data['Case'] = $this->case_model->getCaseById($this->CASES_TABLE, $whereClause);
-        return $this->preparedResponse($response, $data);
 
+        if (!$data['Case']) {
+            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
+        }
+
+        return $this->preparedResponse($response, $data);
     }
 
     public function handleOffensesByCase(Request $request, Response $response, array $uri_args)
     {
         $case_id = $uri_args['case_id'];
-        echo $case_id;    exit;
-        if (!ValidateHelper::validateNumericInput(['case_id'=>$case_id]))
-        {
-            throw new HttpBadRequest($request, "expected numeric but received alpha");
+        // filter by title 
+        $filters = $request->getQueryParams();
+        if (!ValidateHelper::validateId(['id' => $case_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
         }
-    
-        //return $this->preparedResponse($response, $data);
+        $whereClause = ['case_id' => $case_id];
+        // validate filters
+        if ($filters) {
+            foreach ($filters as $key => $value) {
+                if (!ValidateHelper::validateParams($key, $this->filter_params)) {
+                    throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
+                } elseif (strlen($value)  == 0) {
+                    throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
+                }
+            }
+        }
+        try {
+
+            $data['Case'] = $this->case_model->getCaseById($this->CASES_TABLE, $whereClause);
+        } catch (Exception $e) {
+
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+        }
+
+        if (!$data['Case']) {
+            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
+        }
+
+        $offensesObj = new OffensesModel();
+        $offenses = $offensesObj->getOffenses($case_id, $filters);
+        if (!$offenses) {
+            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
+        }
+
+        $data['Case']['offenses'] =  $offenses;
+        return $this->preparedResponse($response, $data);
     }
 
     /**
@@ -76,22 +112,19 @@ class CasesController extends BaseController
 
         // filter by title
         $filters = $request->getQueryParams();
-     
+
         // validate filters
-        if ($filters){
-            foreach($filters as $key => $value)
-            {
-                if (!ValidateHelper::validateParams($key, $this->filter_params)){
+        if ($filters) {
+            foreach ($filters as $key => $value) {
+                if (!ValidateHelper::validateParams($key, $this->filter_params)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
-                } elseif (strlen($value)  == 0)
-                {
+                } elseif (strlen($value)  == 0) {
                     throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
                 }
             }
         }
-     
-        if (!ValidateHelper::validateNumericInput(['misdemeanor'=>$filters['misdemeanor']]))
-        {
+
+        if (!ValidateHelper::validateNumericInput(['misdemeanor' => $filters['misdemeanor']])) {
             throw new HttpBadRequest($request, "expected numeric but received alpha");
         }
 
@@ -104,7 +137,7 @@ class CasesController extends BaseController
         if (!ValidateHelper::validatePageNumbers($page, $pageSize)) {
             throw new HttpBadRequest($request, "expected numeric but received alpha");
         }
-        $dataParams = ['page' => $page, 'pageSize' => $pageSize, 'pageMin' => 1,'pageSizeMin' => 5, 'pageSizeMax' => 10];
+        $dataParams = ['page' => $page, 'pageSize' => $pageSize, 'pageMin' => 1, 'pageSizeMin' => 5, 'pageSizeMax' => 10];
         // check if page is within in range else throw unprocessable content
         if (!ValidateHelper::validatePagingParams($dataParams)) {
             throw new HttpUnprocessableContent($request, "Out of range, unable to process your request, please consult the manual");
@@ -119,13 +152,11 @@ class CasesController extends BaseController
             throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data'])
-        {
+        if (!$data['data']) {
             throw new HttpNotFound($request, 'please check you parameter or consult the documentation');
         }
 
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
-
     }
 }

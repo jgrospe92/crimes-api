@@ -26,6 +26,10 @@ class CasesModel extends BaseModel
     public function getCaseById($table, $whereClause)
     {
         $case = $this->getById($table, $whereClause);
+        if (!$case)
+        {
+            return null;
+        }
         $crime_sceneID = $case['crime_sceneID'];
         $investigator_id = $case['investigator_id'];
         $court_id = $case['court_id'];
@@ -40,6 +44,7 @@ class CasesModel extends BaseModel
         $case['court'] = $courts;
         return $case;
     }
+
 
     /**
      * Summary of getAll
@@ -58,8 +63,6 @@ class CasesModel extends BaseModel
             " inner join crime_scenes on crime_scenes.crime_sceneID = cases.crime_sceneID" .
             " inner join investigators on investigators.investigator_id = cases.investigator_id" .
             " inner join courts on courts.court_id = cases.court_id WHERE 1";
-
-
 
         if (isset($filters['description'])) {
             $sql .= " AND description LIKE CONCAT('%', :description, '%')";

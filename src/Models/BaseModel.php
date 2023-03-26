@@ -127,7 +127,7 @@ class BaseModel
      */
     protected function rows($sql, $args = [], $fetchMode = PDO::FETCH_ASSOC)
     {
-        return $this->run($sql, $args)->fetchAll($fetchMode);
+        return $this->run($sql, $args)->fetch($fetchMode);
     }
 
     /**
@@ -142,7 +142,7 @@ class BaseModel
      */
     protected function row($sql, $args = [], $fetchMode = PDO::FETCH_ASSOC)
     {
-        return $this->run($sql, $args)->fetch($fetchMode);
+        return $this->run($sql, $args)->fetchAll($fetchMode);
     }
 
     /**
