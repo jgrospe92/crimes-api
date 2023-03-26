@@ -2,9 +2,9 @@
 
 namespace Vanier\Api\models;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
+
 use Vanier\Api\Models\BaseModel;
-use Vanier\Api\models\ActorsModel;
+
 use Exception;
 
 /**
