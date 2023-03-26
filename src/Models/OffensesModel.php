@@ -7,6 +7,9 @@ use Vanier\Api\Models\BaseModel;
 use Vanier\Api\models\ActorsModel;
 use Exception;
 
+/**
+ * Summary of OffensesModel
+ */
 class OffensesModel extends BaseModel
 {
 
@@ -15,6 +18,14 @@ class OffensesModel extends BaseModel
         parent::__construct();
     }
 
+    /**
+     * Summary of getOffenses
+     * @param mixed $case_id
+     * @param array $filters
+     * @return mixed
+     * ? filter by name, description, classification
+     * ? sort_by columName.asc|desc
+     */
     public function getOffenses($case_id, array $filters)
     {
         $query_values = [];

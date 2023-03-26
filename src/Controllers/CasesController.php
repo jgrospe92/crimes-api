@@ -40,6 +40,7 @@ class CasesController extends BaseController
      * @param Response $response
      * @param array $uri_args
      * @return Response
+     * ? none supported filtering
      */
     public function handleGetCaseById(Request $request, Response $response, array $uri_args)
     {
@@ -54,6 +55,16 @@ class CasesController extends BaseController
         return $this->preparedResponse($response, $data);
     }
 
+    /**
+     * Summary of handleOffensesByCase
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpBadRequest
+     * @throws HttpUnprocessableContent
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleOffensesByCase(Request $request, Response $response, array $uri_args)
     {
         $case_id = $uri_args['case_id'];
@@ -75,7 +86,7 @@ class CasesController extends BaseController
         }
         try {
 
-            $data['Case'] = $this->case_model->getCaseById($this->CASES_TABLE, $whereClause);
+            $data['Case'] = $this->case_model->offensesByCase($this->CASES_TABLE, $whereClause);
         } catch (Exception $e) {
 
             throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
@@ -103,6 +114,7 @@ class CasesController extends BaseController
      * @throws HttpBadRequest
      * @throws HttpNotFound
      * @return Response
+     * ?
      */
     public function handleGetCases(Request $request, Response $response)
     {
@@ -124,8 +136,11 @@ class CasesController extends BaseController
             }
         }
 
-        if (!ValidateHelper::validateNumericInput(['misdemeanor' => $filters['misdemeanor']])) {
-            throw new HttpBadRequest($request, "expected numeric but received alpha");
+        if (isset($filters['misdemeanor'])){
+
+            if (!ValidateHelper::validateNumericInput(['misdemeanor' => $filters['misdemeanor']])) {
+                throw new HttpBadRequest($request, "expected numeric but received alpha");
+            }
         }
 
         // verify if client added a page and pageSize params
