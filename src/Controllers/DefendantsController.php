@@ -6,10 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 // HTTP exceptions
-use Fig\Http\Message\StatusCodeInterface;
-use Vanier\Api\exceptions\HttpNotFound;
-use Vanier\Api\exceptions\HttpBadRequest;
-use Vanier\Api\exceptions\HttpUnprocessableContent;
+use Slim\Exception\HttpNotFoundException;
 
 // Helpers
 use Vanier\Api\Helpers\ValidateHelper;
@@ -40,6 +37,9 @@ class DefendantsController extends BaseController
     {
         $defendant_id = $uri_args['defendant_id'];
         $data = $this->defendant_model->getDefendantById($defendant_id);
+
+        if (!$data) { throw new HttpNotFoundException($request); }
+
         return $this->prepareOkResponse($response, $data);
     }
 

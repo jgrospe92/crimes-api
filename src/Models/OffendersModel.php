@@ -38,31 +38,39 @@ class OffendersModel extends BaseModel
     public function getOffenderById($offender_id) 
     {
         $this->sql .= "AND offender_id = :offender_id ";
-        $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll()[0];
+        $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
 
-        // Put each person's data in an associative array
-        $offender = 
-        [
-            "offender_id"       => $result["offender_id"],
-            "first_name"        => $result["offender_first_name"],
-            "last_name"         => $result["offender_last_name"],
-            "age"               => $result["offender_age"],
-            "marital_status"    => $result["marital_status"],
-            "arrest_date"       => $result["arrest_date"],
-            "arrest_timestamp"  => $result["arrest_timestamp"]
-        ];
+        // If $result is not empty, put the person's data in an associative array
+        if ($result)
+        {
+            $result = $result[0];
+            $offender = 
+                [
+                    "offender_id"       => $result["offender_id"],
+                    "first_name"        => $result["offender_first_name"],
+                    "last_name"         => $result["offender_last_name"],
+                    "age"               => $result["offender_age"],
+                    "marital_status"    => $result["marital_status"],
+                    "arrest_date"       => $result["arrest_date"],
+                    "arrest_timestamp"  => $result["arrest_timestamp"]
+                ];
     
-        $defendant = 
-        [
-            "defendant_id"      => $result["defendant_id"],
-            "first_name"        => $result["defendant_first_name"],
-            "last_name"         => $result["defendant_last_name"],
-            "age"               => $result["defendant_age"],
-            "specialization"    => $result["specialization"]
-        ];
-
-        $offenders[] = [ "offender" => $offender, "defendant" => $defendant ];
-
+            $defendant = 
+                [
+                    "defendant_id"      => $result["defendant_id"],
+                    "first_name"        => $result["defendant_first_name"],
+                    "last_name"         => $result["defendant_last_name"],
+                    "age"               => $result["defendant_age"],
+                    "specialization"    => $result["specialization"]
+                ];
+                
+            $offenders[] = [ "offender" => $offender, "defendant" => $defendant ];
+        } else
+        {   
+            // else return an empty array, will throw exception in controller method
+            return [];
+        }
+        
         return $offenders;
     }
 
@@ -76,37 +84,37 @@ class OffendersModel extends BaseModel
     {
         $query_values = [];
 
-        if(isset($filters["id"]))
+        if (isset($filters["id"]))
         {
             $this->sql .= " AND offender_id = :offender_id ";
             $query_values[":offender_id"] = $filters["id"];
         }
         
-        if(isset($filters["first-name"]))
+        if (isset($filters["first-name"]))
         {
             $this->sql .= " AND first_name LIKE CONCAT(:first_name,'%') ";
             $query_values[":first_name"] = $filters["first-name"]."%";
         }
 
-        if(isset($filters["last-name"]))
+        if (isset($filters["last-name"]))
         {
             $this->sql .= " AND last_name LIKE CONCAT(:last_name,'%') ";
             $query_values[":last_name"] = $filters["last-name"]."%";
         }
 
-        if(isset($filters["age"]))
+        if (isset($filters["age"]))
         {
             $this->sql .= " AND age = :age ";
             $query_values[":age"] = $filters["age"];
         }
 
-        if(isset($filters["marital-status"]))
+        if (isset($filters["marital-status"]))
         {
             $this->sql .= " AND marital_status LIKE CONCAT(:marital_status, '%') ";
             $query_values[":marital_status"] = $filters["marital-status"] . "%";
         }
 
-        if(isset($filters["date-min"]) && isset($filters["date-max"]))  // Between 2 dates
+        if (isset($filters["date-min"]) && isset($filters["date-max"])) // Between 2 dates
         {
             $this->sql .= " AND arrest_date BETWEEN :date_min AND :date_max ";
             $query_values[":date_min"] = $filters["date-min"];
@@ -121,7 +129,7 @@ class OffendersModel extends BaseModel
             $query_values[":date_max"] = $filters["date-max"];
         }
         
-        if(isset($filters["time-min"]) && isset($filters["time-max"]))  // Between 2 times
+        if (isset($filters["time-min"]) && isset($filters["time-max"])) // Between 2 times
         {
             $this->sql .= " AND arrest_timestamp BETWEEN :time_min AND :time_max ";
             $query_values[":time_min"] = $filters["time-min"];
@@ -137,21 +145,24 @@ class OffendersModel extends BaseModel
         }
 
         // Sorting filters
-        if(isset($filters["sort"]))
+        if (isset($filters["sort"]))
         {
             $sort = $filters["sort"];
-            if($sort == "first_name")           { $this->sql .= " ORDER BY offenders.first_name"; } 
-            elseif($sort == "last_name")        { $this->sql .= " ORDER BY offenders.last_name"; } 
+            if($sort == "first-name")           { $this->sql .= " ORDER BY offenders.first_name"; } 
+            elseif($sort == "last-name")        { $this->sql .= " ORDER BY offenders.last_name"; } 
             elseif($sort == "age")              { $this->sql .= " ORDER BY offenders.age"; }
             elseif($sort == "marital_status")   { $this->sql .= " ORDER BY offenders.marital_status"; } 
             elseif($sort == "date")             { $this->sql .= " ORDER BY offenders.arrest_date"; } 
             elseif($sort == "time")             { $this->sql .= " ORDER BY offenders.arrest_timestamp"; }
+        } else 
+        {
+            $this->sql .= " ORDER BY offenders.offender_id";
         }
 
         $result = $this->paginate($this->sql, $query_values);
 
         // Put each person's data in an associative array
-        foreach($result["data"] as $row)
+        foreach ($result["data"] as $row)
         {
             $offender = 
             [
