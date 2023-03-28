@@ -2,9 +2,13 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+
 use Vanier\Api\Controllers\AboutController;
 use Vanier\Api\Controllers\VerdictsController;
 use Vanier\Api\Controllers\CasesController;
+use Vanier\Api\Controllers\DefendantsController;
+use Vanier\Api\Controllers\OffendersController;
+use Vanier\Api\Controllers\ProsecutorsController;
 
 // Import the app instance into this file's scope.
 global $app;
@@ -24,6 +28,21 @@ $app->get('/cases', [CasesController::class, 'handleGetCases']);
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 $app->get('/verdicts/{verdict_id}', [VerdictsController::class,'handleGetVerdictById']);
 $app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdict']);
+
+
+// Offenders Routes
+$app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);
+$app->get('/offenders/{offender_id}', [OffendersController::class, 'handleGetOffenderById']);
+$app->get('/offenders/{offender_id}/defendants', [OffendersController::class, 'handleGetDefendantOfOffender']);
+$app->get('/offenders/{offender_id}/cases', [OffendersController::class, 'handleGetCaseOfOffender']);
+
+// Prosecutors Routes
+$app->get('/prosecutors', [ProsecutorsController::class, 'handleGetAllProsecutors']);
+$app->get('/prosecutors/{prosecutor_id}', [ProsecutorsController::class, 'handleGetProsecutorById']);
+
+// Defendants Routes
+$app->get('/defendants', [DefendantsController::class, 'handleGetAllDefendants']);
+$app->get('/defendants/{defendant_id}', [DefendantsController::class, 'handleGetDefendantById']);
 
 
 // ROUTE: /hello
