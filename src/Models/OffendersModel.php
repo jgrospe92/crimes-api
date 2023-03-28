@@ -119,13 +119,15 @@ class OffendersModel extends BaseModel
             $this->sql .= " AND arrest_date BETWEEN :date_min AND :date_max ";
             $query_values[":date_min"] = $filters["date-min"];
             $query_values[":date_max"] = $filters["date-max"];
-        } elseif (isset($filters["date-min"]))                          // From this date and later   
+        } 
+        elseif (isset($filters["date-min"]))                            // From this date and later   
         {
-            $this->sql .= " AND arrest_date > :date_min ";
+            $this->sql .= " AND arrest_date >= :date_min ";
             $query_values[":date_min"] = $filters["date-min"];
-        } elseif (isset($filters["date-max"]))                          // From this date and earlier                
+        } 
+        elseif (isset($filters["date-max"]))                            // From this date and earlier                
         {
-            $this->sql .= " AND arrest_date < :date_max ";
+            $this->sql .= " AND arrest_date <= :date_max ";
             $query_values[":date_max"] = $filters["date-max"];
         }
         
@@ -134,13 +136,15 @@ class OffendersModel extends BaseModel
             $this->sql .= " AND arrest_timestamp BETWEEN :time_min AND :time_max ";
             $query_values[":time_min"] = $filters["time-min"];
             $query_values[":time_max"] = $filters["time-max"];
-        } elseif (isset($filters["time-min"]))                          // From this time and later   
+        } 
+        elseif (isset($filters["time-min"]))                            // From this time and later   
         {
-            $this->sql .= " AND arrest_timestamp > :time_min ";
+            $this->sql .= " AND arrest_timestamp >= :time_min ";
             $query_values[":time_min"] = $filters["time-min"];
-        } elseif (isset($filters["time-max"]))                          // From this time and earlier                
+        } 
+        elseif (isset($filters["time-max"]))                            // From this time and earlier                
         {
-            $this->sql .= " AND arrest_timestamp < :time_max ";
+            $this->sql .= " AND arrest_timestamp <= :time_max ";
             $query_values[":time_max"] = $filters["time-max"];
         }
 
@@ -217,22 +221,62 @@ class OffendersModel extends BaseModel
     }
 
     public function getCaseOfOffender($offender_id) {
-        $this->sql .= "AND offender_id = :offender_id ";
+        $this->sql = 
+            "SELECT 
+                offenders.offender_id,
+                offender_details.*,
+                cases.*
+
+            FROM offenders
+            LEFT JOIN offender_details ON offenders.offender_id = offender_details.offender_id
+            LEFT JOIN cases ON offender_details.case_id = cases.case_id
+            WHERE offenders.offender_id = :offender_id
+            ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
 
         // If $result is not empty, put the person's defendant's data in an associative array
         if ($result)
         {
             $result = $result[0];
-            $defendant = 
+            $case = 
                 [
-                    "defendant_id"      => $result["defendant_id"],
-                    "first_name"        => $result["defendant_first_name"],
-                    "last_name"         => $result["defendant_last_name"],
-                    "age"               => $result["defendant_age"],
-                    "specialization"    => $result["specialization"]
+                    "case_id"           => $result["case_id"],
+                    "description"       => $result["description"],
+                    "date_reported"     => $result["date_reported"],
+                    "misdemeanor"       => $result["misdemeanor"],
+                    "crime_sceneID"     => $result["crime_sceneID"],
+                    "investigator_id"   => $result["investigator_id"],
+                    "court_id"          => $result["court_id"],
+
                 ];
-            return $defendant;    
+
+            $crime_scene = 
+                [
+                    "crime_sceneID"     => $result["crime_sceneID"],
+                    "province"          => $result["province"],
+                    "city"              => $result["city"],
+                    "street"            => $result["street"],
+                    "building_number"   => $result["building_number"]
+                ];
+
+            $investigator = 
+                [
+                    "investigator_id"   => $result["investigator_id"],
+                    "badge_number"      => $result["badge_number"],
+                    "first_name"        => $result["first_name"],
+                    "last_name"         => $result["last_name"],
+                    "rank"              => $result["rank"]
+                ];
+
+            $court =
+                [
+                    "court_id"          => $result["court_id"],
+                    "name"              => $result["badge_number"],
+                    "date"              => $result["first_name"],
+                    "time"              => $result["last_name"],
+                    "rank"              => $result["rank"]
+                ]
+            return $case;    
         } else
         {   
             // else return an empty array, will throw exception in controller method
