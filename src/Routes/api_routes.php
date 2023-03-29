@@ -5,6 +5,7 @@ use Slim\Factory\AppFactory;
 use Vanier\Api\Controllers\AboutController;
 use Vanier\Api\Controllers\VerdictsController;
 use Vanier\Api\Controllers\CasesController;
+use Vanier\Api\Controllers\CrimeScenesController;
 use Vanier\Api\Controllers\JudgesController;
 use Vanier\Api\Controllers\VictimsController;
 
@@ -29,6 +30,9 @@ $app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimByI
 
 $app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
 $app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById']);
+
+$app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
+$app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);
 
 // ROUTE: /hello
 $app->get('/hello', function (Request $request, Response $response, $args) {
