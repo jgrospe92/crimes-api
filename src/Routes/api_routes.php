@@ -21,6 +21,8 @@ $app->get('/', [AboutController::class, 'handleAboutApi']);
 $app->get('/cases/{case_id}', [CasesController::class, 'handleGetCaseById']);
 $app->get('/cases', [CasesController::class, 'handleGetCases']);
 $app->get('/cases/{case_id}/offenses', [CasesController::class, 'handleOffensesByCase']);
+$app->get('/cases/{case_id}/victims', [CasesController::class, 'handleVictimsByCase']);
+$app->get('/cases/{case_id}/offenders', [CasesController::class, 'handleOffendersByCase']);
 
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);

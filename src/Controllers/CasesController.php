@@ -55,6 +55,74 @@ class CasesController extends BaseController
         return $this->preparedResponse($response, $data);
     }
 
+    public function handleOffendersByCase(Request $request, Response $response, array $uri_args)
+    {
+        $case_id = $uri_args['case_id'];
+        // filter by title 
+        $filters = $request->getQueryParams();
+        if (!ValidateHelper::validateId(['id' => $case_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $whereClause = ['case_id' => $case_id];
+          // validate filters
+          if ($filters) {
+            foreach ($filters as $key => $value) {
+                if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
+                    throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
+                } elseif (strlen($value)  == 0) {
+                    throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
+                }
+            }
+        }
+        try {
+
+            $data['Case'] = $this->case_model->offendersByCase($this->CASES_TABLE, $whereClause);
+        } catch (Exception $e) {
+
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+        }
+
+        return $this->preparedResponse($response, $data);
+    }
+    /**
+     * Summary of handleVictimsByCase
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpBadRequest
+     * @throws HttpUnprocessableContent
+     * @return Response
+     */
+    public function handleVictimsByCase(Request $request, Response $response, array $uri_args)
+    {
+        $case_id = $uri_args['case_id'];
+        // filter by title 
+        $filters = $request->getQueryParams();
+        if (!ValidateHelper::validateId(['id' => $case_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $whereClause = ['case_id' => $case_id];
+          // validate filters
+          if ($filters) {
+            foreach ($filters as $key => $value) {
+                if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
+                    throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
+                } elseif (strlen($value)  == 0) {
+                    throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
+                }
+            }
+        }
+        try {
+
+            $data['Case'] = $this->case_model->victimsByCase($this->CASES_TABLE, $whereClause);
+        } catch (Exception $e) {
+
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+        }
+
+        return $this->preparedResponse($response, $data);
+    }
+
     /**
      * Summary of handleOffensesByCase
      * @param Request $request
@@ -95,17 +163,9 @@ class CasesController extends BaseController
         if (!$data['Case']) {
             throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
         }
-
-        $offensesObj = new OffensesModel();
-        $offenses = $offensesObj->getOffensesById($case_id, $filters);
-        if (!$offenses) {
-            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
-        }
-
-        $data['Case']['offenses'] =  $offenses;
         return $this->preparedResponse($response, $data);
     }
-
+    
     /**
      * Summary of handleGetCases
      * @param Request $request

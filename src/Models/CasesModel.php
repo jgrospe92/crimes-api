@@ -86,6 +86,64 @@ class CasesModel extends BaseModel
     }
 
     /**
+     * Summary of offendersByCase
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return object|null
+     */
+    public function offendersByCase($table, $whereClause)
+    {
+        $case = $this->getById($table, $whereClause);
+
+        if (!$case)
+        {
+            return null;
+        }
+        $crime_sceneID = $case['crime_sceneID'];
+        $investigator_id = $case['investigator_id'];
+        $court_id = $case['court_id'];
+        unset($case['crime_sceneID']);
+        unset($case['investigator_id']);
+        unset($case['court_id']);
+        $crime_scene = $this->getById('crime_scenes', ['crime_sceneID' => $crime_sceneID]);
+        $investigators = $this->getById('investigators', ['investigator_id' => $investigator_id]);
+        $courts = $this->getById('courts', ['court_id' => $court_id]);
+        $offenders = $this->offenders($whereClause['case_id']);
+
+        $case['crime scene'] = $crime_scene;
+        $case['investigator'] = $investigators;
+        $case['court'] = $courts;
+        $case['offenders'] = $offenders;
+        return $case;
+    }
+
+    public function victimsByCase($table, $whereClause)
+    {
+        $case = $this->getById($table, $whereClause);
+
+        if (!$case)
+        {
+            return null;
+        }
+        $crime_sceneID = $case['crime_sceneID'];
+        $investigator_id = $case['investigator_id'];
+        $court_id = $case['court_id'];
+        unset($case['crime_sceneID']);
+        unset($case['investigator_id']);
+        unset($case['court_id']);
+        $crime_scene = $this->getById('crime_scenes', ['crime_sceneID' => $crime_sceneID]);
+        $investigators = $this->getById('investigators', ['investigator_id' => $investigator_id]);
+        $courts = $this->getById('courts', ['court_id' => $court_id]);
+        $victims = $this->victims($whereClause['case_id']);
+
+        $case['crime scene'] = $crime_scene;
+        $case['investigator'] = $investigators;
+        $case['court'] = $courts;
+        $case['victims'] = $victims;
+        return $case;
+    }
+
+    /**
      * Summary of offenses
      * @param mixed $case_id
      * @return mixed
