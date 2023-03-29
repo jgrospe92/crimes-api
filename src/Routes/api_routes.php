@@ -5,6 +5,7 @@ use Slim\Factory\AppFactory;
 use Vanier\Api\Controllers\AboutController;
 use Vanier\Api\Controllers\VerdictsController;
 use Vanier\Api\Controllers\CasesController;
+use Vanier\Api\Controllers\JudgesController;
 use Vanier\Api\Controllers\VictimsController;
 
 // Import the app instance into this file's scope.
@@ -25,6 +26,9 @@ $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 
 $app->get('/victims', [VictimsController::class, 'handleGetAllVictims']);
 $app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimById']);
+
+$app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
+$app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById']);
 
 // ROUTE: /hello
 $app->get('/hello', function (Request $request, Response $response, $args) {
