@@ -6,6 +6,7 @@ use Vanier\Api\Controllers\AboutController;
 use Vanier\Api\Controllers\VerdictsController;
 use Vanier\Api\Controllers\CasesController;
 use Vanier\Api\Controllers\OffensesController;
+use Vanier\Api\Controllers\InvestigatorsController;
 
 // Import the app instance into this file's scope.
 global $app;
@@ -26,6 +27,8 @@ $app->get('/cases/{case_id}/offenders', [CasesController::class, 'handleOffender
 
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);
+// Routes : investigators
+$app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
 
 //Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
