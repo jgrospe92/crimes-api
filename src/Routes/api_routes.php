@@ -5,8 +5,12 @@ use Slim\Factory\AppFactory;
 use Vanier\Api\Controllers\AboutController;
 use Vanier\Api\Controllers\VerdictsController;
 use Vanier\Api\Controllers\CasesController;
+use Vanier\Api\Controllers\CrimeScenesController;
+use Vanier\Api\Controllers\JudgesController;
+use Vanier\Api\Controllers\VictimsController;
 use Vanier\Api\Controllers\OffensesController;
 use Vanier\Api\Controllers\InvestigatorsController;
+
 
 // Import the app instance into this file's scope.
 global $app;
@@ -35,6 +39,15 @@ $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 $app->get('/verdicts/{verdict_id}', [VerdictsController::class,'handleGetVerdictById']);
 $app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdict']);
 
+
+$app->get('/victims', [VictimsController::class, 'handleGetAllVictims']);
+$app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimById']);
+
+$app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
+$app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById']);
+
+$app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
+$app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);
 
 // ROUTE: /hello
 $app->get('/hello', function (Request $request, Response $response, $args) {
