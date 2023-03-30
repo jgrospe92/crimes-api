@@ -24,7 +24,15 @@ class VerdictsController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
-
+    public function handleGetVerdictById(Request $request, Response $response, array $args)
+    {
+        //echo"hi";exit;
+        $filters = $request->getQueryParams();
+        $verdicts_model = new VerdictsModel();
+        $verdict_id = $args["verdict_id"];
+        $data = $verdicts_model->handleGetVerdictById($verdict_id);
+        return $this->prepareOkResponse($response, $data);
+    }
 
 
 

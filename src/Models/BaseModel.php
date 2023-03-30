@@ -127,7 +127,7 @@ class BaseModel
      */
     protected function rows($sql, $args = [], $fetchMode = PDO::FETCH_ASSOC)
     {
-        return $this->run($sql, $args)->fetchAll($fetchMode);
+        return $this->run($sql, $args)->fetch($fetchMode);
     }
 
     /**
@@ -142,7 +142,7 @@ class BaseModel
      */
     protected function row($sql, $args = [], $fetchMode = PDO::FETCH_ASSOC)
     {
-        return $this->run($sql, $args)->fetch($fetchMode);
+        return $this->run($sql, $args)->fetchAll($fetchMode);
     }
 
     /**
@@ -153,9 +153,16 @@ class BaseModel
      * @param  object $fetchMode set return mode ie object or array
      * @return object            returns single record
      */
-    protected function getById($table, $id, $fetchMode = PDO::FETCH_ASSOC)
+    protected function getById($table, $whereClause, array $filters = [], $fetchMode = PDO::FETCH_ASSOC)
     {
-        return $this->run("SELECT * FROM $table WHERE id = ?", [$id])->fetch($fetchMode);
+        $column_name = key($whereClause);
+        $id = $whereClause[$column_name];
+
+        $sql = "SELECT * FROM $table WHERE 1";
+        $sql .= " AND " . $column_name . " = :id";
+        $filters['id'] = $id;
+        
+        return $this->run($sql, $filters)->fetch($fetchMode);
     }
 
     /**
@@ -359,7 +366,7 @@ class BaseModel
      * Summary of getTotaPage
      * @return int
      */
-    protected function getTotaPage() : int{
+    protected function getTotalPage() : int{
 
         if (!empty($this->total_records)) {
             // Calculate the total number of pages.
