@@ -20,6 +20,7 @@ class VerdictsController extends BaseController
         $filters = $request->getQueryParams();
         $verdicts_model = new VerdictsModel();
         $data = $verdicts_model->handleGetAllVerdicts($filters);
+        
         return $this->prepareOkResponse($response, $data);
     }
 

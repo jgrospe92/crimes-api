@@ -32,6 +32,20 @@ class CourtsModel extends BaseModel
             $sql .= " AND time LIKE :time ";
             $query_values["time"] = $filters["time"];
         }
+
+        if(isset($filters["sort_by"])){
+            $sort_by = $filters["sort_by"];
+            if($sort_by == "courts_id"){
+                $sql .= " ORDER BY courts_id";
+            }elseif ($sort_by == "name") {
+                $sql .= " ORDER BY name";
+            }elseif ($sort_by == "date") {
+                $sql .= " ORDER BY date";
+            }elseif ($sort_by == "time") {
+                $sql .= " ORDER BY time";
+            }
+        }
+
         return $this->paginate($sql, $query_values);
     }
 

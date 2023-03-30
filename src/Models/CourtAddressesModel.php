@@ -37,6 +37,20 @@ class CourtAddressesModel extends BaseModel
             $sql .= " AND postal_code LIKE CONCAT(:postal_code, '%') ";
             $query_values["postal_code"] = $filters["postal_code"];
         }
+
+        if(isset($filters["sort_by"])){
+            $sort_by = $filters["sort_by"];
+            if($sort_by == "address_id"){
+                $sql .= " ORDER BY address_id";
+            }elseif ($sort_by == "city") {
+                $sql .= " ORDER BY city";
+            }elseif ($sort_by == "street") {
+                $sql .= " ORDER BY street";
+            }elseif ($sort_by == "postal_code") {
+                $sql .= " ORDER BY postal_code";
+            }
+        }
+
         return $this->paginate($sql,$query_values);
     }
 

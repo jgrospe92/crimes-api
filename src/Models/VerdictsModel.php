@@ -37,6 +37,21 @@ class VerdictsModel extends BaseModel
             $sql .= " AND fine LIKE CONCAT(:fine, '%') ";
             $query_values[":fine"] = $filters["fine"];
         }
+
+        if(isset($filters["sort_by"])){
+            $sort_by = $filters["sort_by"];
+            if($sort_by == "verdict_id"){
+                $sql .= " ORDER BY verdict_id";
+            }elseif ($sort_by == "name") {
+                $sql .= " ORDER BY name";
+            }elseif ($sort_by == "description") {
+                $sql .= " ORDER BY description";
+            }elseif ($sort_by == "sentence") {
+                $sql .= " ORDER BY sentence";
+            }elseif ($sort_by == "fine") {
+                $sql .= " ORDER BY fine";
+            }
+        }
         
         return $this->paginate($sql, $query_values);
     }
