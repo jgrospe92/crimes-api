@@ -225,11 +225,16 @@ class OffendersModel extends BaseModel
             "SELECT 
                 offenders.offender_id,
                 offender_details.*,
-                cases.*
-
+                cases.*,
+                crime_scenes.*,
+                investigators.*,
+                courts.*
             FROM offenders
-            LEFT JOIN offender_details ON offenders.offender_id = offender_details.offender_id
-            LEFT JOIN cases ON offender_details.case_id = cases.case_id
+            LEFT JOIN offender_details  ON offenders.offender_id = offender_details.offender_id
+            LEFT JOIN cases             ON offender_details.case_id = cases.case_id
+            LEFT JOIN crime_scenes      ON cases.crime_sceneID = crime_scenes.crime_sceneID
+            LEFT JOIN investigators     ON cases.investigator_id = investigators.investigator_id
+            LEFT JOIN courts            ON cases.court_id = courts.court_id
             WHERE offenders.offender_id = :offender_id
             ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
@@ -274,9 +279,13 @@ class OffendersModel extends BaseModel
                     "name"              => $result["badge_number"],
                     "date"              => $result["first_name"],
                     "time"              => $result["last_name"],
-                    "rank"              => $result["rank"]
-                ]
-            return $case;    
+                    "address_id"        => $result["address_id"],
+                    "judge_id"          => $result["judge_id"],
+                    "verdict_id"        => $result["verdict_id"]
+                ];
+
+            $offender_case = [ "case" => $case, "crime scene" => $crime_scene, "investigator" => $investigator, "court" => $court ];    
+            return $offender_case;
         } else
         {   
             // else return an empty array, will throw exception in controller method
