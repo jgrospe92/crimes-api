@@ -52,8 +52,6 @@ class VerdictsModel extends BaseModel
                 $sql .= " ORDER BY fine";
             }
         }
-
-        
         
         return $this->paginate($sql, $query_values);
     }
