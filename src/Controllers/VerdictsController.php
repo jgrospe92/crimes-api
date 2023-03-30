@@ -4,11 +4,14 @@ use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
+use Vanier\Api\exceptions\HttpUnprocessableContent;
+use Vanier\Api\Helpers\ValidateHelper;
 use Vanier\Api\Models\VerdictsModel;
 
 class VerdictsController extends BaseController
 {
     private $verdicts_model = null;
+    private array $filter_params = ['verdict_id', 'name', 'description', 'sentence', 'fine'];
 
     public function __construct()
     {
@@ -19,8 +22,18 @@ class VerdictsController extends BaseController
     {
         $filters = $request->getQueryParams();
         $verdicts_model = new VerdictsModel();
+
+        // validation for filters
+        if($filters){
+            foreach ($filters as $key => $value) {
+                // if(!ValidateHelper::validateParams($key, $this->filter_params)){
+                //     throw new HttpUnprocessableContent($request, 'Invalid ');
+                    
+                // }
+            }
+        }
+
         $data = $verdicts_model->handleGetAllVerdicts($filters);
-        
         return $this->prepareOkResponse($response, $data);
     }
 
