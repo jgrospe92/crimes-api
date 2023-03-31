@@ -14,7 +14,6 @@ use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
 // models
 use Vanier\Api\models\CasesModel;
-use Vanier\Api\models\OffensesModel;
 
 /**
  * Summary of CasesController
@@ -28,6 +27,9 @@ class CasesController extends BaseController
         'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize'
     ];
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->case_model = new CasesModel();
@@ -55,6 +57,15 @@ class CasesController extends BaseController
         return $this->preparedResponse($response, $data);
     }
 
+    /**
+     * Summary of handleOffendersByCase
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpBadRequest
+     * @throws HttpUnprocessableContent
+     * @return Response
+     */
     public function handleOffendersByCase(Request $request, Response $response, array $uri_args)
     {
         $case_id = $uri_args['case_id'];
@@ -79,7 +90,7 @@ class CasesController extends BaseController
             $data['Case'] = $this->case_model->offendersByCase($this->CASES_TABLE, $whereClause);
         } catch (Exception $e) {
 
-            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the documentation");
         }
 
         return $this->preparedResponse($response, $data);
@@ -117,7 +128,7 @@ class CasesController extends BaseController
             $data['Case'] = $this->case_model->victimsByCase($this->CASES_TABLE, $whereClause);
         } catch (Exception $e) {
 
-            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the documentation");
         }
 
         return $this->preparedResponse($response, $data);
@@ -157,7 +168,7 @@ class CasesController extends BaseController
             $data['Case'] = $this->case_model->offensesByCase($this->CASES_TABLE, $whereClause);
         } catch (Exception $e) {
 
-            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the documentation");
         }
 
         if (!$data['Case']) {
@@ -215,7 +226,7 @@ class CasesController extends BaseController
         $dataParams = ['page' => $page, 'pageSize' => $pageSize, 'pageMin' => 1, 'pageSizeMin' => 5, 'pageSizeMax' => 10];
         // check if page is within in range else throw unprocessable content
         if (!ValidateHelper::validatePagingParams($dataParams)) {
-            throw new HttpUnprocessableContent($request, "Out of range, unable to process your request, please consult the manual");
+            throw new HttpUnprocessableContent($request, "Out of range, unable to process your request, please consult the documentation");
         }
 
         $this->case_model->setPaginationOptions($page, $pageSize);
@@ -224,7 +235,7 @@ class CasesController extends BaseController
         try {
             $data = $this->case_model->getAll($filters);
         } catch (Exception $e) {
-            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the documentation");
         }
         // throw a HttpNotFound error if data is empty
         if (!$data['data']) {

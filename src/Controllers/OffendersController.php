@@ -21,6 +21,9 @@ class OffendersController extends BaseController
 {
     private $offenders_model;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->offenders_model = new OffendersModel();
@@ -57,6 +60,14 @@ class OffendersController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
+    /**
+     * Summary of handleGetDefendantOfOffender
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpNotFoundException
+     * @return Response
+     */
     public function handleGetDefendantOfOffender(Request $request, Response $response, array $uri_args) 
     {
         $offender_id = $uri_args['offender_id'];
@@ -67,6 +78,14 @@ class OffendersController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
+    /**
+     * Summary of handleGetCaseOfOffender
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpNotFoundException
+     * @return Response
+     */
     public function handleGetCaseOfOffender(Request $request, Response $response, array $uri_args) 
     {
         $offender_id = $uri_args['offender_id'];

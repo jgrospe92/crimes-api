@@ -17,10 +17,16 @@ use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 
+/**
+ * Summary of VictimsController
+ */
 class VictimsController extends BaseController
 {
     private $victims_model = null;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->victims_model = new VictimsModel();

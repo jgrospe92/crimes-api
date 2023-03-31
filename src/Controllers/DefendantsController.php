@@ -21,6 +21,9 @@ class DefendantsController extends BaseController
 {
     private $defendant_model;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->defendant_model = new DefendantsModel();
