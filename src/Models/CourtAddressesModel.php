@@ -2,14 +2,25 @@
 namespace Vanier\Api\Models;
 use Vanier\Api\Models\BaseModel;
 
+/**
+ * Summary of CourtAddressesModel
+ */
 class CourtAddressesModel extends BaseModel
 {
     private $table_name = "court_addresses";
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
     }
+    /**
+     * Summary of handleGetAllAddresses
+     * @param array $filters
+     * @return array
+     */
     public function handleGetAllAddresses(array $filters = [])
     {
         $query_values = [];
@@ -51,9 +62,14 @@ class CourtAddressesModel extends BaseModel
             }
         }
 
-        return $this->paginate($sql,$query_values);
+        return $this->paginate($sql,$query_values, 'court_addresses');
     }
 
+    /**
+     * Summary of handleGetAddressById
+     * @param string $address_id
+     * @return mixed
+     */
     public function handleGetAddressById(String $address_id)
     {
         $sql = "SELECT * FROM $this->table_name WHERE address_id = :address_id ";

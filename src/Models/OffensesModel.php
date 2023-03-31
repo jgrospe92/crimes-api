@@ -13,6 +13,9 @@ use Exception;
 class OffensesModel extends BaseModel
 {
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
@@ -70,6 +73,11 @@ class OffensesModel extends BaseModel
         return $this->run($sql, $query_values)->fetchAll();
     }
 
+    /**
+     * Summary of getOffenses
+     * @param array $filters
+     * @return array
+     */
     public function getOffenses(array $filters)
     {
         $query_values = [];
@@ -107,6 +115,6 @@ class OffensesModel extends BaseModel
             $sql .= " GROUP BY offense_id ";
         }
 
-        return $this->paginate($sql, $query_values);
+        return $this->paginate($sql, $query_values, 'offenses');
     }
 }

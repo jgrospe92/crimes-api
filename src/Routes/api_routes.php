@@ -76,9 +76,3 @@ $app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById'])
 
 $app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
 $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);
-
-// ROUTE: /hello
-$app->get('/hello', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Reporting! Hello there!");    
-    return $response;
-});

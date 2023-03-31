@@ -2,11 +2,17 @@
 namespace Vanier\Api\Models;
 use Vanier\Api\Models\BaseModel;
 
+/**
+ * Summary of VerdictsModel
+ */
 class VerdictsModel extends BaseModel
 {
     private $table_name = "verdicts";
 
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
@@ -53,7 +59,7 @@ class VerdictsModel extends BaseModel
             }
         }
         
-        return $this->paginate($sql, $query_values);
+        return $this->paginate($sql, $query_values, 'verdicts');
     }
 
     public function handleGetVerdictById(String $verdict_id)

@@ -14,6 +14,9 @@ use Vanier\Api\Helpers\ValidateHelper;
 // models
 use Vanier\Api\models\InvestigatorsModel;
 
+/**
+ * Summary of InvestigatorsController
+ */
 class InvestigatorsController extends BaseController
 {
 
@@ -27,11 +30,23 @@ class InvestigatorsController extends BaseController
     ];
 
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->investigator_model = new InvestigatorsModel();
     }
 
+    /**
+     * Summary of handleInvestigators
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpUnprocessableContent
+     * @throws HttpBadRequest
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleInvestigators(Request $request, Response $response)
     {
         $filters = $request->getQueryParams();
@@ -70,7 +85,7 @@ class InvestigatorsController extends BaseController
         $dataParams = ['page' => $page, 'pageSize' => $pageSize, 'pageMin' => 1, 'pageSizeMin' => 5, 'pageSizeMax' => 10];
         // check if page is within in range else throw unprocessable content
         if (!ValidateHelper::validatePagingParams($dataParams)) {
-            throw new HttpUnprocessableContent($request, "Out of range, unable to process your request, please consult the manual");
+            throw new HttpUnprocessableContent($request, "Out of range, unable to process your request, please consult the documentation");
         }
 
         $this->investigator_model->setPaginationOptions($page, $pageSize);
@@ -79,10 +94,10 @@ class InvestigatorsController extends BaseController
         try {
             $data = $this->investigator_model->getAll($filters);
         } catch (Exception $e) {
-            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the documentation");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data']) {
+        if (!$data['investigators']) {
             throw new HttpNotFound($request, 'please check you parameter or consult the documentation');
         }
 

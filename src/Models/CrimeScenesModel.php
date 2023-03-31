@@ -3,15 +3,26 @@
 namespace Vanier\Api\Models;
 use Vanier\Api\Models\BaseModel;
 
+/**
+ * Summary of CrimeScenesModel
+ */
 class CrimeScenesModel extends BaseModel
 {
     private $table_name = "crime_scenes";
     
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
+    /**
+     * Summary of handleGetAllCrimeScenes
+     * @param array $filters
+     * @return array
+     */
     public function handleGetAllCrimeScenes(array $filters = [])
     {
         $query_values = [];
@@ -45,9 +56,14 @@ class CrimeScenesModel extends BaseModel
             } 
         }
 
-        return $this->paginate($sql, $query_values);
+        return $this->paginate($sql, $query_values, 'crime_scenes');
     }
 
+    /**
+     * Summary of handleGetCrimeSceneById
+     * @param mixed $crime_scene_id
+     * @return mixed
+     */
     public function handleGetCrimeSceneById($crime_scene_id) {
         $sql = "SELECT * FROM $this->table_name WHERE crime_sceneID = :crime_sceneID";
         $query_values = [":crime_sceneID" => $crime_scene_id];

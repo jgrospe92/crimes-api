@@ -21,6 +21,9 @@ class ProsecutorsController extends BaseController
 {
     private $prosecutor_model;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->prosecutor_model = new ProsecutorsModel();

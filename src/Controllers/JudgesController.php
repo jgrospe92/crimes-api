@@ -16,15 +16,30 @@ use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
+/**
+ * Summary of JudgesController
+ */
 class JudgesController extends BaseController
 {
     private $judges_model = null;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->judges_model = new JudgesModel();
     }
 
+    /**
+     * Summary of handleGetAllJudges
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpBadRequest
+     * @throws HttpUnprocessableContent
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleGetAllJudges(Request $request, Response $response) {
         // constant values
         define('DEFAULT_PAGE', 1);
@@ -57,13 +72,21 @@ class JudgesController extends BaseController
             throw new HttpBadRequest($request, "Not the right syntax, consult the documentation");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data']) {
+        if (!$data['judges']) {
             throw new HttpNotFound($request, 'Please check you parameter or consult the documentation');
         }
         
         return $this->prepareOkResponse($response, $data, StatusCodeInterface::STATUS_OK);
     }
 
+    /**
+     * Summary of handleGetJudgeById
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleGetJudgeById(Request $request, Response $response, array $uri_args) {
         $judge_id = $uri_args["judge_id"];
 

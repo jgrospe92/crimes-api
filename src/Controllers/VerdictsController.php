@@ -10,16 +10,30 @@ use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
 use Vanier\Api\Models\VerdictsModel;
 
+/**
+ * Summary of VerdictsController
+ */
 class VerdictsController extends BaseController
 {
     private $verdicts_model = null;
     private array $filter_params = ['verdict_id', 'name', 'description', 'sentence', 'fine'];
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->verdicts_model = new VerdictsModel();
     }
 
+    /**
+     * Summary of handleGetAllVerdicts
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpUnprocessableContent
+     * @throws HttpBadRequest
+     * @return Response
+     */
     public function handleGetAllVerdicts(Request $request, Response $response)
     {
         $filters = $request->getQueryParams();
@@ -54,9 +68,17 @@ class VerdictsController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
+    /**
+     * Summary of handleGetVerdictById
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleGetVerdictById(Request $request, Response $response, array $args)
     {
-        //echo"hi";exit;
+      
         $filters = $request->getQueryParams();
         $verdicts_model = new VerdictsModel();
         $verdict_id = $args["verdict_id"];

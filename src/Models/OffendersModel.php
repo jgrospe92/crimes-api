@@ -25,6 +25,9 @@ class OffendersModel extends BaseModel
         LEFT JOIN defendants ON offenders.defendant_id = defendants.defendant_id
         WHERE 1 ";
 
+    /**
+     * Summary of __construct
+     */
     public function __construct() 
     {
         parent::__construct();
@@ -163,10 +166,10 @@ class OffendersModel extends BaseModel
             $this->sql .= " ORDER BY offenders.offender_id";
         }
 
-        $result = $this->paginate($this->sql, $query_values);
+        $result = $this->paginate($this->sql, $query_values, 'offenders');
 
         // Put each person's data in an associative array
-        foreach ($result["data"] as $row)
+        foreach ($result["offenders"] as $row)
         {
             $offender = 
             [
