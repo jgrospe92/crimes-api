@@ -90,7 +90,7 @@ class OffensesController extends BaseController
             throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the documentation");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data']) {
+        if (!$data['offenses']) {
             throw new HttpNotFound($request, 'please check you parameter or consult the documentation');
         }
 

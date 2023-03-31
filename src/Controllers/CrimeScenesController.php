@@ -72,7 +72,7 @@ class CrimeScenesController extends BaseController
             throw new HttpBadRequest($request, "Not the right syntax, consult the documentation");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data']) {
+        if (!$data['crime_scenes']) {
             throw new HttpNotFound($request, 'Please check you parameter or consult the documentation');
         }
         
