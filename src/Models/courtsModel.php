@@ -51,24 +51,21 @@ class CourtsModel extends BaseModel
         foreach ($courts['data'] as $key => $value) {
             // ? You can add filters too
             $verdict_id = $value['verdict_id'];
- 
             $verdicts = $this->getById('verdicts', ['verdict_id' => $verdict_id]);
      
+            $judge_id = $value['judge_id'];
+            $judges = $this->getById('judges', ['judge_id' => $judge_id]);
+
+            $address_id = $value['address_id'];
             $court_addresses = $this->getById('court_addresses', ['address_id' => $value['address_id']]);
 
             unset($courts['data'][$key]['verdict_id']);
-            // unset($courts['data'][$key]['investigator_id']);
-            // unset($courts['data'][$key]['court_id']);
+            unset($courts['data'][$key]['address_id']);
+            unset($courts['data'][$key]['judge_id']);
 
-            
-
-            //$verdicts = $this->verdicts($courts['data'][$key]['case_id']);
-            //$court_addresses = $this->court_addresses($courts['data'][$key]['case_id']);
-
-        
-            $courts['data'][$key]['verdicts'] = $verdicts;
-            // $courts['data'][$key]['verdicts'] = $verdicts ?? '';
-            // $courts['data'][$key]['court_addresses'] = $court_addresses ?? '';
+            $courts['data'][$key]['verdicts'] = $verdicts ?? '';
+            $courts['data'][$key]['judges'] = $judges ?? '';
+            $courts['data'][$key]['court_addresses'] = $court_addresses ?? '';
         }
 
         return $courts;
