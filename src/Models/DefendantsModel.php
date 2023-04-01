@@ -9,6 +9,9 @@ class DefendantsModel extends BaseModel
 {
     private $sql = "SELECT * FROM defendants WHERE 1 ";
 
+    /**
+     * Summary of __construct
+     */
     public function __construct() 
     {
         parent::__construct();
@@ -73,6 +76,6 @@ class DefendantsModel extends BaseModel
             elseif ($sort == "specialization")   { $this->sql .= " ORDER BY specialization"; }
         }
 
-        return $this->paginate($this->sql, $query_values);
+        return $this->paginate($this->sql, $query_values,'defendants');
     }
 }

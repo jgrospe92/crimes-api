@@ -20,7 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `crimes-api`
 --
-CREATE DATABASE IF NOT EXISTS `crimes-api` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+DROP DATABASE IF EXISTS `crimes-api`;
+CREATE DATABASE `crimes-api`;
 USE `crimes-api`;
 
 -- --------------------------------------------------------

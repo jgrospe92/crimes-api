@@ -2,15 +2,26 @@
 namespace Vanier\Api\Models;
 use Vanier\Api\Models\BaseModel;
 
+/**
+ * Summary of CourtsModel
+ */
 class CourtsModel extends BaseModel
 {
     private $table_name = "courts";
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
+    /**
+     * Summary of handleGetAllCourts
+     * @param array $filters
+     * @return array
+     */
     public function handleGetAllCourts(array $filters = [])
     {
         $query_values = [];
@@ -69,6 +80,7 @@ class CourtsModel extends BaseModel
         }
 
         return $courts;
+        return $this->paginate($sql, $query_values,'courts');
     }
 
     public function handleGetCourtById(String $court_id)
