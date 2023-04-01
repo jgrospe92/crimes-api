@@ -6,7 +6,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 // HTTP exceptions
+use Exception;
+use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 // Helpers
 use Vanier\Api\Helpers\ValidateHelper;
@@ -51,8 +54,43 @@ class DefendantsController extends BaseController
      */
     public function handleGetAllDefendants(Request $request, Response $response)
     {
+        // Constant values
+        define('DEFAULT_PAGE', 1);
+        define("DEFAULT_PAGE_SIZE", 10);
+
         $filters = $request->getQueryParams();
-        $data = $this->defendant_model->getAllDefendants($filters);
+
+        // Define default page size if not specified
+        $page = $filters["page"] ?? DEFAULT_PAGE;
+        $pageSize = $filters["pageSize"] ?? DEFAULT_PAGE_SIZE;
+
+        // Check if the params are numeric
+        if (!ValidateHelper::validatePageNumbers($page, $pageSize)) { throw new HttpBadRequestException($request); }
+
+        $dataParams = 
+        [
+            'page'          => $page, 
+            'pageSize'      => $pageSize, 
+            'pageMin'       => 1, 
+            'pageSizeMin'   => 5, 
+            'pageSizeMax'   => 10
+        ];
+
+        // Check if the page is within range 
+        if (!ValidateHelper::validatePagingParams($dataParams)) 
+        {
+            throw new HttpUnprocessableContent($request, "Out of range, unable to process your request");
+        }
+
+        $this->defendant_model->setPaginationOptions($page, $pageSize);
+
+        // Catch any DB exceptions
+        try { $data = $this->defendant_model->getAllDefendants($filters); } 
+        catch (Exception $e) { throw new HttpBadRequestException($request); }
+
+        // Throw a HttpNotFound error if data is empty
+        if (!$data['data']) { throw new HttpNotFoundException($request); }
+
         return $this->prepareOkResponse($response, $data);
     }
 }
