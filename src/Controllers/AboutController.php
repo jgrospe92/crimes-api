@@ -14,7 +14,6 @@ class AboutController extends BaseController
             'about' => 'Welcome, this is a Web services that provides fake crimes information all around the world',
             'version' => 'v1',
             'resources' => ['cases', 'offenders','victims','defendants','prosecutors','investigators','courts','verdicts','judges'],
-            'Team Leader' => 'Jeffrey',
             'Developers' => ['Jeffrey','Saqliyan','Theodore', 'Alex']
         );                
         return $this->prepareOkResponse($response, $data);

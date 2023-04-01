@@ -92,7 +92,7 @@ class ProsecutorsController extends BaseController
         catch (Exception $e) { throw new HttpBadRequestException($request); }
 
         // Throw a HttpNotFound error if data is empty
-        if (!$data['data']) { throw new HttpNotFoundException($request); }
+        if (!$data['prosecutors']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
     }

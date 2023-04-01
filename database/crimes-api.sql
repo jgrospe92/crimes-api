@@ -268,6 +268,8 @@ CREATE TABLE `offenders` (
 --
 
 INSERT INTO `offenders` (`offender_id`, `first_name`, `last_name`, `age`, `marital_status`, `arrest_date`, `arrest_timestamp`, `defendant_id`) VALUES
+(1, 'John', 'Bastista', 30, 'married', '2022-02-14', '21:04:56',3),
+(2, 'Mike', 'Gustos', 41, 'single', '2023-91-22', '16:56:57',3),
 (3, 'Jeremy', 'Elbertson', 36, 'single', '2020-01-30', '12:07:57', 3),
 (4, 'Andrew', 'Tate', 41, 'married', '2022-04-01', '16:56:57', 1),
 (5, 'Peach', 'Toadstool', 24, 'married', '2023-02-14', '23:56:57', 4),

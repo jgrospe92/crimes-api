@@ -93,7 +93,7 @@ class OffendersController extends BaseController
         catch (Exception $e) { throw new HttpBadRequestException($request); }
 
         // Throw a HttpNotFound error if data is empty
-        if (!$data['data']) { throw new HttpNotFoundException($request); }
+        if (!$data['offenders']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
     }
