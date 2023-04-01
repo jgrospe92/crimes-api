@@ -57,7 +57,29 @@ class CourtsModel extends BaseModel
             }
         }
 
-        return $this->paginate($sql, $query_values,'courts');
+        $courts= $this->paginate($sql,$query_values);
+
+        foreach ($courts['data'] as $key => $value) {
+            // ? You can add filters too
+            $verdict_id = $value['verdict_id'];
+            $verdicts = $this->getById('verdicts', ['verdict_id' => $verdict_id]);
+     
+            $judge_id = $value['judge_id'];
+            $judges = $this->getById('judges', ['judge_id' => $judge_id]);
+
+            $address_id = $value['address_id'];
+            $court_addresses = $this->getById('court_addresses', ['address_id' => $value['address_id']]);
+
+            unset($courts['data'][$key]['verdict_id']);
+            unset($courts['data'][$key]['address_id']);
+            unset($courts['data'][$key]['judge_id']);
+
+            $courts['data'][$key]['verdicts'] = $verdicts ?? '';
+            $courts['data'][$key]['judges'] = $judges ?? '';
+            $courts['data'][$key]['court_addresses'] = $court_addresses ?? '';
+        }
+
+        return $courts;
     }
 
     public function handleGetCourtById(String $court_id)
