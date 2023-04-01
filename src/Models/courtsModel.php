@@ -80,7 +80,6 @@ class CourtsModel extends BaseModel
         }
 
         return $courts;
-        return $this->paginate($sql, $query_values,'courts');
     }
 
     public function handleGetCourtById(String $court_id)
