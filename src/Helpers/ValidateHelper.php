@@ -68,7 +68,28 @@ class ValidateHelper
         return filter_var($dataParams['id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => $dataParams['min'], 'max_range' => $dataParams['max']]]);
     }
 
+    /**
+     * Summary of validateDateInput
+     * @param array $date
+     * @return bool
+     */
+    public static function validateDateInput(array $date)
+    {
+        $data = array('from_rentalDate' => $date['from_rentalDate'], 'to_rentalDate' => $date['to_rentalDate']);
 
+        $rules = array(
+            'from_rentalDate' => [['dateFormat', 'Y-m-d']],
+            'to_rentalDate' => [['dateFormat', 'Y-m-d']]
+        );
+        $validator = new Validator($data, [], 'en');
+        // Important: map the validation rules before calling validate()
+        $validator->mapFieldsRules($rules);
+        if ($validator->validate()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Summary of validateDateFormat
