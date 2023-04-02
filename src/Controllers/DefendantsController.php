@@ -42,6 +42,16 @@ class DefendantsController extends BaseController
     public function handleGetDefendantById(Request $request, Response $response, array $uri_args)
     {
         $defendant_id = $uri_args['defendant_id'];
+        if (!ValidateHelper::validateId(['id' => $defendant_id])) {
+            throw new HttpBadRequestException($request, "please enter a valid id");
+        }
+
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+        
         $data = $this->defendant_model->getDefendantById($defendant_id);
 
         if (!$data) { throw new HttpNotFoundException($request); }

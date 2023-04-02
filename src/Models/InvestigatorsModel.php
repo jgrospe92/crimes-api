@@ -74,4 +74,20 @@ class InvestigatorsModel extends BaseModel
         return $this->paginate($sql, $query_values, 'investigators');
 
     }
+
+    /**
+     * Summary of getInvestigatorById
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return object|null
+     */
+    public function getInvestigatorById($table, $whereClause)
+    {
+        $investigator = $this->getById($table, $whereClause);
+        if (!$investigator){
+            return null;
+        }
+        return $investigator;
+
+    }
 }

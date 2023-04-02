@@ -47,6 +47,14 @@ class CasesController extends BaseController
     public function handleGetCaseById(Request $request, Response $response, array $uri_args)
     {
         $case_id = $uri_args['case_id'];
+        if (!ValidateHelper::validateId(['id' => $case_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
         $whereClause = ['case_id' => $case_id];
         $data['Case'] = $this->case_model->getCaseById($this->CASES_TABLE, $whereClause);
 

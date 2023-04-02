@@ -1,5 +1,7 @@
 <?php
+
 namespace Vanier\Api\Controllers;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
@@ -24,7 +26,7 @@ class CourtAddressesController extends BaseController
     {
         $this->court_addresses_model = new CourtAddressesModel();
     }
-    
+
     /**
      * Summary of handleGetAllAddresses
      * @param Request $request
@@ -39,17 +41,16 @@ class CourtAddressesController extends BaseController
         $court_addresses_model = new CourtAddressesModel();
 
         // validation for filters
-        if($filters){
+        if ($filters) {
             foreach ($filters as $key => $value) {
-                if(!ValidateHelper::validateParams($key, $this->filter_params)){
-                    throw new HttpUnprocessableContent($request, 'Invalid query Parameter: ' . ' {' . $key . '}');                    
-                }
-                elseif (strlen($value) == 0) {
+                if (!ValidateHelper::validateParams($key, $this->filter_params)) {
+                    throw new HttpUnprocessableContent($request, 'Invalid query Parameter: ' . ' {' . $key . '}');
+                } elseif (strlen($value) == 0) {
                     throw new HttpUnprocessableContent($request, 'Please provide query value for : ' . '{' . $key . '}');
                 }
             }
         }
-        if (isset($filters['address_id'])){
+        if (isset($filters['address_id'])) {
 
             if (!ValidateHelper::validateNumericInput(['verdict_id' => $filters['verdict_id']])) {
                 throw new HttpBadRequest($request, "expected numeric but received alpha");
@@ -57,7 +58,7 @@ class CourtAddressesController extends BaseController
         }
 
         $data = $court_addresses_model->handleGetAllAddresses($filters);
-        return $this->prepareOkResponse($response,$data);
+        return $this->prepareOkResponse($response, $data);
     }
 
     /**
@@ -70,20 +71,23 @@ class CourtAddressesController extends BaseController
      */
     public function handleGetAddressById(Request $request, Response $response, array $args)
     {
-        $filters = $request->getQueryParams();
+      
         $court_addresses_model = new CourtAddressesModel();
         $address_id = $args["address_id"];
-        $data = $court_addresses_model->handleGetAddressById($address_id);
+        if (!ValidateHelper::validateId(['id' => $address_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+        $data["court address"] = $court_addresses_model->handleGetAddressById($address_id);
 
-        if(!$data){
+        if (!$data['court address']) {
             throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
         }
 
-        return $this->prepareOkResponse($response,$data);
+        return $this->prepareOkResponse($response, $data);
     }
-
-
-
-
-
 }

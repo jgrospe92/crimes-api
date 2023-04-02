@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 // Helpers
@@ -127,6 +128,15 @@ class OffendersController extends BaseController
     public function handleGetCaseOfOffender(Request $request, Response $response, array $uri_args) 
     {
         $offender_id = $uri_args['offender_id'];
+        if (!ValidateHelper::validateId(['id' => $offender_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+
         $data = $this->offenders_model->getCaseOfOffender($offender_id);
 
         if (!$data) { throw new HttpNotFoundException($request); }

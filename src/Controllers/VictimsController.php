@@ -93,9 +93,16 @@ class VictimsController extends BaseController
     public function handleGetVictimById(Request $request, Response $response, array $uri_args) {     
 
         $victim_id = $uri_args ["victim_id"];
-
+        $filters = $request->getQueryParams();
         // Instantiate the VictimsModel to retrieve the victim data.
         $victims_model = new VictimsModel();
+        if (!ValidateHelper::validateId(['id' => $victim_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
         $data = $victims_model->handleGetVictimById($victim_id);
 
         // Http Exception

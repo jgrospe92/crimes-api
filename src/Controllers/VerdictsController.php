@@ -82,9 +82,16 @@ class VerdictsController extends BaseController
         $filters = $request->getQueryParams();
         $verdicts_model = new VerdictsModel();
         $verdict_id = $args["verdict_id"];
-        $data = $verdicts_model->handleGetVerdictById($verdict_id);
+        if (!ValidateHelper::validateId(['id' => $verdict_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+        $data['verdict'] = $verdicts_model->handleGetVerdictById($verdict_id);
 
-        if(!$data){
+        if(!$data['verdict']){
             throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
         }
 

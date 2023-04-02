@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 // Helpers
@@ -42,9 +43,17 @@ class ProsecutorsController extends BaseController
     public function handleGetProsecutorById(Request $request, Response $response, array $uri_args)
     {
         $prosecutor_id = $uri_args['prosecutor_id'];
-        $data = $this->prosecutor_model->getProsecutorById($prosecutor_id);
+        if (!ValidateHelper::validateId(['id' => $prosecutor_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+        $data['prosecutor'] = $this->prosecutor_model->getProsecutorById($prosecutor_id);
 
-        if (!$data) { throw new HttpNotFoundException($request); }
+        if (!$data['prosecutor']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
     }

@@ -89,13 +89,21 @@ class JudgesController extends BaseController
      */
     public function handleGetJudgeById(Request $request, Response $response, array $uri_args) {
         $judge_id = $uri_args["judge_id"];
+        if (!ValidateHelper::validateId(['id' => $judge_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
 
         $judges_model = new JudgesModel();
 
-        $data = $judges_model->handleGetJudgeById($judge_id);
+        $data['judge'] = $judges_model->handleGetJudgeById($judge_id);
 
         // Http Exception
-        if (empty($data)) {
+        if (!$data['judge']) {
             throw new HttpNotFound($request, "Please check your query parameter or consult the documentation.");
         }
 

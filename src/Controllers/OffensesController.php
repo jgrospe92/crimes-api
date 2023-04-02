@@ -97,4 +97,26 @@ class OffensesController extends BaseController
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
     }
+
+    public function handleOffensesById(Request $request, Response $response, array $uri_args)
+    {
+        $offense_id = $uri_args['offense_id'];
+        if (!ValidateHelper::validateId(['id' => $offense_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+
+        $whereClause = ['offense_id' => $offense_id];
+        $data['offense'] = $this->offenses_model->getOffensesById("offenses", $whereClause);
+
+        if (!$data['offense']) {
+            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
+        }
+
+        return $this->preparedResponse($response, $data);
+    }
 }
