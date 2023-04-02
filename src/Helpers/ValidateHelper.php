@@ -68,24 +68,47 @@ class ValidateHelper
         return filter_var($dataParams['id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => $dataParams['min'], 'max_range' => $dataParams['max']]]);
     }
 
+
+
     /**
-     * Summary of validateDateInput
+     * Summary of validateDateFormat
      * @param mixed $date
-     * @return bool 
-     * Validate date input
+     * @return bool
      */
-    public static function validateDateInput(array $date)
+    public static function validateDateFormat($date)
     {
 
-        $data = array('from_rentalDate' => $date['from_rentalDate'], 'to_rentalDate' => $date['to_rentalDate']);
-
+        $data = array("date_data" => $date);
+        $currentDate = date("Y-m-d");
         $rules = array(
-            'from_rentalDate' => [['dateFormat', 'Y-m-d']],
-            'to_rentalDate' => [['dateFormat', 'Y-m-d']]
+            'dateBefore' => [['date_data', $currentDate]],
         );
         $validator = new Validator($data, [], 'en');
         // Important: map the validation rules before calling validate()
-        $validator->mapFieldsRules($rules);
+        $validator->rules($rules);
+        if ($validator->validate()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * Summary of validateTimeStamp
+     * @param mixed $time
+     * @return bool
+     */
+    public static function validateTimeStamp($time)
+    {
+        $data = ['time_stamp' => $time];
+        $rules = 
+        ['regex' => 
+            [
+                ['time_stamp', '/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/']
+            ]
+        ];
+        $validator = new Validator($data, [], 'en');
+        // Important: map the validation rules before calling validate()
+        $validator->rules($rules);
         if ($validator->validate()) {
             return true;
         } else {
@@ -173,10 +196,10 @@ class ValidateHelper
      * @return bool
      */
     public static function isUnique(array $data)
-    { 
+    {
         $rules =
             [
-               
+
                 'containsUnique' =>
                 [
                     ['id']
@@ -195,11 +218,11 @@ class ValidateHelper
     public static function validateId(array $data)
     {
         $rules = [
-            'min'=>
+            'min' =>
             [
                 ['id', 1]
             ]
-            ];
+        ];
 
         $validator = new Validator($data);
         $validator->rules($rules);
@@ -300,7 +323,7 @@ class ValidateHelper
      */
     public static function validatePutFilms(array $data)
     {
-       
+
         $title = $data['title'] ?? '';
         $description = $data['description'] ?? '';
         $release_year = $data['release_year'] ?? '';
@@ -537,7 +560,6 @@ class ValidateHelper
             return false;
         }
         return true;
-
     }
 
     /**
@@ -548,11 +570,9 @@ class ValidateHelper
      */
     public static function validateParams($param, array $params)
     {
-        if (in_array($param, $params))
-        {
+        if (in_array($param, $params)) {
             return true;
         }
         return false;
     }
-
 }

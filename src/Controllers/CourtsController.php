@@ -67,6 +67,13 @@ class CourtsController extends BaseController
                 throw new HttpBadRequest($request, "expected numeric but received alpha");
             }
         }
+        if (isset($filters['time'])){
+            $time = $filters['time'];
+            if (!ValidateHelper::validateTimeStamp($time)){
+          
+                throw new HttpUnprocessableContent($request, 'Invalid time: ' . ' {' . $time . '}');
+            }
+        }
 
         $data = $courts_model->handleGetAllCourts($filters);
         return $this->prepareOkResponse($response, $data);

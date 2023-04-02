@@ -24,7 +24,7 @@ class CasesController extends BaseController
     private string $CASES_TABLE = 'cases';
     private array $FILTER_PARAMS = [
         'description', 'misdemeanor', 'classification', 'name',
-        'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize'
+        'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize','time_stamp'
     ];
 
     /**
@@ -214,7 +214,21 @@ class CasesController extends BaseController
                 }
             }
         }
-
+        // validate date
+        if (isset($filters['date_from']))
+        {
+            $date_format = $filters['date_from'];
+            if (!ValidateHelper::validateDateFormat($date_format)){
+                throw new HttpUnprocessableContent($request, 'Invalid date: ' . ' {' . $date_format . '}');
+            }
+        }
+        if (isset($filters['date_to']))
+        {
+            $date_format = $filters['date_to'];
+            if (!ValidateHelper::validateDateFormat($date_format)){
+                throw new HttpUnprocessableContent($request, 'Invalid date: ' . ' {' . $date_format . '}');
+            }
+        }
         if (isset($filters['misdemeanor'])){
 
             if (!ValidateHelper::validateNumericInput(['misdemeanor' => $filters['misdemeanor']])) {
