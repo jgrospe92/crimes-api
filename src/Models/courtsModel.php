@@ -57,9 +57,9 @@ class CourtsModel extends BaseModel
             }
         }
 
-        $courts= $this->paginate($sql,$query_values);
+        $courts= $this->paginate($sql,$query_values, 'courts');
 
-        foreach ($courts['data'] as $key => $value) {
+        foreach ($courts['courts'] as $key => $value) {
             // ? You can add filters too
             $verdict_id = $value['verdict_id'];
             $verdicts = $this->getById('verdicts', ['verdict_id' => $verdict_id]);
@@ -68,15 +68,15 @@ class CourtsModel extends BaseModel
             $judges = $this->getById('judges', ['judge_id' => $judge_id]);
 
             $address_id = $value['address_id'];
-            $court_addresses = $this->getById('court_addresses', ['address_id' => $value['address_id']]);
+            $court_addresses = $this->getById('court_addresses', ['address_id' => $address_id]);
 
-            unset($courts['data'][$key]['verdict_id']);
-            unset($courts['data'][$key]['address_id']);
-            unset($courts['data'][$key]['judge_id']);
+            unset($courts['courts'][$key]['verdict_id']);
+            unset($courts['courts'][$key]['address_id']);
+            unset($courts['courts'][$key]['judge_id']);
 
-            $courts['data'][$key]['verdicts'] = $verdicts ?? '';
-            $courts['data'][$key]['judges'] = $judges ?? '';
-            $courts['data'][$key]['court_addresses'] = $court_addresses ?? '';
+            $courts['courts'][$key]['verdicts'] = $verdicts ?? '';
+            $courts['courts'][$key]['judges'] = $judges ?? '';
+            $courts['courts'][$key]['court_addresses'] = $court_addresses ?? '';
         }
 
         return $courts;
