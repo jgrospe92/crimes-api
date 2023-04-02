@@ -16,15 +16,30 @@ use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
+/**
+ * Summary of CrimeScenesController
+ */
 class CrimeScenesController extends BaseController
 {
     private $crime_scenes_model = null;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->crime_scenes_model = new CrimeScenesModel();
     }
 
+    /**
+     * Summary of handleGetAllCrimeScenes
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpBadRequest
+     * @throws HttpUnprocessableContent
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleGetAllCrimeScenes(Request $request, Response $response) {
         // constant values
         define('DEFAULT_PAGE', 1);
@@ -57,19 +72,35 @@ class CrimeScenesController extends BaseController
             throw new HttpBadRequest($request, "Not the right syntax, consult the documentation");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data']) {
+        if (!$data['crime_scenes']) {
             throw new HttpNotFound($request, 'Please check you parameter or consult the documentation');
         }
         
         return $this->prepareOkResponse($response, $data, StatusCodeInterface::STATUS_OK);
     }
 
+    /**
+     * Summary of handleGetCrimeById
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleGetCrimeById(Request $request, Response $response, array $uri_args) {
         $crime_scene_id = $uri_args["crime_sceneID"];
 
         $crime_scenes_model = new CrimeScenesModel();
+        if (!ValidateHelper::validateId(['id' => $crime_scene_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
 
-        $data = $crime_scenes_model->handleGetCrimeSceneById($crime_scene_id);
+        $data['crime scene'] = $crime_scenes_model->handleGetCrimeSceneById($crime_scene_id);
 
         // Http Exception
         if (empty($data)) {
@@ -80,10 +111,9 @@ class CrimeScenesController extends BaseController
     }
 
     /**
-    * Validates the filters for retrieving all victims
     *
-    * @param array $filters The filters to validate
-    * @throws HttpBadRequest If any of the filters are invalid
+    * @param array $filters
+    * @throws HttpBadRequest
      */
     private function validateFilters(Request $request, array $filters)
     {

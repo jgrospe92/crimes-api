@@ -69,11 +69,11 @@ class VictimsModel extends BaseModel
         }
 
          // Paginate the results
-        $result = $this->paginate($sql, $query_values);
+        $result = $this->paginate($sql, $query_values, 'victims');
 
         //mapping the data to a victims json objects that is the parent of victim and prosecutor json objects
         $victims = [];
-        foreach($result["data"] as $row){
+        foreach($result["victims"] as $row){
             $victim = [
                 "victim_id" => $row["victim_id"],
                 "first_name" => $row["victim_first_name"],
@@ -96,7 +96,7 @@ class VictimsModel extends BaseModel
             ];
         }
     
-        $result["data"] = $victims;
+        $result["victims"] = $victims;
         return $result;
     
     }

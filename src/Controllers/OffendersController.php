@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 // Helpers
@@ -39,6 +40,9 @@ class OffendersController extends BaseController
         'sort'
     ];
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->offenders_model = new OffendersModel();
@@ -174,11 +178,19 @@ class OffendersController extends BaseController
         catch (Exception $e) { throw new HttpBadRequestException($request); }
 
         // Throw a HttpNotFound error if data is empty
-        if (!$data['data']) { throw new HttpNotFoundException($request); }
+        if (!$data['offenders']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
     }
 
+    /**
+     * Summary of handleGetDefendantOfOffender
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpNotFoundException
+     * @return Response
+     */
     public function handleGetDefendantOfOffender(Request $request, Response $response, array $uri_args) 
     {
         $offender_id = $uri_args['offender_id'];
@@ -201,6 +213,14 @@ class OffendersController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
+    /**
+     * Summary of handleGetCaseOfOffender
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpNotFoundException
+     * @return Response
+     */
     public function handleGetCaseOfOffender(Request $request, Response $response, array $uri_args) 
     {
         $offender_id = $uri_args['offender_id'];

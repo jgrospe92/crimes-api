@@ -35,6 +35,9 @@ class DefendantsController extends BaseController
         'sort'
     ];
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->defendant_model = new DefendantsModel();
@@ -146,7 +149,7 @@ class DefendantsController extends BaseController
         catch (Exception $e) { throw new HttpBadRequestException($request); }
 
         // Throw a HttpNotFound error if data is empty
-        if (!$data['data']) { throw new HttpNotFoundException($request); }
+        if (!$data['defendants']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
     }

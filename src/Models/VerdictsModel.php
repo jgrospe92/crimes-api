@@ -2,11 +2,17 @@
 namespace Vanier\Api\Models;
 use Vanier\Api\Models\BaseModel;
 
+/**
+ * Summary of VerdictsModel
+ */
 class VerdictsModel extends BaseModel
 {
     private $table_name = "verdicts";
 
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
@@ -37,7 +43,23 @@ class VerdictsModel extends BaseModel
             $sql .= " AND fine LIKE CONCAT(:fine, '%') ";
             $query_values[":fine"] = $filters["fine"];
         }
-        return $this->paginate($sql, $query_values);
+
+        if(isset($filters["sort_by"])){
+            $sort_by = $filters["sort_by"];
+            if($sort_by == "verdict_id"){
+                $sql .= " ORDER BY verdict_id";
+            }elseif ($sort_by == "name") {
+                $sql .= " ORDER BY name";
+            }elseif ($sort_by == "description") {
+                $sql .= " ORDER BY description";
+            }elseif ($sort_by == "sentence") {
+                $sql .= " ORDER BY sentence";
+            }elseif ($sort_by == "fine") {
+                $sql .= " ORDER BY fine";
+            }
+        }
+        
+        return $this->paginate($sql, $query_values, 'verdicts');
     }
 
     public function handleGetVerdictById(String $verdict_id)
@@ -46,6 +68,10 @@ class VerdictsModel extends BaseModel
         return $this->run($sql2, ["verdict_id"=> $verdict_id])->fetch();
     }
 
+    public function handleCreateVerdicts(array $verdict)
+    {
+        return $this->insert($this->table_name, $verdict);
+    }
 
 
 

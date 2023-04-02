@@ -7,14 +7,25 @@ use Vanier\Api\Models\BaseModel;
 
 use Exception;
 
+/**
+ * Summary of InvestigatorsModel
+ */
 class InvestigatorsModel extends BaseModel
 {
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
 
+    /**
+     * Summary of getAll
+     * @param mixed $filters
+     * @return array
+     */
     public function getAll($filters)
     {
         $query_values = [];
@@ -60,7 +71,23 @@ class InvestigatorsModel extends BaseModel
             $sql .= " GROUP BY investigator_id ";
         }
 
-        return $this->paginate($sql, $query_values);
+        return $this->paginate($sql, $query_values, 'investigators');
+
+    }
+
+    /**
+     * Summary of getInvestigatorById
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return object|null
+     */
+    public function getInvestigatorById($table, $whereClause)
+    {
+        $investigator = $this->getById($table, $whereClause);
+        if (!$investigator){
+            return null;
+        }
+        return $investigator;
 
     }
 }

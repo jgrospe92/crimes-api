@@ -117,6 +117,12 @@ class CasesModel extends BaseModel
         return $case;
     }
 
+    /**
+     * Summary of victimsByCase
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return object|null
+     */
     public function victimsByCase($table, $whereClause)
     {
         $case = $this->getById($table, $whereClause);
@@ -235,8 +241,6 @@ class CasesModel extends BaseModel
             $query_values['date_to'] = $filters['date_to'];
         }
 
-
-
         // If sort_by filters are added
         if (isset($filters['sort_by'])) {
             $sql .= ' GROUP BY cases.case_id';
@@ -255,33 +259,31 @@ class CasesModel extends BaseModel
             $sql .= " GROUP BY cases.case_id ";
         }
 
-        $cases = $this->paginate($sql, $query_values);
+        $cases = $this->paginate($sql, $query_values, 'cases');
 
         // merge crime_scene , investigator, court
-        foreach ($cases['data'] as $key => $value) {
+        foreach ($cases['cases'] as $key => $value) {
             // ? You can add filters too
 
             $crime_scene = $this->getById('crime_scenes',  ['crime_sceneID' => $value['crime_sceneID']]);
             $investigator = $this->getById('investigators', ['investigator_id' => $value['investigator_id']]);
             $courts = $this->getById('courts', ['court_id' => $value['court_id']]);
 
-            unset($cases['data'][$key]['crime_sceneID']);
-            unset($cases['data'][$key]['investigator_id']);
-            unset($cases['data'][$key]['court_id']);
+            unset($cases['cases'][$key]['crime_sceneID']);
+            unset($cases['cases'][$key]['investigator_id']);
+            unset($cases['cases'][$key]['court_id']);
 
-            $cases['data'][$key]['crime_scene'] = $crime_scene;
+            $cases['cases'][$key]['crime_scene'] = $crime_scene;
 
-            $offenses = $this->offenses($cases['data'][$key]['case_id']);
-            $victims = $this->victims($cases['data'][$key]['case_id']);
-            $offenders = $this->offenders($cases['data'][$key]['case_id']);
-
-        
-            
-            $cases['data'][$key]['investigator'] = $investigator ?? '';
-            $cases['data'][$key]['court'] = $courts ?? '';
-            $cases['data'][$key]['offenses'] =  $offenses ?? '';
-            $cases['data'][$key]['victims'] =  $victims ?? '';
-            $cases['data'][$key]['offenders'] =  $offenders ?? '';
+            $offenses = $this->offenses($cases['cases'][$key]['case_id']);
+            $victims = $this->victims($cases['cases'][$key]['case_id']);
+            $offenders = $this->offenders($cases['cases'][$key]['case_id']);
+    
+            $cases['cases'][$key]['investigator'] = $investigator ?? '';
+            $cases['cases'][$key]['court'] = $courts ?? '';
+            $cases['cases'][$key]['offenses'] =  $offenses ?? '';
+            $cases['cases'][$key]['victims'] =  $victims ?? '';
+            $cases['cases'][$key]['offenders'] =  $offenders ?? '';
             
            
         }

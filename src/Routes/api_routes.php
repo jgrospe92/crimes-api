@@ -6,6 +6,9 @@ use Slim\Factory\AppFactory;
 use Vanier\Api\Controllers\AboutController;
 use Vanier\Api\Controllers\VerdictsController;
 use Vanier\Api\Controllers\CasesController;
+use Vanier\Api\Controllers\CourtAddressesController;
+use Vanier\Api\Controllers\CourtsController;
+
 use Vanier\Api\Controllers\DefendantsController;
 use Vanier\Api\Controllers\OffendersController;
 use Vanier\Api\Controllers\ProsecutorsController;
@@ -34,13 +37,24 @@ $app->get('/cases/{case_id}/offenders', [CasesController::class, 'handleOffender
 
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);
+$app->get('/offenses/{offense_id}', [OffensesController::class, 'handleOffensesById']);
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
+$app->get('/investigators/{investigator_id}', [InvestigatorsController::class, 'handleInvestigatorsById']);
 
-//Routes for Verdicts
+// Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 $app->get('/verdicts/{verdict_id}', [VerdictsController::class,'handleGetVerdictById']);
-$app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdict']);
+$app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdicts']);
+
+// Routes for Court_Addresses
+$app->get('/court_addresses',[CourtAddressesController::class, 'handleGetAllAddresses']);
+$app->get('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleGetAddressById']);
+
+// Routes for Courts
+$app->get('/courts',[CourtsController::class, 'handleGetAllCourts']);
+$app->get('/courts/{court_id}',[CourtsController::class, 'handleGetCourtById']);
+
 
 // Offenders Routes
 $app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);
@@ -64,9 +78,3 @@ $app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById'])
 
 $app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
 $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);
-
-// ROUTE: /hello
-$app->get('/hello', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Reporting! Hello there!");    
-    return $response;
-});

@@ -25,10 +25,11 @@ class BaseModel
     private $current_page = 1;
 
     /**
+     * TODO: change back to 5 as default value.
      * Holds the number of records per page.
      * @var int
      */
-    private $records_per_page = 5;
+    private $records_per_page = 10;
 
     /**
      * The total number of records contained in the fetched result set 
@@ -339,7 +340,7 @@ class BaseModel
         $this->records_per_page = $records_per_page;
     }
 
-    protected function paginate(string $sql, array $filters)
+    protected function paginate(string $sql, array $filters, string $label = "data")
     {
         // Step 1/ Get the number of rows/row counts
         $row_counts = $this->count($sql, $filters);
@@ -357,7 +358,7 @@ class BaseModel
         $data = $paginator->getPaginationInfo();
 
         // Step 6 Run the query and retrieve the partial result / the requested page
-        $data["data"] = $this->run($sql, $filters)->fetchAll();
+        $data[$label] = $this->run($sql, $filters)->fetchAll();
 
         return $data;
     }

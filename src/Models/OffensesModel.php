@@ -13,6 +13,9 @@ use Exception;
 class OffensesModel extends BaseModel
 {
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
@@ -26,50 +29,20 @@ class OffensesModel extends BaseModel
      * ? filter by name, description, classification
      * ? sort_by columName.asc|desc
      */
-    public function getOffensesById($case_id, array $filters)
+    public function getOffensesById($table, $whereClause)
     {
-        $query_values = [];
-
-        $sql = "SELECT offenses.* from offenses inner JOIN cases_offenses ON cases_offenses.offense_id = offenses.offense_id" .
-            " INNER JOIN cases on cases.case_id = cases_offenses.case_id WHERE 1";
-
-        $sql .= " AND cases.case_id =:id";
-        $query_values['id'] = $case_id;
-
-        if (isset($filters['name']))
-        {
-            $sql .= " AND offenses.name LIKE CONCAT(:name, '%') ";
-            $query_values[':name'] = $filters['name'];
+        $offense = $this->getById($table, $whereClause);
+        if (!$offense){
+            return null;
         }
-
-        if (isset($filters['description'])) {
-            $sql .= " AND description LIKE CONCAT('%', :description, '%')";
-            $query_values['description'] = $filters['description'];
-        }
-
-        if (isset($filters['classification'])) {
-            $sql .= " AND classification LIKE CONCAT('%', :classification, '%')";
-            $query_values['classification'] = $filters['classification'];
-        }
-
-        if (isset($filters['sort_by'])) {
-            // Append GROUP BY before ORDER BY
-            $sql .= " GROUP BY offenses.offense_id ";
-
-            if (!empty($filters['sort_by'])) {
-                $keyword = explode(".", $filters['sort_by']);
-                $column = $keyword[0] ?? "";
-                $order_by = $keyword[1] ?? "";
-                $sql .= " ORDER BY " .   $column . " " .  $order_by;
-            }
-        }
-        if (!isset($filters["sort_by"])){
-            $sql .= " GROUP BY offenses.offense_id ";
-        }
-
-        return $this->run($sql, $query_values)->fetchAll();
+        return $offense;
     }
 
+    /**
+     * Summary of getOffenses
+     * @param array $filters
+     * @return array
+     */
     public function getOffenses(array $filters)
     {
         $query_values = [];
@@ -107,6 +80,6 @@ class OffensesModel extends BaseModel
             $sql .= " GROUP BY offense_id ";
         }
 
-        return $this->paginate($sql, $query_values);
+        return $this->paginate($sql, $query_values, 'offenses');
     }
 }

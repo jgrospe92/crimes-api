@@ -15,6 +15,9 @@ use Vanier\Api\Helpers\ValidateHelper;
 // models
 use Vanier\Api\models\OffensesModel;
 
+/**
+ * Summary of OffensesController
+ */
 class OffensesController extends BaseController
 {
 
@@ -25,11 +28,23 @@ class OffensesController extends BaseController
         'sort_by', 'page', 'pageSize',
     ];
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->offenses_model = new OffensesModel();
     }
 
+    /**
+     * Summary of handleOffenses
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpUnprocessableContent
+     * @throws HttpBadRequest
+     * @throws HttpNotFound
+     * @return Response
+     */
     public function handleOffenses(Request $request, Response $response)
     {
         // constant values
@@ -62,7 +77,7 @@ class OffensesController extends BaseController
         $dataParams = ['page' => $page, 'pageSize' => $pageSize, 'pageMin' => 1, 'pageSizeMin' => 5, 'pageSizeMax' => 10];
         // check if page is within in range else throw unprocessable content
         if (!ValidateHelper::validatePagingParams($dataParams)) {
-            throw new HttpUnprocessableContent($request, "Out of range, unable to process your request, please consult the manual");
+            throw new HttpUnprocessableContent($request, "Out of range, unable to process your request, please consult the documentation");
         }
 
 
@@ -72,14 +87,36 @@ class OffensesController extends BaseController
         try {
             $data = $this->offenses_model->getOffenses($filters);
         } catch (Exception $e) {
-            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the manual");
+            throw new HttpBadRequest($request, "Invalid request Syntax, please refer to the documentation");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data']) {
+        if (!$data['offenses']) {
             throw new HttpNotFound($request, 'please check you parameter or consult the documentation');
         }
 
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
+    }
+
+    public function handleOffensesById(Request $request, Response $response, array $uri_args)
+    {
+        $offense_id = $uri_args['offense_id'];
+        if (!ValidateHelper::validateId(['id' => $offense_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+
+        $whereClause = ['offense_id' => $offense_id];
+        $data['offense'] = $this->offenses_model->getOffensesById("offenses", $whereClause);
+
+        if (!$data['offense']) {
+            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
+        }
+
+        return $this->preparedResponse($response, $data);
     }
 }

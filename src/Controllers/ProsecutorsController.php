@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 // Helpers
@@ -35,6 +36,9 @@ class ProsecutorsController extends BaseController
         'sort'
     ];
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->prosecutor_model = new ProsecutorsModel();
@@ -66,7 +70,7 @@ class ProsecutorsController extends BaseController
 
         $data = $this->prosecutor_model->getProsecutorById($prosecutor_id);
         if (!$data) { throw new HttpNotFoundException($request); }
-
+        
         return $this->prepareOkResponse($response, $data);
     }
 
@@ -146,7 +150,7 @@ class ProsecutorsController extends BaseController
         catch (Exception $e) { throw new HttpBadRequestException($request); }
 
         // Throw a HttpNotFound error if data is empty
-        if (!$data['data']) { throw new HttpNotFoundException($request); }
+        if (!$data['prosecutors']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
     }

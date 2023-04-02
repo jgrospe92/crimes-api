@@ -3,15 +3,26 @@
 namespace Vanier\Api\Models;
 use Vanier\Api\Models\BaseModel;
 
+/**
+ * Summary of JudgesModel
+ */
 class JudgesModel extends BaseModel
 {
     private $table_name = "judges";
     
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
+    /**
+     * Summary of handleGetAllJudges
+     * @param array $filters
+     * @return array
+     */
     public function handleGetAllJudges(array $filters = [])
     {
         $query_values = [];
@@ -52,9 +63,14 @@ class JudgesModel extends BaseModel
             }
         }
 
-        return $this->paginate($sql, $query_values);
+        return $this->paginate($sql, $query_values, 'judges');
     }
 
+    /**
+     * Summary of handleGetJudgeById
+     * @param mixed $judge_id
+     * @return mixed
+     */
     public function handleGetJudgeById($judge_id) {
         $sql = "SELECT * FROM $this->table_name WHERE judge_id = :judge_id";
         $query_values = [":judge_id" => $judge_id];

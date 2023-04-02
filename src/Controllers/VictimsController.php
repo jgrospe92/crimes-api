@@ -17,10 +17,16 @@ use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 
+/**
+ * Summary of VictimsController
+ */
 class VictimsController extends BaseController
 {
     private $victims_model = null;
 
+    /**
+     * Summary of __construct
+     */
     public function __construct()
     {
         $this->victims_model = new VictimsModel();
@@ -68,7 +74,7 @@ class VictimsController extends BaseController
             throw new HttpBadRequest($request, "Not the right syntax, consult the documentation");
         }
         // throw a HttpNotFound error if data is empty
-        if (!$data['data']) {
+        if (!$data['victims']) {
             throw new HttpNotFound($request, 'Please check you parameter or consult the documentation');
         }
         
@@ -87,9 +93,16 @@ class VictimsController extends BaseController
     public function handleGetVictimById(Request $request, Response $response, array $uri_args) {     
 
         $victim_id = $uri_args ["victim_id"];
-
+        $filters = $request->getQueryParams();
         // Instantiate the VictimsModel to retrieve the victim data.
         $victims_model = new VictimsModel();
+        if (!ValidateHelper::validateId(['id' => $victim_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
         $data = $victims_model->handleGetVictimById($victim_id);
 
         // Http Exception
