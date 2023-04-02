@@ -71,7 +71,7 @@ class CourtsController extends BaseController
             $time = $filters['time'];
             if (!ValidateHelper::validateTimeStamp($time)){
           
-                throw new HttpUnprocessableContent($request, 'Invalid time: ' . ' {' . $time . '}');
+                throw new HttpUnprocessableContent($request, 'Invalid time: ' . ' {' . $time . '} [hh:mm:ss]' );
             }
         }
 
