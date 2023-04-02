@@ -23,6 +23,17 @@ use Vanier\Api\Models\DefendantsModel;
 class DefendantsController extends BaseController
 {
     private $defendant_model;
+    private $filter_params = 
+    [
+        'id',
+        'first-name',
+        'last-name',
+        'age',
+        'specialization',
+        'page',
+        'pageSize',
+        'sort'
+    ];
 
     /**
      * Summary of __construct
@@ -42,18 +53,21 @@ class DefendantsController extends BaseController
     public function handleGetDefendantById(Request $request, Response $response, array $uri_args)
     {
         $defendant_id = $uri_args['defendant_id'];
-        if (!ValidateHelper::validateId(['id' => $defendant_id])) {
-            throw new HttpBadRequestException($request, "please enter a valid id");
+        $filters = $request->getQueryParams();
+        
+        // Check if ID is numeric
+        if (!ValidateHelper::validateId(['id' => $defendant_id])) 
+        {
+            throw new HttpBadRequestException($request, "Enter a valid ID");
         }
 
-        $filters = $request->getQueryParams();
+        // Check if any params are present
         if ($filters)
         {
             throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
         }
         
         $data = $this->defendant_model->getDefendantById($defendant_id);
-
         if (!$data) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
@@ -73,6 +87,39 @@ class DefendantsController extends BaseController
 
         $filters = $request->getQueryParams();
 
+        // Validate filters
+        if($filters)
+        {
+            foreach ($filters as $key => $value) 
+            {
+                if(!ValidateHelper::validateParams($key, $this->filter_params))
+                {
+                    throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');                    
+                }
+                elseif (strlen($value) == 0) 
+                {
+                    throw new HttpUnprocessableContent($request, 'Provide query value for : ' . '{' . $key . '}');
+                }
+            }
+        }
+        
+        // Validate params that require specific values
+        if (isset($filters['id']))
+        {
+            if (!ValidateHelper::validateNumericInput(['defendant_id' => $filters['id']])) 
+            {
+                throw new HttpBadRequestException($request, "Expected numeric value, received alpha");
+            }
+        }
+
+        if (isset($filters['age']))
+        {
+            if (!ValidateHelper::validateNumericInput(['age' => $filters['age']])) 
+            {
+                throw new HttpBadRequestException($request, "Expected numeric value, received alpha");
+            }
+        }
+
         // Define default page size if not specified
         $page = $filters["page"] ?? DEFAULT_PAGE;
         $pageSize = $filters["pageSize"] ?? DEFAULT_PAGE_SIZE;
@@ -80,7 +127,7 @@ class DefendantsController extends BaseController
         // Check if the params are numeric
         if (!ValidateHelper::validatePageNumbers($page, $pageSize)) { throw new HttpBadRequestException($request); }
 
-        $dataParams = 
+        $pageParams = 
         [
             'page'          => $page, 
             'pageSize'      => $pageSize, 
@@ -90,7 +137,7 @@ class DefendantsController extends BaseController
         ];
 
         // Check if the page is within range 
-        if (!ValidateHelper::validatePagingParams($dataParams)) 
+        if (!ValidateHelper::validatePagingParams($pageParams)) 
         {
             throw new HttpUnprocessableContent($request, "Out of range, unable to process your request");
         }

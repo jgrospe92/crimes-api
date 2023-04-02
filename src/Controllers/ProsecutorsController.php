@@ -24,6 +24,17 @@ use Vanier\Api\Models\ProsecutorsModel;
 class ProsecutorsController extends BaseController
 {
     private $prosecutor_model;
+    private $filter_params = 
+    [
+        'id',
+        'first-name',
+        'last-name',
+        'age',
+        'specialization',
+        'page',
+        'pageSize',
+        'sort'
+    ];
 
     /**
      * Summary of __construct
@@ -43,18 +54,23 @@ class ProsecutorsController extends BaseController
     public function handleGetProsecutorById(Request $request, Response $response, array $uri_args)
     {
         $prosecutor_id = $uri_args['prosecutor_id'];
-        if (!ValidateHelper::validateId(['id' => $prosecutor_id])) {
-            throw new HttpBadRequest($request, "please enter a valid id");
-        }
         $filters = $request->getQueryParams();
+
+        // Check if ID is numeric
+        if (!ValidateHelper::validateId(['id' => $prosecutor_id])) 
+        {
+            throw new HttpBadRequestException($request, "Enter a valid ID");
+        }
+
+        // Check if any params are present
         if ($filters)
         {
             throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
         }
-        $data['prosecutor'] = $this->prosecutor_model->getProsecutorById($prosecutor_id);
 
-        if (!$data['prosecutor']) { throw new HttpNotFoundException($request); }
-
+        $data = $this->prosecutor_model->getProsecutorById($prosecutor_id);
+        if (!$data) { throw new HttpNotFoundException($request); }
+        
         return $this->prepareOkResponse($response, $data);
     }
 
@@ -71,6 +87,39 @@ class ProsecutorsController extends BaseController
         define("DEFAULT_PAGE_SIZE", 10);
 
         $filters = $request->getQueryParams();
+
+        // Validate filters
+        if($filters)
+        {
+            foreach ($filters as $key => $value) 
+            {
+                if(!ValidateHelper::validateParams($key, $this->filter_params))
+                {
+                    throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');                    
+                }
+                elseif (strlen($value) == 0) 
+                {
+                    throw new HttpUnprocessableContent($request, 'Provide query value for : ' . '{' . $key . '}');
+                }
+            }
+        }
+
+        // Validate params that require specific values
+        if (isset($filters['id']))
+        {
+            if (!ValidateHelper::validateNumericInput(['prosecutor_id' => $filters['id']])) 
+            {
+                throw new HttpBadRequestException($request, "Expected numeric value, received alpha");
+            }
+        }
+
+        if (isset($filters['age']))
+        {
+            if (!ValidateHelper::validateNumericInput(['age' => $filters['age']])) 
+            {
+                throw new HttpBadRequestException($request, "Expected numeric value, received alpha");
+            }
+        }
 
         // Define default page size if not specified
         $page = $filters["page"] ?? DEFAULT_PAGE;
