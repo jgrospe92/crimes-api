@@ -100,7 +100,7 @@ class DefendantsController extends BaseController
             }
         }
         
-        // Validate params that require only numbers
+        // Validate params that require specific values
         if (isset($filters['id']))
         {
             if (!ValidateHelper::validateNumericInput(['defendant_id' => $filters['id']])) 

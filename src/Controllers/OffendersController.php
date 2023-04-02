@@ -105,7 +105,7 @@ class OffendersController extends BaseController
             }
         }
 
-        // Validate params that require only numbers
+        // Validate params that require specific values
         if (isset($filters['id']))
         {
             if (!ValidateHelper::validateNumericInput(['offender_id' => $filters['id']])) 
@@ -119,6 +119,29 @@ class OffendersController extends BaseController
             if (!ValidateHelper::validateNumericInput(['age' => $filters['age']])) 
             {
                 throw new HttpBadRequestException($request, "Expected numeric value, received alpha");
+            }
+        }
+
+        // Date validations
+        if (isset($filters['date-min']) && isset($filters['date-max']))
+        {
+            if (!ValidateHelper::validateDateInput(['from_rentalDate' => $filters['date-min'], 'to_rentalDate' => $filters['date-max']]))
+            {
+                throw new HttpBadRequestException($request, "Bad date format. Make sure it is in this format: YYYY-MM-DD");
+            }
+        }
+        elseif (isset($filters['date-min']))
+        {
+            if (!ValidateHelper::validateDateInput(['from_rentalDate' => $filters['date-min'], 'to_rentalDate' => '9999-12-31']))
+            {
+                throw new HttpBadRequestException($request, "Bad date format. Make sure it is in this format: YYYY-MM-DD");
+            }
+        }
+        elseif (isset($filters['date-max']))
+        {
+            if (!ValidateHelper::validateDateInput(['from_rentalDate' => '1901-12-31', 'to_rentalDate' => $filters['date-max']]))
+            {
+                throw new HttpBadRequestException($request, "Bad date format. Make sure it is in this format: YYYY-MM-DD");
             }
         }
 
