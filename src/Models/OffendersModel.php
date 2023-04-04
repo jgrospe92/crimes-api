@@ -7,23 +7,8 @@ namespace Vanier\Api\Models;
  */
 class OffendersModel extends BaseModel
 {
-    private $sql = 
-        "SELECT 
-            offenders.offender_id,  
-            offenders.first_name        AS offender_first_name,       
-            offenders.last_name         AS offender_last_name,
-            offenders.age               AS offender_age,
-            offenders.marital_status,
-            offenders.arrest_date,
-            offenders.arrest_timestamp,
-            defendants.defendant_id,
-            defendants.first_name       AS defendant_first_name,
-            defendants.last_name        AS defendant_last_name, 
-            defendants.age              AS defendant_age,
-            defendants.specialization
-        FROM offenders
-        LEFT JOIN defendants ON offenders.defendant_id = defendants.defendant_id
-        WHERE 1 ";
+    private $table_name;
+    private $sql;
 
     /**
      * Summary of __construct
@@ -31,6 +16,24 @@ class OffendersModel extends BaseModel
     public function __construct() 
     {
         parent::__construct();
+        $this->table_name = "offenders";
+        $this->sql =  
+            "SELECT 
+                offenders.offender_id,  
+                offenders.first_name        AS offender_first_name,       
+                offenders.last_name         AS offender_last_name,
+                offenders.age               AS offender_age,
+                offenders.marital_status,
+                offenders.arrest_date,
+                offenders.arrest_timestamp,
+                defendants.defendant_id,
+                defendants.first_name       AS defendant_first_name,
+                defendants.last_name        AS defendant_last_name, 
+                defendants.age              AS defendant_age,
+                defendants.specialization
+            FROM $this->table_name
+            LEFT JOIN defendants ON offenders.defendant_id = defendants.defendant_id
+            WHERE 1 ";
     }
 
     /**
@@ -68,7 +71,8 @@ class OffendersModel extends BaseModel
                 ];
                 
             $offenders[] = [ "offender" => $offender, "defendant" => $defendant ];
-        } else
+        } 
+        else
         {   
             // else return an empty array, will throw exception in controller method
             return [];
@@ -161,7 +165,8 @@ class OffendersModel extends BaseModel
             elseif($sort == "marital_status")   { $this->sql .= " ORDER BY offenders.marital_status"; } 
             elseif($sort == "date")             { $this->sql .= " ORDER BY offenders.arrest_date"; } 
             elseif($sort == "time")             { $this->sql .= " ORDER BY offenders.arrest_timestamp"; }
-        } else 
+        } 
+        else 
         {
             $this->sql .= " ORDER BY offenders.offender_id";
         }
@@ -194,8 +199,7 @@ class OffendersModel extends BaseModel
             $offenders[] = [ "offender" => $offender, "defendant" => $defendant ];
         }
 
-        // Replace 'data' with $offenders instead of returning $offenders directly for pagination details in JSON
-        $result['data'] = $offenders;
+        $result['offenders'] = $offenders;
         return $result;
     }
 
@@ -216,7 +220,8 @@ class OffendersModel extends BaseModel
                     "specialization"    => $result["specialization"]
                 ];
             return $defendant;    
-        } else
+        } 
+        else
         {   
             // else return an empty array, will throw exception in controller method
             return [];
@@ -289,10 +294,26 @@ class OffendersModel extends BaseModel
 
             $offender_case = [ "case" => $case, "crime scene" => $crime_scene, "investigator" => $investigator, "court" => $court ];    
             return $offender_case;
-        } else
+        } 
+        else
         {   
             // else return an empty array, will throw exception in controller method
             return [];
         }
+    }
+
+    public function postOffender()
+    {
+        
+    }
+
+    public function putOffender($offender_id)
+    {
+        
+    }
+
+    public function deleteOffender()
+    {
+        
     }
 }

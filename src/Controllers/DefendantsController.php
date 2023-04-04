@@ -4,6 +4,7 @@ namespace Vanier\Api\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Fig\Http\Message\StatusCodeInterface;
 
 // HTTP exceptions
 use Exception;
@@ -152,5 +153,29 @@ class DefendantsController extends BaseController
         if (!$data['defendants']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
+    }
+
+    public function handlePostDefendants(Request $request, Response $response)
+    {
+        $data = $request->getParsedBody();
+        foreach ($data as $key => $defendant)
+        {
+            $this->defendant_model->postDefendant($defendant);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+    }
+
+    public function handlePutDefendant(Request $request, Response $response, array $uri_args)
+    {
+        $defendant_id = $uri_args['defendant_id'];
+        $data = $request->getParsedBody();
+        var_dump($data);
+        return $this->defendant_model->putDefendant($defendant_id, $data);
+    }
+
+    public function handleDeleteDefendant(Request $request, Response $response)
+    {
+        
     }
 }

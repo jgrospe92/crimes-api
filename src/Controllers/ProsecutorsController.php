@@ -4,6 +4,7 @@ namespace Vanier\Api\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Fig\Http\Message\StatusCodeInterface;
 
 // HTTP exceptions
 use Exception;
@@ -153,5 +154,28 @@ class ProsecutorsController extends BaseController
         if (!$data['prosecutors']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
+    }
+
+    public function handlePostProsecutors(Request $request, Response $response)
+    {
+        $data = $request->getParsedBody();
+        foreach($data as $key => $prosecutor)
+        {
+            $this->prosecutor_model->postProsecutor($prosecutor);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+    }
+
+    public function handlePutProsecutor(Request $request, Response $response, array $uri_args)
+    {
+        $prosecutor_id = $uri_args['prosecutor_id'];
+        $data = $request->getParsedBody();
+        return $this->prosecutor_model->putProsecutor($prosecutor_id, $data);
+    }
+
+    public function handleDeleteProsecutor(Request $request, Response $response)
+    {
+        
     }
 }
