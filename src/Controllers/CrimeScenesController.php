@@ -91,8 +91,16 @@ class CrimeScenesController extends BaseController
         $crime_scene_id = $uri_args["crime_sceneID"];
 
         $crime_scenes_model = new CrimeScenesModel();
+        if (!ValidateHelper::validateId(['id' => $crime_scene_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
 
-        $data = $crime_scenes_model->handleGetCrimeSceneById($crime_scene_id);
+        $data['crime scene'] = $crime_scenes_model->handleGetCrimeSceneById($crime_scene_id);
 
         // Http Exception
         if (empty($data)) {

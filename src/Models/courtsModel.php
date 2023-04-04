@@ -57,9 +57,9 @@ class CourtsModel extends BaseModel
             }
         }
 
-        $courts= $this->paginate($sql,$query_values);
+        $courts= $this->paginate($sql,$query_values, 'courts');
 
-        foreach ($courts['data'] as $key => $value) {
+        foreach ($courts['courts'] as $key => $value) {
             // ? You can add filters too
             $verdict_id = $value['verdict_id'];
             $verdicts = $this->getById('verdicts', ['verdict_id' => $verdict_id]);
@@ -68,15 +68,15 @@ class CourtsModel extends BaseModel
             $judges = $this->getById('judges', ['judge_id' => $judge_id]);
 
             $address_id = $value['address_id'];
-            $court_addresses = $this->getById('court_addresses', ['address_id' => $value['address_id']]);
+            $court_addresses = $this->getById('court_addresses', ['address_id' => $address_id]);
 
-            unset($courts['data'][$key]['verdict_id']);
-            unset($courts['data'][$key]['address_id']);
-            unset($courts['data'][$key]['judge_id']);
+            unset($courts['courts'][$key]['verdict_id']);
+            unset($courts['courts'][$key]['address_id']);
+            unset($courts['courts'][$key]['judge_id']);
 
-            $courts['data'][$key]['verdicts'] = $verdicts ?? '';
-            $courts['data'][$key]['judges'] = $judges ?? '';
-            $courts['data'][$key]['court_addresses'] = $court_addresses ?? '';
+            $courts['courts'][$key]['verdicts'] = $verdicts ?? '';
+            $courts['courts'][$key]['judges'] = $judges ?? '';
+            $courts['courts'][$key]['court_addresses'] = $court_addresses ?? '';
         }
 
         return $courts;
@@ -85,50 +85,40 @@ class CourtsModel extends BaseModel
     public function handleGetCourtById(String $court_id)
     {
         $sql = "SELECT * FROM $this->table_name WHERE court_id = :court_id ";
-        $courts = $this->run($sql,["court_id"=>$court_id])->fetchAll();
+        $courts = $this->run($sql,["court_id"=>$court_id])->fetch();
 
-        $verdict_id = $courts[0]['verdict_id'];
+        $verdict_id = $courts['verdict_id'];
         if ($verdict_id) {
-            $sql = "SELECT * FROM $this->table_name WHERE verdict_id = :verdict_id";
+            $sql = "SELECT * from verdicts WHERE verdict_id = :verdict_id";
             $verdicts_params = [":verdict_id" => $verdict_id];
-            $verdicts = $this->run($sql, $verdicts_params)->fetchAll();
-            $verdict_data = $verdicts[0];
+            $verdicts = $this->run($sql, $verdicts_params)->fetch();
+          
         } else {
-            $verdict_data = null;
+            $verdicts = null;
         }
-        $courts_data = $courts[0];
-        unset($courts_data['verdict_id']);
+        unset($courts['verdict_id']);
 
-        $judge_id = $courts[0]['judge_id'];
+        $judge_id = $courts['judge_id'];
         if ($judge_id) {
-            $sql = "SELECT * FROM $this->table_name WHERE judge_id = :judge_id";
+            $sql = "SELECT * FROM judges WHERE judge_id = :judge_id";
             $judges_params = [":judge_id" => $judge_id];
-            $judges = $this->run($sql, $judges_params)->fetchAll();
-            $judge_data = $judges[0];
+            $judges = $this->run($sql, $judges_params)->fetch();
         } else {
-            $judge_data = null;
+            $judges= null;
         }
-        $courts_data = $courts[0];
-        unset($courts_data['judge_id']);
-
-        $address_id = $courts[0]['address_id'];
+        unset($courts['judge_id']);
+        $address_id = $courts['address_id'];
         if ($address_id) {
-            $sql = "SELECT * FROM $this->table_name WHERE address_id = :address_id";
+            $sql = "SELECT * FROM court_addresses WHERE address_id = :address_id";
             $address_params = [":address_id" => $address_id];
-            $court_addresses = $this->run($sql, $address_params)->fetchAll();
-            $address_data = $court_addresses[0];
+            $addresses = $this->run($sql, $address_params)->fetch();
         } else {
-            $address_data = null;
+            $addresses = null;
         }
-        $courts_data = $courts[0];
-        unset($courts_data['address_id']);
-
-        return ['courts' => $courts_data, 'verdicts' => $verdict_data, 'judges' => $judge_data, 'court_addresses' => $address_data];
+        unset($courts['address_id']);
+        $courts['verdicts'] = $verdicts;
+        $courts['judges'] = $judges;
+        $courts['addresses'] = $addresses;
+        return $courts;
     }
-
-    public function handleCreateCourts(array $courts)
-    {
-        return $this->insert($this->table_name, $courts);
-    }
-
 }

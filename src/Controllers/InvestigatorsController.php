@@ -106,4 +106,34 @@ class InvestigatorsController extends BaseController
 
     }
 
+    /**
+     * Summary of handleInvestigatorsById
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpBadRequest
+     * @throws HttpNotFound
+     * @return Response
+     */
+    public function handleInvestigatorsById(Request $request, Response $response, array $uri_args)
+    {
+        $investigator_id = $uri_args['investigator_id'];
+        if (!ValidateHelper::validateId(['id' => $investigator_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering/paginate");
+        }
+        $whereClause = ['investigator_id' => $investigator_id];
+        $data['Investigator'] = $this->investigator_model->getInvestigatorById("investigators", $whereClause);
+
+        if (!$data['Investigator']) {
+            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
+        }
+
+        return $this->preparedResponse($response, $data);
+    }
+
 }

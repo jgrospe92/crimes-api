@@ -1,7 +1,5 @@
 <?php
 namespace Vanier\Api\Controllers;
-
-use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
@@ -69,6 +67,13 @@ class CourtsController extends BaseController
                 throw new HttpBadRequest($request, "expected numeric but received alpha");
             }
         }
+        if (isset($filters['time'])){
+            $time = $filters['time'];
+            if (!ValidateHelper::validateTimeStamp($time)){
+          
+                throw new HttpUnprocessableContent($request, 'Invalid time: ' . ' {' . $time . '} [hh:mm:ss]' );
+            }
+        }
 
         $data = $courts_model->handleGetAllCourts($filters);
         return $this->prepareOkResponse($response, $data);
@@ -87,9 +92,17 @@ class CourtsController extends BaseController
         $filters = $request->getQueryParams();
         $courts_model = new CourtsModel();
         $court_id = $args["court_id"];
-        $data = $courts_model->handleGetCourtById($court_id);
+        if (!ValidateHelper::validateId(['id' => $court_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+        $data['court'] = $courts_model->handleGetCourtById($court_id);
 
-        if(!$data){
+        if(!$data['court']){
             throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
         }
         

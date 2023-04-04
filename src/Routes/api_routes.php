@@ -37,8 +37,10 @@ $app->get('/cases/{case_id}/offenders', [CasesController::class, 'handleOffender
 
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);
+$app->get('/offenses/{offense_id}', [OffensesController::class, 'handleOffensesById']);
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
+$app->get('/investigators/{investigator_id}', [InvestigatorsController::class, 'handleInvestigatorsById']);
 
 // Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
@@ -48,12 +50,11 @@ $app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdicts']);
 // Routes for Court_Addresses
 $app->get('/court_addresses',[CourtAddressesController::class, 'handleGetAllAddresses']);
 $app->get('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleGetAddressById']);
-$app->post('/court_addresses',[CourtAddressesController::class, 'handleCreateAddresses']);
 
 // Routes for Courts
 $app->get('/courts',[CourtsController::class, 'handleGetAllCourts']);
 $app->get('/courts/{court_id}',[CourtsController::class, 'handleGetCourtById']);
-$app->post('/courts',[CourtsController::class, 'handleCreateCourts']);
+
 
 // Offenders Routes
 $app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);
