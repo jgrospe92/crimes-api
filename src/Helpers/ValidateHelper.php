@@ -410,19 +410,13 @@ class ValidateHelper
 
     public static function validatePostMethods(array $data, string $label)
     {
-        $rules = [];
+        $body = array("description" => $data['description']);
         if ($label == "cases")
         {
             $rules = 
             [
-                'required' => 
-                [
-                    ['description'],
-                    ['date_reported'],
-                    ['misdemeanor'],
-                    ['crime_sceneID']
-
-                ],
+               
+                'required' => 'description',
                 // 'min' => 
                 // [
                 //     ['misdemeanor', 0]
@@ -443,16 +437,18 @@ class ValidateHelper
                 //     ['date_reported']
                 // ]
             ]; 
-        }  
-        var_dump($rules);exit;
 
-        $validator = new Validator($data);
-        $validator->rules($rules);
+        }  
+
+        $validator = new Validator($body);
+        $validator->rule("required", 'description')->message('{field} is required')->label('Desc');
 
         if ($validator->validate())
         {
+            echo "not valid";
             return true;
         } else {
+            echo "not valid";
             return false;
         }
     }

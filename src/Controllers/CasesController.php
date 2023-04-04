@@ -280,14 +280,7 @@ class CasesController extends BaseController
             throw new HttpConflict($request, "Please provide required data");
         }
         // validate the body
-        if (ValidateHelper::validatePostMethods($data, "cases"))
-        {
-            echo 'valid';
-        }
-        else
-        {
-            echo 'not valid';
-        }
+        ValidateHelper::validatePostMethods($data, 'cases');
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
 
