@@ -44,16 +44,22 @@ $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigator
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
 $app->get('/verdicts/{verdict_id}', [VerdictsController::class,'handleGetVerdictById']);
 $app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdicts']);
+$app->put('/verdicts/{verdict_id}', [VerdictsController::class, 'handleUpdateVerdictById']);
+$app->delete('/verdicts/{verdict_id}', [VerdictsController::class, "handleDeleteVerdictById"]);
 
 // Routes for Court_Addresses
 $app->get('/court_addresses',[CourtAddressesController::class, 'handleGetAllAddresses']);
 $app->get('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleGetAddressById']);
 $app->post('/court_addresses',[CourtAddressesController::class, 'handleCreateAddresses']);
+$app->put('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleUpdateAddressById']);
+$app->delete('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleDeleteAddressById']);
 
 // Routes for Courts
 $app->get('/courts',[CourtsController::class, 'handleGetAllCourts']);
 $app->get('/courts/{court_id}',[CourtsController::class, 'handleGetCourtById']);
 $app->post('/courts',[CourtsController::class, 'handleCreateCourts']);
+$app->put('/courts/{court_id',[CourtsController::class, 'handleUpdateCourtsById']);
+$app->delete('/courts/{court_id',[CourtsController::class, 'handleDeleteCourtsById']);
 
 // Offenders Routes
 $app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);

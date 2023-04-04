@@ -131,4 +131,9 @@ class CourtsModel extends BaseModel
         return $this->insert($this->table_name, $courts);
     }
 
+    public function handleCreateCourtsById(array $courts)
+    {
+        # finish this later
+    }
+
 }
