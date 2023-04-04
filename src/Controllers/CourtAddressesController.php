@@ -2,6 +2,8 @@
 
 namespace Vanier\Api\Controllers;
 
+use Exception;
+use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
@@ -90,4 +92,17 @@ class CourtAddressesController extends BaseController
 
         return $this->prepareOkResponse($response, $data);
     }
+
+    public function handleCreateAddresses(Request $request, Response $response)
+    {// need to test create handle later and fix bugs with this
+        $address_data = $request->getParsedBody();
+        foreach ($address_data as $key =>$address) {
+            $this->court_addresses_model->handleCreateAddresses($address);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+
+    }
+
+
 }

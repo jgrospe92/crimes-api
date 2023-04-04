@@ -85,18 +85,51 @@ class CourtsModel extends BaseModel
     public function handleGetCourtById(String $court_id)
     {
         $sql = "SELECT * FROM $this->table_name WHERE court_id = :court_id ";
-        $courts = $this->run($sql,["court_id"=>$court_id])->fetch();
+        $courts = $this->run($sql,["court_id"=>$court_id])->fetchAll();
 
-        $verdict_id = $courts['verdict_id'];
+        $verdict_id = $courts[0]['verdict_id'];
         if ($verdict_id) {
-            $sql = "SELECT * from verdicts WHERE verdict_id = :verdict_id";
+            $sql = "SELECT * FROM $this->table_name WHERE verdict_id = :verdict_id";
             $verdicts_params = [":verdict_id" => $verdict_id];
-            $verdicts = $this->run($sql, $verdicts_params)->fetch();
-          
+            $verdicts = $this->run($sql, $verdicts_params)->fetchAll();
+            $verdict_data = $verdicts[0];
         } else {
-            $verdicts = null;
+            $verdict_data = null;
         }
-        unset($courts['verdict_id']);
+        $courts_data = $courts[0];
+        unset($courts_data['verdict_id']);
+
+        $judge_id = $courts[0]['judge_id'];
+        if ($judge_id) {
+            $sql = "SELECT * FROM $this->table_name WHERE judge_id = :judge_id";
+            $judges_params = [":judge_id" => $judge_id];
+            $judges = $this->run($sql, $judges_params)->fetchAll();
+            $judge_data = $judges[0];
+        } else {
+            $judge_data = null;
+        }
+        $courts_data = $courts[0];
+        unset($courts_data['judge_id']);
+
+        $address_id = $courts[0]['address_id'];
+        if ($address_id) {
+            $sql = "SELECT * FROM $this->table_name WHERE address_id = :address_id";
+            $address_params = [":address_id" => $address_id];
+            $court_addresses = $this->run($sql, $address_params)->fetchAll();
+            $address_data = $court_addresses[0];
+        } else {
+            $address_data = null;
+        }
+        $courts_data = $courts[0];
+        unset($courts_data['address_id']);
+
+        return ['courts' => $courts_data, 'verdicts' => $verdict_data, 'judges' => $judge_data, 'court_addresses' => $address_data];
+    }
+
+    public function handleCreateCourts(array $courts)
+    {
+        return $this->insert($this->table_name, $courts);
+    }
 
         $judge_id = $courts['judge_id'];
         if ($judge_id) {
