@@ -289,5 +289,16 @@ class CasesModel extends BaseModel
         }
 
         return $cases;
+        
+    }
+
+    /**
+     * Summary of createCases
+     * @param array $cases
+     * @return bool|string
+     */
+    public function createCases(array $cases)
+    {
+        return $this->insert("case", $cases);
     }
 }

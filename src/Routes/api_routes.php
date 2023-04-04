@@ -34,6 +34,7 @@ $app->get('/cases', [CasesController::class, 'handleGetCases']);
 $app->get('/cases/{case_id}/offenses', [CasesController::class, 'handleOffensesByCase']);
 $app->get('/cases/{case_id}/victims', [CasesController::class, 'handleVictimsByCase']);
 $app->get('/cases/{case_id}/offenders', [CasesController::class, 'handleOffendersByCase']);
+$app->post('/cases', [CasesController::class, 'handlePostCases']);
 
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);

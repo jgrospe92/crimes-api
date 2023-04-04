@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 // exceptions
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
@@ -266,5 +267,29 @@ class CasesController extends BaseController
 
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
+    }
+
+    // POST METHOD
+    public function handlePostCases(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request -> getParsedBody();
+        // check if body is empty, throw an exception otherwise
+        if (!isset($data))
+        {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+        // validate the body
+        if (ValidateHelper::validatePostMethods($data, "cases"))
+        {
+            echo 'valid';
+        }
+        else
+        {
+            echo 'not valid';
+        }
+
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+
     }
 }

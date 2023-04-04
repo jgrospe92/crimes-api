@@ -408,6 +408,55 @@ class ValidateHelper
         }
     }
 
+    public static function validatePostMethods(array $data, string $label)
+    {
+        $rules = [];
+        if ($label == "cases")
+        {
+            $rules = 
+            [
+                'required' => 
+                [
+                    ['description'],
+                    ['date_reported'],
+                    ['misdemeanor'],
+                    ['crime_sceneID']
+
+                ],
+                // 'min' => 
+                // [
+                //     ['misdemeanor', 0]
+                // ],
+                // 'lengthMax' =>
+                // [
+                //     ['description', 300]
+                // ],
+                // 'numeric' => 
+                // [
+                //     ['misdemeanor'],
+                //     ['crime_sceneID'],
+                //     ['investigator_id'],
+                //     ['court_id']
+                // ],
+                // 'date' =>
+                // [
+                //     ['date_reported']
+                // ]
+            ]; 
+        }  
+        var_dump($rules);exit;
+
+        $validator = new Validator($data);
+        $validator->rules($rules);
+
+        if ($validator->validate())
+        {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Summary of validatePostActor
      * @param array $data
