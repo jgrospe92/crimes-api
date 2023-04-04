@@ -76,9 +76,4 @@ class CourtAddressesModel extends BaseModel
         return $this->run($sql,["address_id"=>$address_id])->fetch();
     }
 
-    public function handleCreateAddresses(array $address)
-    {
-        return $this->insert($this->table_name, $address);
-    }
-
 }

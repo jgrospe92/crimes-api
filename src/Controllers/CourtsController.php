@@ -1,7 +1,5 @@
 <?php
 namespace Vanier\Api\Controllers;
-
-use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
@@ -110,14 +108,4 @@ class CourtsController extends BaseController
         
         return $this->prepareOkResponse($response, $data);
     }
-
-    public function handleCreateCourts(Request $request, Response $response)
-    {
-        $courts_data = $request->getParsedBody();
-        foreach ($courts_data as $key => $courts) {
-            $this->courts_model->handleCreateCourts($courts);
-        }
-        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
-    }
-
 }
