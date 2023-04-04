@@ -95,6 +95,7 @@ class VerdictsController extends BaseController
     {
         $verdicts_data = $request->getParsedBody();
         foreach($verdicts_data as $key =>$verdict){
+            //var_dump($verdict); exit;
             $this->verdicts_model->handleCreateVerdicts($verdict);
             //var_dump($this->verdicts_model->handleCreateVerdicts($verdict));
             //echo "hi";exit;

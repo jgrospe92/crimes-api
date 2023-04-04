@@ -48,11 +48,12 @@ $app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdicts']);
 // Routes for Court_Addresses
 $app->get('/court_addresses',[CourtAddressesController::class, 'handleGetAllAddresses']);
 $app->get('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleGetAddressById']);
+$app->post('/court_addresses',[CourtAddressesController::class, 'handleCreateAddresses']);
 
 // Routes for Courts
 $app->get('/courts',[CourtsController::class, 'handleGetAllCourts']);
 $app->get('/courts/{court_id}',[CourtsController::class, 'handleGetCourtById']);
-
+$app->post('/courts',[CourtsController::class, 'handleCreateCourts']);
 
 // Offenders Routes
 $app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);
