@@ -108,4 +108,15 @@ class CourtsController extends BaseController
         
         return $this->prepareOkResponse($response, $data);
     }
+
+    public function handleCreateCourts(Request $request, Response $response)
+    {
+        $courts_data = $request->getParsedBody();
+        foreach ($courts_data as $key => $courts) {
+            $this->courts_model->handleCreateCourts($courts);
+        }
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        //hello friend
+    }
+
 }
