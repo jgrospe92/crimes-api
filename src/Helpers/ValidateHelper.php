@@ -408,47 +408,60 @@ class ValidateHelper
         }
     }
 
+    /**
+     * Summary of validatePostMethods
+     * @param array $data
+     * @param string $label
+     * @return bool
+     */
     public static function validatePostMethods(array $data, string $label)
     {
-        $body = array("description" => $data['description']);
         if ($label == "cases")
         {
             $rules = 
             [
-               
-                'required' => 'description',
-                // 'min' => 
-                // [
-                //     ['misdemeanor', 0]
-                // ],
-                // 'lengthMax' =>
-                // [
-                //     ['description', 300]
-                // ],
-                // 'numeric' => 
-                // [
-                //     ['misdemeanor'],
-                //     ['crime_sceneID'],
-                //     ['investigator_id'],
-                //     ['court_id']
-                // ],
-                // 'date' =>
-                // [
-                //     ['date_reported']
-                // ]
-            ]; 
+                'required' => 
+                [
+                    ['description'],
+                    ['date_reported'],
+                    ['misdemeanor'],
+                    ['crime_sceneID']
+                ],
+                'min' => 
+                [
+                    ['misdemeanor', 0]
+                ],
+                'max' =>
+                [
+                    ['misdemeanor', 1]
+                ],
+                'lengthMax' =>
+                [
+                    ['description', 300]
+                ],
+                'numeric' => 
+                [
+                    ['misdemeanor'],
+                    ['crime_sceneID'],
+                    ['investigator_id'],
+                    ['court_id']
+                ],
+                'date' =>
+                [
+                    ['date_reported']
+                ]
+            ];
 
+            
         }  
 
-        $validator = new Validator($body);
-        $validator->rule("required", 'description')->message('{field} is required')->label('Desc');
+        $validator = new Validator($data);
+        $validator->rules($rules);
 
         if ($validator->validate())
         {
-            echo "not valid";
             return true;
-        } else {
-            echo "not valid";
+        } else {  
             return false;
         }
     }

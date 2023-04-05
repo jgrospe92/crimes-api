@@ -25,7 +25,7 @@ class CasesController extends BaseController
     private string $CASES_TABLE = 'cases';
     private array $FILTER_PARAMS = [
         'description', 'misdemeanor', 'classification', 'name',
-        'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize','time_stamp'
+        'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize', 'time_stamp'
     ];
 
     /**
@@ -52,8 +52,7 @@ class CasesController extends BaseController
             throw new HttpBadRequest($request, "please enter a valid id");
         }
         $filters = $request->getQueryParams();
-        if ($filters)
-        {
+        if ($filters) {
             throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
         }
         $whereClause = ['case_id' => $case_id];
@@ -84,8 +83,8 @@ class CasesController extends BaseController
             throw new HttpBadRequest($request, "please enter a valid id");
         }
         $whereClause = ['case_id' => $case_id];
-          // validate filters
-          if ($filters) {
+        // validate filters
+        if ($filters) {
             foreach ($filters as $key => $value) {
                 if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
@@ -122,8 +121,8 @@ class CasesController extends BaseController
             throw new HttpBadRequest($request, "please enter a valid id");
         }
         $whereClause = ['case_id' => $case_id];
-          // validate filters
-          if ($filters) {
+        // validate filters
+        if ($filters) {
             foreach ($filters as $key => $value) {
                 if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
@@ -185,7 +184,7 @@ class CasesController extends BaseController
         }
         return $this->preparedResponse($response, $data);
     }
-    
+
     /**
      * Summary of handleGetCases
      * @param Request $request
@@ -216,21 +215,19 @@ class CasesController extends BaseController
             }
         }
         // validate date
-        if (isset($filters['date_from']))
-        {
+        if (isset($filters['date_from'])) {
             $date_format = $filters['date_from'];
-            if (!ValidateHelper::validateDateFormat($date_format)){
+            if (!ValidateHelper::validateDateFormat($date_format)) {
                 throw new HttpUnprocessableContent($request, 'Invalid date: ' . ' {' . $date_format . '}');
             }
         }
-        if (isset($filters['date_to']))
-        {
+        if (isset($filters['date_to'])) {
             $date_format = $filters['date_to'];
-            if (!ValidateHelper::validateDateFormat($date_format)){
+            if (!ValidateHelper::validateDateFormat($date_format)) {
                 throw new HttpUnprocessableContent($request, 'Invalid date: ' . ' {' . $date_format . '}');
             }
         }
-        if (isset($filters['misdemeanor'])){
+        if (isset($filters['misdemeanor'])) {
 
             if (!ValidateHelper::validateNumericInput(['misdemeanor' => $filters['misdemeanor']])) {
                 throw new HttpBadRequest($request, "expected numeric but received alpha");
@@ -270,19 +267,35 @@ class CasesController extends BaseController
     }
 
     // POST METHOD
+    /**
+     * Summary of handlePostCases
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpConflict
+     * @return Response
+     */
     public function handlePostCases(Request $request, Response $response)
     {
         // Retrieve data
-        $data = $request -> getParsedBody();
+        $data = $request->getParsedBody();
         // check if body is empty, throw an exception otherwise
-        if (!isset($data))
-        {
+        if (!isset($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
-        // validate the body
-        ValidateHelper::validatePostMethods($data, 'cases');
+        foreach ($data as $case) {
+            if (!ValidateHelper::validatePostMethods($case, "cases")) {
+                $exception = new HttpConflict($request);
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+                $payload['reason'] = $case;
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            $this->case_model->createCases($case);
+        }
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
-
     }
 }

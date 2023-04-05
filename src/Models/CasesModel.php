@@ -299,6 +299,6 @@ class CasesModel extends BaseModel
      */
     public function createCases(array $cases)
     {
-        return $this->insert("case", $cases);
+        return $this->insert("cases", $cases);
     }
 }
