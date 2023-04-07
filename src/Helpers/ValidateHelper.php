@@ -522,6 +522,27 @@ class ValidateHelper
         }
     }
 
+    public static function arrayIsUnique(array $ids) : bool
+    {
+        $data = ['id' => $ids];
+        $rules = 
+        [
+            'containsUnique' => 
+            [
+                ['id']
+            ]
+        ];
+
+        $validator = new Validator($data);
+        $validator->rules($rules);
+
+        if ($validator->validate()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Summary of validateNumIsPositive
      * @param mixed $data
@@ -565,9 +586,9 @@ class ValidateHelper
                     'min' =>
                     [
                         ['case_id', 0],
-                        ['offense_id', 0],
-                        ['victim_id', 0],
-                        ['offender_id', 0],
+                        //['offense_id', 0],
+                        //['victim_id', 0],
+                        //['offender_id', 0],
                         ['investigator_id', 0],
                         ['court_id', 0],
                         ['misdemeanor', 0]

@@ -27,8 +27,7 @@ class CasesModel extends BaseModel
     {
         $case = $this->getById($table, $whereClause);
 
-        if (!$case)
-        {
+        if (!$case) {
             return null;
         }
         $crime_sceneID = $case['crime_sceneID'];
@@ -64,8 +63,7 @@ class CasesModel extends BaseModel
     {
         $case = $this->getById($table, $whereClause);
 
-        if (!$case)
-        {
+        if (!$case) {
             return null;
         }
         $crime_sceneID = $case['crime_sceneID'];
@@ -96,8 +94,7 @@ class CasesModel extends BaseModel
     {
         $case = $this->getById($table, $whereClause);
 
-        if (!$case)
-        {
+        if (!$case) {
             return null;
         }
         $crime_sceneID = $case['crime_sceneID'];
@@ -128,8 +125,7 @@ class CasesModel extends BaseModel
     {
         $case = $this->getById($table, $whereClause);
 
-        if (!$case)
-        {
+        if (!$case) {
             return null;
         }
         $crime_sceneID = $case['crime_sceneID'];
@@ -159,7 +155,7 @@ class CasesModel extends BaseModel
     private function offenses($case_id)
     {
         $sql = "SELECT offenses.* from offenses inner JOIN cases_offenses ON cases_offenses.offense_id = offenses.offense_id" .
-        " INNER JOIN cases on cases.case_id = cases_offenses.case_id WHERE 1";
+            " INNER JOIN cases on cases.case_id = cases_offenses.case_id WHERE 1";
 
         $sql .= " AND cases.case_id =:id";
         $query_values['id'] = $case_id;
@@ -178,7 +174,7 @@ class CasesModel extends BaseModel
     private function victims($case_id)
     {
         $sql = "SELECT victims.* from victims inner JOIN cases_victims ON cases_victims.victim_id = victims.victim_id" .
-        " INNER JOIN cases on cases.case_id = cases_victims.case_id WHERE 1";
+            " INNER JOIN cases on cases.case_id = cases_victims.case_id WHERE 1";
 
         $sql .= " AND cases.case_id =:id";
         $query_values['id'] = $case_id;
@@ -197,7 +193,7 @@ class CasesModel extends BaseModel
     private function offenders($case_id)
     {
         $sql = "SELECT offenders.* from offenders inner JOIN offender_details ON offenders.offender_id = offender_details.offender_id" .
-        " INNER JOIN cases on cases.case_id = offender_details.case_id WHERE 1";
+            " INNER JOIN cases on cases.case_id = offender_details.case_id WHERE 1";
 
         $sql .= " AND cases.case_id =:id";
         $query_values['id'] = $case_id;
@@ -231,7 +227,7 @@ class CasesModel extends BaseModel
             $query_values['description'] = $filters['description'];
         }
 
-        if (isset($filters['misdemeanor'])){
+        if (isset($filters['misdemeanor'])) {
             $sql .= " AND misdemeanor =:misdemeanor";
             $query_values['misdemeanor'] = $filters['misdemeanor'];
         }
@@ -279,18 +275,15 @@ class CasesModel extends BaseModel
             $offenses = $this->offenses($cases['cases'][$key]['case_id']);
             $victims = $this->victims($cases['cases'][$key]['case_id']);
             $offenders = $this->offenders($cases['cases'][$key]['case_id']);
-    
+
             $cases['cases'][$key]['investigator'] = $investigator ?? '';
             $cases['cases'][$key]['court'] = $courts ?? '';
             $cases['cases'][$key]['offenses'] =  $offenses ?? '';
             $cases['cases'][$key]['victims'] =  $victims ?? '';
             $cases['cases'][$key]['offenders'] =  $offenders ?? '';
-            
-           
         }
 
         return $cases;
-        
     }
 
     /**
@@ -298,9 +291,9 @@ class CasesModel extends BaseModel
      * @param array $cases
      * @return bool|string
      */
-    public function createCases(array $cases) : bool
+    public function createCases(array $cases): bool
     {
-        
+
         $offense_ids = $cases['offense_id'];
         $victim_ids = $cases['victim_id'];
         $offender_ids = $cases['offender_id'];
@@ -309,66 +302,128 @@ class CasesModel extends BaseModel
         unset($cases['offender_id']);
         $case_id = $this->insert("cases", $cases);
         // insert the rest to the junction table
-        foreach ($offense_ids as $id)
-        {
-            $cases_offenses = array("case_id"=>$case_id, "offense_id"=> $id);
+        foreach ($offense_ids as $id) {
+            $cases_offenses = array("case_id" => $case_id, "offense_id" => $id);
             $this->insert('cases_offenses', $cases_offenses);
-
         }
-        foreach ($victim_ids as $id)
-        {
-            $cases_victims = array("case_id"=>$case_id, "victim_id"=> $id);
+        foreach ($victim_ids as $id) {
+            $cases_victims = array("case_id" => $case_id, "victim_id" => $id);
             $this->insert('cases_victims', $cases_victims);
-
         }
-        foreach ($offender_ids as $id)
-        {
-            $offender_details = array("offender_id"=>$id, "case_id"=> $case_id);
+        foreach ($offender_ids as $id) {
+            $offender_details = array("offender_id" => $id, "case_id" => $case_id);
             $this->insert('offender_details', $offender_details);
-
         }
-       
+
         return true;
-        
     }
 
     /**
      * Summary of updateCase
      * @param mixed $cases
      * @return bool
-     */
-    public function updateCase($cases) : bool
+     * TODO refactor
+     */ 
+    public function updateCase($cases): bool
     {
-        $case_exists = $this->getById('cases',['case_id'=>$cases['case_id']]);
-        // check if the ID exists in the DB
-        if (!$case_exists){
-            return false;
-        }
+        $old_offenses_id = [];
+        $old_victims_id = [];
+        $old_offenders_id = [];
+
         $case_id = $cases['case_id'];
-        $offense_id = $cases['offense_id'];
-        $victim_id = $cases['victim_id'];
-        $offender_id = $cases['offender_id'];
+        $new_offense_ids = $cases['offense_id'];
+        $new_victim_ids = $cases['victim_id'];
+        $new_offender_ids = $cases['offender_id'];
         unset($cases['case_id']);
         unset($cases['offense_id']);
         unset($cases['victim_id']);
         unset($cases['offender_id']);
-        $cases_offenses = array("case_id"=>$case_id, "offense_id"=> $offense_id);
-        $cases_victims = array("case_id"=>$case_id, "victim_id"=> $victim_id);
-        $offender_details = array("offender_id"=>$offender_id, "case_id"=> $case_id);
 
-        // updates
+        // update case
         $this->getPdo()->beginTransaction();
+
         try {
-            $this->update("cases", $cases, ['case_id'=>$case_id]);
-            $this->getPdo()->commit();
-         
-        } catch (Exception $e)
-        {
+
+            $this->update('cases', $cases, ['case_id' => $case_id]);
+
+            // process offenses
+            $old_offenses = $this->offenses($case_id);
+            // extract the id from the $old_offenses array
+            foreach ($old_offenses as $offense) {
+                array_push($old_offenses_id, $offense['offense_id']);
+            }
+            // returns the difference between two arrays 
+            $diff_old_offense_ids = array_diff($old_offenses_id, $new_offense_ids);
+            $diff_new_offense_ids = array_diff($new_offense_ids, $old_offenses_id);
+
+            // delete the old offenses
+            if ($diff_old_offense_ids) {
+                foreach ($diff_old_offense_ids as $old_id) {
+                    $this->delete('cases_offenses', ['case_id' => $case_id, 'offense_id' => $old_id]);
+                }
+            }
+            // insert the new offenses if provided
+            if ($diff_new_offense_ids) {
+                foreach ($diff_new_offense_ids as $new_id) {
+                    $new_data = ['case_id' => $case_id, 'offense_id' => $new_id];
+                    $this->insert('cases_offenses', $new_data);
+                }
+            }
+
+            // process victims
+            $old_victims = $this->victims($case_id);
+            // extract the victim_id from the $old_victims array
+            foreach ($old_victims as $victim) {
+                array_push($old_victims_id, $victim['victim_id']);
+            }
+            // returns the difference between two arrays
+            $diff_old_victim_ids = array_diff($old_victims_id, $new_victim_ids);
+            $diff_new_victim_ids = array_diff($new_victim_ids, $old_victims_id);
+
+            // delete the old victims
+            if ($diff_old_victim_ids) {
+                foreach ($diff_old_victim_ids as $old_id) {
+                    $this->delete('cases_victims', ['case_id' => $case_id, 'victim_id' => $old_id]);
+                }
+            }
+            // insert the new victims if provided
+            if ($diff_new_victim_ids) {
+                foreach ($diff_new_victim_ids as $new_id) {
+                    $new_data = ['case_id' => $case_id, 'victim_id' => $new_id];
+                    $this->insert('cases_victims', $new_data);
+                }
+            }
+
+            // process offender
+            $old_offenders = $this->offenders($case_id);
+            // extract the offender_id from the $old_offenders array
+            foreach ($old_offenders as $offenders) {
+                array_push($old_offenders_id, $offenders['offender_id']);
+            }
+            // returns the difference between two arrays
+            $diff_old_offender_ids = array_diff($old_offenders_id, $new_offender_ids);
+            $diff_new_offender_ids = array_diff($new_offender_ids, $old_offenders_id);
+
+            // delete the old victims
+            if ($diff_old_offender_ids) {
+                foreach ($diff_old_offender_ids as $old_id) {
+                    $this->delete('offender_details', ['offender_id' => $old_id, 'case_id' => $case_id]);
+                }
+            }
+
+            // insert the new victims if provided
+            if ($diff_new_offender_ids) {
+                foreach ($diff_new_offender_ids as $new_id) {
+                    $new_data = ['offender_id' => $new_id, 'case_id' => $case_id];
+                    $this->insert('offender_details', $new_data);
+                }
+            }
+        } catch (Exception $e) {
             $this->getPdo()->rollBack();
             return false;
         }
-        // ? original query UPDATE `cases_offenses` SET `case_id`=15,`offense_id`=2 WHERE case_id=15 AND offense_id=1;
-     
+
+        $this->getPdo()->commit();
         return true;
     }
 
@@ -378,14 +433,12 @@ class CasesModel extends BaseModel
      * @param mixed $whereClause
      * @return bool
      */
-    public function checkIfResourceExists($table, $whereClause) : bool
+    public function checkIfResourceExists($table, $whereClause): bool
     {
 
-        if  (!$this->getById($table,$whereClause))
-        {
+        if (!$this->getById($table, $whereClause)) {
             return false;
         }
         return true;
-             
     }
 }
