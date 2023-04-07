@@ -411,7 +411,7 @@ class ValidateHelper
     /**
      * Summary of validatePostMethods
      * @param array $data
-     * @param string $label
+     * @param string $label represents the resource being passed
      * @return bool
      */
     public static function validatePostMethods(array $data, string $label)
@@ -453,7 +453,35 @@ class ValidateHelper
             ];
 
             
-        }  
+        } else if ($label == 'investigator')
+        {
+            $allowed_ranks = ['Certified Legal Investigator', 'Board Certified Investigator','Certified Forensic Investigator','Certified Fraud Examiner'];
+            $rules = 
+            [
+               'required' =>
+               [
+                    ['badge_number'],
+                    ['first_name'],
+                    ['last_name'],
+                    ['rank']
+               ],
+               'regex' =>
+               [
+                ['badge_number', '/^[0-9]{4,7}$/']
+               ],
+               'lengthMax' =>
+               [
+                   ['first_name', 40],
+                   ['last_name', 40],
+                   ['rank', 40],
+               ],
+               'in' =>
+               [
+                    ['rank', $allowed_ranks]
+               ]
+            ];
+        }
+
 
         $validator = new Validator($data);
         $validator->rules($rules);

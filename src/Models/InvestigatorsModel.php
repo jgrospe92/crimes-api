@@ -90,4 +90,15 @@ class InvestigatorsModel extends BaseModel
         return $investigator;
 
     }
+
+
+    /**
+     * Summary of createInvestigator
+     * @param mixed $investigator
+     * @return bool|string
+     */
+    public function createInvestigator($investigator)
+    {
+        return $this->insert('investigators', $investigator);
+    }
 }

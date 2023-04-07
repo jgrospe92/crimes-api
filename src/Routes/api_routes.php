@@ -42,6 +42,7 @@ $app->get('/offenses/{offense_id}', [OffensesController::class, 'handleOffensesB
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
 $app->get('/investigators/{investigator_id}', [InvestigatorsController::class, 'handleInvestigatorsById']);
+$app->post('/investigators', [InvestigatorsController::class, 'handlePostInvestigators']);
 
 // Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);

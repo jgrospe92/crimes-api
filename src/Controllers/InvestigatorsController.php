@@ -1,4 +1,5 @@
 <?php
+
 namespace Vanier\Api\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -6,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 // exceptions
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
@@ -103,7 +105,6 @@ class InvestigatorsController extends BaseController
 
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
-
     }
 
     /**
@@ -122,8 +123,7 @@ class InvestigatorsController extends BaseController
             throw new HttpBadRequest($request, "please enter a valid id");
         }
         $filters = $request->getQueryParams();
-        if ($filters)
-        {
+        if ($filters) {
             throw new HttpUnprocessableContent($request, "Resource does not support filtering/paginate");
         }
         $whereClause = ['investigator_id' => $investigator_id];
@@ -136,4 +136,28 @@ class InvestigatorsController extends BaseController
         return $this->preparedResponse($response, $data);
     }
 
+    public function handlePostInvestigators(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+        // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        foreach ($data as $investigator) {
+            if (!ValidateHelper::validatePostMethods($investigator, "investigator")) {
+                $exception = new HttpConflict($request);
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+                $payload['reason'] = $investigator;
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            //$this->investigator_model->createInvestigator($investigator);
+        }
+
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
 }
