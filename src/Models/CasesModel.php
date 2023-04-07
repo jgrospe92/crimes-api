@@ -298,7 +298,7 @@ class CasesModel extends BaseModel
      * @param array $cases
      * @return bool|string
      */
-    public function createCases(array $cases)
+    public function createCases(array $cases) : bool
     {
         
         $offense_id = $cases['offense_id'];
@@ -316,10 +316,64 @@ class CasesModel extends BaseModel
         $this->insert('cases_victims', $cases_victims);
         $this->insert('offender_details', $offender_details);
         
+        return true;
+        
     }
 
-    public function updateCase($data)
+    /**
+     * Summary of updateCase
+     * @param mixed $cases
+     * @return bool
+     */
+    public function updateCase($cases) : bool
     {
-       
+        $case_exists = $this->getById('cases',['case_id'=>$cases['case_id']]);
+        // check if the ID exists in the DB
+        if (!$case_exists){
+            return false;
+        }
+        $case_id = $cases['case_id'];
+        $offense_id = $cases['offense_id'];
+        $victim_id = $cases['victim_id'];
+        $offender_id = $cases['offender_id'];
+        unset($cases['case_id']);
+        unset($cases['offense_id']);
+        unset($cases['victim_id']);
+        unset($cases['offender_id']);
+        $cases_offenses = array("case_id"=>$case_id, "offense_id"=> $offense_id);
+        $cases_victims = array("case_id"=>$case_id, "victim_id"=> $victim_id);
+        $offender_details = array("offender_id"=>$offender_id, "case_id"=> $case_id);
+
+        // updates
+        $this->getPdo()->beginTransaction();
+        try {
+            $this->update("cases", $cases, ['case_id'=>$case_id]);
+            $this->getPdo()->commit();
+         
+        } catch (Exception $e)
+        {
+            $this->getPdo()->rollBack();
+            return false;
+        }
+        // ? original query UPDATE `cases_offenses` SET `case_id`=15,`offense_id`=2 WHERE case_id=15 AND offense_id=1;
+     
+        return true;
+    }
+
+    /**
+     * Summary of checkIfResourceExists
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return bool
+     */
+    public function checkIfResourceExists($table, $whereClause) : bool
+    {
+
+        if  (!$this->getById($table,$whereClause))
+        {
+            return false;
+        }
+        return true;
+             
     }
 }

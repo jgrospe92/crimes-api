@@ -535,17 +535,27 @@ class ValidateHelper
                 [
                     'required' =>
                     [
-                        ['case_id']
+                        ['case_id'],
                         ['description'],
                         ['date_reported'],
                         ['misdemeanor'],
                         ['crime_sceneID'],
                         ['investigator_id'],
                         ['court_id'],
+                        ['offense_id'],
+                        ['victim_id'],
+                        ['offender_id']
+
+
                     ],
                     'min' =>
-                    [   
+                    [
                         ['case_id', 0],
+                        ['offense_id', 0],
+                        ['victim_id', 0],
+                        ['offender_id', 0],
+                        ['investigator_id', 0],
+                        ['court_id', 0],
                         ['misdemeanor', 0]
                     ],
                     'max' =>
