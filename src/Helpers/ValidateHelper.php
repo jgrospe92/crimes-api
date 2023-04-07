@@ -6,7 +6,6 @@ namespace Vanier\Api\Helpers;
 require_once("Validator.php");
 
 
-
 /**
  * Summary of ValidateHelper
  * Modify this to match crimes-api
@@ -479,6 +478,28 @@ class ValidateHelper
                [
                     ['rank', $allowed_ranks]
                ]
+            ];
+        } else if ($label == "offense")
+        {
+            $allowed_classification = ['Felony', 'Misdemeanor', 'White-collar crime', 'Violent crime', 'Property crime', 'Drug crime','Cyber-crime',];
+            $rules = 
+            [
+                'required' =>
+                [
+                     ['name'],
+                     ['description'],
+                     ['classification'],
+                ],
+                'lengthMax' =>
+                [
+                    ['name', 40],
+                    ['description', 300],
+                    ['classification', 80],
+                ],
+                'in' =>
+                [
+                     ['classification', $allowed_classification]
+                ]
             ];
         }
 

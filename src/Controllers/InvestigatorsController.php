@@ -136,6 +136,13 @@ class InvestigatorsController extends BaseController
         return $this->preparedResponse($response, $data);
     }
 
+    /**
+     * Summary of handlePostInvestigators
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpConflict
+     * @return Response
+     */
     public function handlePostInvestigators(Request $request, Response $response)
     {
         // Retrieve data
@@ -155,7 +162,7 @@ class InvestigatorsController extends BaseController
 
                 return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
             }
-            //$this->investigator_model->createInvestigator($investigator);
+            $this->investigator_model->createInvestigator($investigator);
         }
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
