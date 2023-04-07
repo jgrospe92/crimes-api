@@ -435,9 +435,9 @@ class ValidateHelper
                     ],
                     'min' =>
                     [
-                        ['offense_id', 0],
-                        ['victim_id', 0],
-                        ['offender_id', 0],
+                        // ['offense_id', 0],
+                        //['victim_id', 0],
+                        //['offender_id', 0],
                         ['investigator_id', 0],
                         ['court_id', 0],
                         ['misdemeanor', 0]
@@ -520,6 +520,20 @@ class ValidateHelper
         } else {
             return false;
         }
+    }
+
+    /**
+     * Summary of validateNumIsPositive
+     * @param mixed $data
+     * @return bool
+     */
+    public static function validateNumIsPositive($id) : bool
+    {
+
+        $validator = new Validator(['id'=>$id]);
+        $validator->rule('min', "id", 0);
+
+        return $validator->validate();
     }
 
     /**
