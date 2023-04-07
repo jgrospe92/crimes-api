@@ -2,6 +2,7 @@
 
 namespace Vanier\Api\models;
 
+use Exception;
 use Vanier\Api\Models\BaseModel;
 
 
@@ -299,6 +300,26 @@ class CasesModel extends BaseModel
      */
     public function createCases(array $cases)
     {
-        return $this->insert("cases", $cases);
+        
+        $offense_id = $cases['offense_id'];
+        $victim_id = $cases['victim_id'];
+        $offender_id = $cases['offender_id'];
+        unset($cases['offense_id']);
+        unset($cases['victim_id']);
+        unset($cases['offender_id']);
+        $case_id = $this->insert("cases", $cases);
+        $cases_offenses = array("case_id"=>$case_id, "offense_id"=> $offense_id);
+        $cases_victims = array("case_id"=>$case_id, "victim_id"=> $victim_id);
+        $offender_details = array("offender_id"=>$offender_id, "case_id"=> $case_id);
+        // insert the rest to the junction table
+        $this->insert('cases_offenses', $cases_offenses);
+        $this->insert('cases_victims', $cases_victims);
+        $this->insert('offender_details', $offender_details);
+        
+    }
+
+    public function updateCase($data)
+    {
+       
     }
 }

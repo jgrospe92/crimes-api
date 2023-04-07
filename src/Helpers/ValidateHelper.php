@@ -120,12 +120,13 @@ class ValidateHelper
     public static function validateTimeStamp($time)
     {
         $data = ['time_stamp' => $time];
-        $rules = 
-        ['regex' => 
+        $rules =
             [
-                ['time_stamp', '/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/']
-            ]
-        ];
+                'regex' =>
+                [
+                    ['time_stamp', '/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/']
+                ]
+            ];
         $validator = new Validator($data, [], 'en');
         // Important: map the validation rules before calling validate()
         $validator->rules($rules);
@@ -415,102 +416,214 @@ class ValidateHelper
      */
     public static function validatePostMethods(array $data, string $label)
     {
-        if ($label == "cases")
-        {
-            $rules = 
-            [
-                'required' => 
+        if ($label == "cases") {
+            $rules =
                 [
-                    ['description'],
-                    ['date_reported'],
-                    ['misdemeanor'],
-                    ['crime_sceneID']
-                ],
-                'min' => 
-                [
-                    ['misdemeanor', 0]
-                ],
-                'max' =>
-                [
-                    ['misdemeanor', 1]
-                ],
-                'lengthMax' =>
-                [
-                    ['description', 300]
-                ],
-                'numeric' => 
-                [
-                    ['misdemeanor'],
-                    ['crime_sceneID'],
-                    ['investigator_id'],
-                    ['court_id']
-                ],
-                'date' =>
-                [
-                    ['date_reported']
-                ]
-            ];
+                    'required' =>
+                    [
+                        ['description'],
+                        ['date_reported'],
+                        ['misdemeanor'],
+                        ['crime_sceneID'],
+                        ['investigator_id'],
+                        ['court_id'],
+                        ['offense_id'],
+                        ['victim_id'],
+                        ['offender_id']
 
-            
-        } else if ($label == 'investigator')
-        {
-            $allowed_ranks = ['Certified Legal Investigator', 'Board Certified Investigator','Certified Forensic Investigator','Certified Fraud Examiner'];
-            $rules = 
-            [
-               'required' =>
-               [
-                    ['badge_number'],
-                    ['first_name'],
-                    ['last_name'],
-                    ['rank']
-               ],
-               'regex' =>
-               [
-                ['badge_number', '/^[0-9]{4,7}$/']
-               ],
-               'lengthMax' =>
-               [
-                   ['first_name', 40],
-                   ['last_name', 40],
-                   ['rank', 40],
-               ],
-               'in' =>
-               [
-                    ['rank', $allowed_ranks]
-               ]
-            ];
-        } else if ($label == "offense")
-        {
-            $allowed_classification = ['Felony', 'Misdemeanor', 'White-collar crime', 'Violent crime', 'Property crime', 'Drug crime','Cyber-crime',];
-            $rules = 
-            [
-                'required' =>
+
+                    ],
+                    'min' =>
+                    [
+                        ['offense_id', 0],
+                        ['victim_id', 0],
+                        ['offender_id', 0],
+                        ['investigator_id', 0],
+                        ['court_id', 0],
+                        ['misdemeanor', 0]
+                    ],
+                    'max' =>
+                    [
+                        ['misdemeanor', 1]
+                    ],
+                    'lengthMax' =>
+                    [
+                        ['description', 300]
+                    ],
+                    'numeric' =>
+                    [
+                        ['misdemeanor'],
+                        ['crime_sceneID'],
+                        ['investigator_id'],
+                        ['court_id']
+                    ],
+                    'date' =>
+                    [
+                        ['date_reported']
+                    ]
+                ];
+        } else if ($label == 'investigator') {
+            $allowed_ranks = ['Certified Legal Investigator', 'Board Certified Investigator', 'Certified Forensic Investigator', 'Certified Fraud Examiner'];
+            $rules =
                 [
-                     ['name'],
-                     ['description'],
-                     ['classification'],
-                ],
-                'lengthMax' =>
+                    'required' =>
+                    [
+                        ['badge_number'],
+                        ['first_name'],
+                        ['last_name'],
+                        ['rank']
+                    ],
+                    'regex' =>
+                    [
+                        ['badge_number', '/^[0-9]{4,7}$/']
+                    ],
+                    'lengthMax' =>
+                    [
+                        ['first_name', 40],
+                        ['last_name', 40],
+                        ['rank', 40],
+                    ],
+                    'in' =>
+                    [
+                        ['rank', $allowed_ranks]
+                    ]
+                ];
+        } else if ($label == "offense") {
+            $allowed_classification = ['Felony', 'Misdemeanor', 'White-collar crime', 'Violent crime', 'Property crime', 'Drug crime', 'Cyber-crime',];
+            $rules =
                 [
-                    ['name', 40],
-                    ['description', 300],
-                    ['classification', 80],
-                ],
-                'in' =>
-                [
-                     ['classification', $allowed_classification]
-                ]
-            ];
+                    'required' =>
+                    [
+                        ['name'],
+                        ['description'],
+                        ['classification'],
+                    ],
+                    'lengthMax' =>
+                    [
+                        ['name', 40],
+                        ['description', 300],
+                        ['classification', 80],
+                    ],
+                    'in' =>
+                    [
+                        ['classification', $allowed_classification]
+                    ]
+                ];
         }
 
 
         $validator = new Validator($data);
         $validator->rules($rules);
 
-        if ($validator->validate())
-        {
+        if ($validator->validate()) {
             return true;
-        } else {  
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Summary of validatePutMethods
+     * @param array $data
+     * @param string $label
+     * @return bool
+     */
+    public static function validatePutMethods(array $data, string $label)
+    {
+        if ($label == "cases") {
+            $rules =
+                [
+                    'required' =>
+                    [
+                        ['case_id']
+                        ['description'],
+                        ['date_reported'],
+                        ['misdemeanor'],
+                        ['crime_sceneID'],
+                        ['investigator_id'],
+                        ['court_id'],
+                    ],
+                    'min' =>
+                    [   
+                        ['case_id', 0],
+                        ['misdemeanor', 0]
+                    ],
+                    'max' =>
+                    [
+                        ['misdemeanor', 1]
+                    ],
+                    'lengthMax' =>
+                    [
+                        ['description', 300]
+                    ],
+                    'numeric' =>
+                    [
+                        ['misdemeanor'],
+                        ['crime_sceneID'],
+                        ['investigator_id'],
+                        ['court_id']
+                    ],
+                    'date' =>
+                    [
+                        ['date_reported']
+                    ]
+                ];
+        } else if ($label == 'investigator') {
+            $allowed_ranks = ['Certified Legal Investigator', 'Board Certified Investigator', 'Certified Forensic Investigator', 'Certified Fraud Examiner'];
+            $rules =
+                [
+                    'required' =>
+                    [
+                        ['badge_number'],
+                        ['first_name'],
+                        ['last_name'],
+                        ['rank']
+                    ],
+                    'regex' =>
+                    [
+                        ['badge_number', '/^[0-9]{4,7}$/']
+                    ],
+                    'lengthMax' =>
+                    [
+                        ['first_name', 40],
+                        ['last_name', 40],
+                        ['rank', 40],
+                    ],
+                    'in' =>
+                    [
+                        ['rank', $allowed_ranks]
+                    ]
+                ];
+        } else if ($label == "offense") {
+            $allowed_classification = ['Felony', 'Misdemeanor', 'White-collar crime', 'Violent crime', 'Property crime', 'Drug crime', 'Cyber-crime',];
+            $rules =
+                [
+                    'required' =>
+                    [
+                        ['name'],
+                        ['description'],
+                        ['classification'],
+                    ],
+                    'lengthMax' =>
+                    [
+                        ['name', 40],
+                        ['description', 300],
+                        ['classification', 80],
+                    ],
+                    'in' =>
+                    [
+                        ['classification', $allowed_classification]
+                    ]
+                ];
+        }
+
+
+        $validator = new Validator($data);
+        $validator->rules($rules);
+
+        if ($validator->validate()) {
+            return true;
+        } else {
             return false;
         }
     }

@@ -298,4 +298,30 @@ class CasesController extends BaseController
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
     }
+
+    public function handlePutCases(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+        // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        foreach ($data as $case) {
+            if (!ValidateHelper::validatePutMethods($case, "cases")) {
+                $exception = new HttpConflict($request);
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+                $payload['reason'] = $case;
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            //$this->case_model->updateCase($case);
+        }
+
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
 }
