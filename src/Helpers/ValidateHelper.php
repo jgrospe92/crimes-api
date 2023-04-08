@@ -585,13 +585,13 @@ class ValidateHelper
                     ],
                     'min' =>
                     [
-                        ['case_id', 0],
+                        ['case_id', 1],
                         //['offense_id', 0],
                         //['victim_id', 0],
                         //['offender_id', 0],
-                        ['investigator_id', 0],
-                        ['court_id', 0],
-                        ['misdemeanor', 0]
+                        ['investigator_id', 1],
+                        ['court_id', 1],
+                        ['misdemeanor', 1]
                     ],
                     'max' =>
                     [
@@ -619,6 +619,7 @@ class ValidateHelper
                 [
                     'required' =>
                     [
+                        ['investigator_id'],
                         ['badge_number'],
                         ['first_name'],
                         ['last_name'],
@@ -632,11 +633,15 @@ class ValidateHelper
                     [
                         ['first_name', 40],
                         ['last_name', 40],
-                        ['rank', 40],
+                        ['rank', 80],
                     ],
                     'in' =>
                     [
                         ['rank', $allowed_ranks]
+                    ],
+                    'min' =>
+                    [
+                        ['investigator_id',1],
                     ]
                 ];
         } else if ($label == "offense") {

@@ -167,4 +167,36 @@ class InvestigatorsController extends BaseController
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
     }
+
+    public function handlePutInvestigators(Request $request, Response $response)
+    {   
+        // retrieve data
+        $data = $request->getParsedBody();
+        // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+        // validate data
+        foreach($data as $investigator)
+        {
+            if (!ValidateHelper::validatePutMethods($investigator, 'investigator'))
+            {
+                $exception = new HttpConflict($request);
+                return $this->parsedError($response, $investigator,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            // validate if the investigator_id exists
+            if (!$this->investigator_model->checkIfResourceExists('investigators', ['investigator_id'=>$investigator['investigator_id']])){
+
+                $exception = new HttpConflict($request);
+                $exception->setDescription("investigator_id is invalid");
+                return $this->parsedError($response, $investigator,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // update the resource
+            $this->investigator_model->updateInvestigator($investigator);
+
+        }
+
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
 }

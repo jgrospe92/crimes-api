@@ -50,7 +50,10 @@ $app->put('/offenses', [OffensesController::class, 'handlePutOffenses']);
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
 $app->get('/investigators/{investigator_id}', [InvestigatorsController::class, 'handleInvestigatorsById']);
+// POST /investigators
 $app->post('/investigators', [InvestigatorsController::class, 'handlePostInvestigators']);
+// PUT /investigators
+$app->put('/investigators', [InvestigatorsController::class, 'handlePutInvestigators']);
 
 // Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);

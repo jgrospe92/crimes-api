@@ -101,4 +101,16 @@ class InvestigatorsModel extends BaseModel
     {
         return $this->insert('investigators', $investigator);
     }
+
+    /**
+     * Summary of updateInvestigator
+     * @param mixed $investigator
+     * @return void
+     */
+    public function updateInvestigator($investigator)
+    {
+        $investigator_id = $investigator['investigator_id'];
+        unset($investigator['investigator_id']);
+        $this->update('investigators', $investigator ,['investigator_id'=>$investigator_id]);
+    }
 }

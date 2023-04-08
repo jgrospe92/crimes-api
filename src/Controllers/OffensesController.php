@@ -192,6 +192,7 @@ class OffensesController extends BaseController
                 $exception->setDescription("offense_id is invalid");
                 return $this->parsedError($response, $offense,  $exception, StatusCodeInterface::STATUS_CONFLICT);
             }
+            // updte the resource
             $this->offenses_model->updateOffense($offense);
         }
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
