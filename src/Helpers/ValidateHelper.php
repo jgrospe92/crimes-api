@@ -645,6 +645,7 @@ class ValidateHelper
                 [
                     'required' =>
                     [
+                        ['offense_id'],
                         ['name'],
                         ['description'],
                         ['classification'],

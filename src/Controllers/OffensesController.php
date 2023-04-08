@@ -161,4 +161,39 @@ class OffensesController extends BaseController
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
     }
+
+    /**
+     * Summary of handlePutOffenses
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpConflict
+     * @return Response
+     */
+    public function handlePutOffenses(Request $request, Response $response)
+    {
+        // retrieve the body
+        $data = $request->getParsedBody();
+         // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        foreach($data as $offense)
+        {
+            // validate if the provided data is correct
+            if (!ValidateHelper::validatePutMethods($offense, "offense")) {
+                $exception = new HttpConflict($request);
+                return $this->parsedError($response, $offense,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // validate if the offense_id exists
+            if (!$this->offenses_model->checkIfResourceExists('offenses', ['offense_id' => $offense['offense_id']])) {
+
+                $exception = new HttpConflict($request);
+                $exception->setDescription("offense_id is invalid");
+                return $this->parsedError($response, $offense,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            $this->offenses_model->updateOffense($offense);
+        }
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
 }

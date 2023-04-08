@@ -358,7 +358,7 @@ class CasesController extends BaseController
      */
     public function handlePutCases(Request $request, Response $response)
     {
-        // Retrieve data
+        // Retrieve body
         $data = $request->getParsedBody();
         // check if body is empty, throw an exception otherwise
         if (!isset($data)) {

@@ -42,7 +42,11 @@ $app->put('/cases', [CasesController::class, 'handlePutCases']);
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);
 $app->get('/offenses/{offense_id}', [OffensesController::class, 'handleOffensesById']);
+// POST /offenses
 $app->post('/offenses', [OffensesController::class, 'handlePostOffenses']);
+// PUT /offenses
+$app->put('/offenses', [OffensesController::class, 'handlePutOffenses']);
+
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
 $app->get('/investigators/{investigator_id}', [InvestigatorsController::class, 'handleInvestigatorsById']);
