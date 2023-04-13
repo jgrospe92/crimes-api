@@ -75,6 +75,7 @@ $app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimByI
 
 $app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
 $app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById']);
+$app->post('/judges', [JudgesController::class, 'createJudge']);
 
 $app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
 $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);

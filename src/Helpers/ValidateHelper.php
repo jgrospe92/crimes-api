@@ -408,6 +408,51 @@ class ValidateHelper
         }
     }
 
+    public static function validatePostJudges(array $data, string $label)
+    {
+        $body = array("description" => $data['description']);
+        if ($label == "judges")
+        {
+            $rules = 
+            [
+               
+                'required' => 'description',
+                 // 'min' => 
+                // [
+                //     ['misdemeanor', 0]
+                // ],
+                // 'lengthMax' =>
+                // [
+                //     ['description', 300]
+                // ],
+                // 'numeric' => 
+                // [
+                //     ['misdemeanor'],
+                //     ['crime_sceneID'],
+                //     ['investigator_id'],
+                //     ['court_id']
+                // ],
+                // 'date' =>
+                // [
+                //     ['date_reported']
+                // ]
+            ]; 
+
+        }  
+
+        $validator = new Validator($body);
+        $validator->rule("required", 'description')->message('{field} is required')->label('Desc');
+
+        if ($validator->validate())
+        {
+            echo "not valid";
+            return true;
+        } else {
+            echo "not valid";
+            return false;
+        }
+    }
+
     /**
      * Summary of validatePostActor
      * @param array $data

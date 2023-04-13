@@ -77,4 +77,34 @@ class JudgesModel extends BaseModel
 
         return $this->run($sql, $query_values)->fetchAll();
     }
+
+    /**
+     * Inserts a Judge in the database
+     * @param array $judge_data
+     */
+    public function createJudge(array $judge_data) {
+        return $this->insert($this->table_name, $judge_data);
+    }
+
+     /**
+     * Updates a Judges
+     * @param int $id 
+     * @param mixed $data 
+     */
+    public function updateJudges($id, $data) {
+        $this->update($this->table_name, $data, ['judge_id' => $id]);
+    }
+
+    /**
+     * Delete a Judge
+     * @param int $id
+     */
+    public function deleteJudge($id)
+    {
+        // Delete the customer from the database
+        $result = $this->delete($this->table_name, ['judge_id' => $id]);
+
+        // Return the number of rows affected
+        return $result->rowCount();
+    }
 }

@@ -15,6 +15,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
+use Vanier\Api\exceptions\HttpNotAcceptableException;
 
 /**
  * Summary of JudgesController
@@ -108,6 +109,28 @@ class JudgesController extends BaseController
         }
 
         return $this->prepareOkResponse($response, $data);
+    }
+
+    /**
+     * This function creates a judge
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return mixed response
+     */
+    public function createJudge(Request $request, Response $response)
+    {
+        $judges_data = $request->getParsedBody();
+
+        // Validate the data
+        if ($judges_data === null) {
+            throw new HttpNotAcceptableException($request, "Please enter the required data");
+        }
+
+        // validate the body
+        ValidateHelper::validatePostJudges($judges_data, 'judges');
+
+        return $this->preparedResponse($response, $judges_data, StatusCodeInterface::STATUS_CREATED);
     }
 
     /**
