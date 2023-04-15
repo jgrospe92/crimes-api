@@ -132,4 +132,12 @@ class VictimsModel extends BaseModel
         return ['Victim' => $victim_data, 'Prosecutor' => $prosecutor_data];
     }
 
+     /**
+     * Inserts a Victim in the database
+     * @param $victim
+     */
+    public function createVictim($victim) {
+        return $this->insert('victims', $victim);
+    }
+
 }

@@ -15,7 +15,8 @@ use Fig\Http\Message\StatusCodeInterface;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
-
+use Vanier\Api\exceptions\HttpConflict;
+use Vanier\Api\Models\ProsecutorsModel;
 
 /**
  * Summary of VictimsController
@@ -23,6 +24,8 @@ use Vanier\Api\exceptions\HttpUnprocessableContent;
 class VictimsController extends BaseController
 {
     private $victims_model = null;
+    private $prosecutors_model = null;
+
 
     /**
      * Summary of __construct
@@ -30,6 +33,7 @@ class VictimsController extends BaseController
     public function __construct()
     {
         $this->victims_model = new VictimsModel();
+        $this->prosecutors_model = new ProsecutorsModel();
     }
 
     /**
@@ -120,6 +124,58 @@ class VictimsController extends BaseController
             'Prosecutor' => $prosecutor_data
         ];
         return $this->prepareOkResponse($response, $response_data);
+    }
+
+
+    public function createVictims(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data
+        if (!ValidateHelper::validatePostMethods($data, "victim")) {
+            $exception = new HttpConflict($request, "Something is not valid");
+            $payload['statusCode'] = $exception->getCode();
+            $payload['error']['description'] = $exception->getDescription();
+            $payload['error']['message'] = $exception->getMessage();
+
+            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Check if the prosecutor exists
+        $prosecutor = $this->prosecutors_model->getProsecutorById($data['prosecutor_id']);
+        if (!$prosecutor) {
+            $exception = new HttpConflict($request, "Prosecutor not found.");
+            $payload['statusCode'] = $exception->getCode();
+            $payload['error']['description'] = $exception->getDescription();
+            $payload['error']['message'] = $exception->getMessage();
+
+            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Create a new victim
+        $newVictim = [
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'age' => $data['age'],
+            'marital_status' => $data['marital_status'],
+            'prosecutor_id' => $data['prosecutor_id']
+        ];
+
+        $this->victims_model->createVictim($newVictim);
+
+        $responseMessage = "You have successfully created a new victim.";
+        $responseData = [
+            'message' => $responseMessage,
+            'victim' => $newVictim
+        ];
+
+        return $this->prepareOkResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
     /**

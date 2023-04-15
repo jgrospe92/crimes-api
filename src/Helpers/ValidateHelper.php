@@ -543,6 +543,27 @@ class ValidateHelper
                     ['building_number', 9]
                 ]
             ];
+        }  else if ($label == 'victim') {
+            $allowed_marital_status = ['married', 'single', 'divorced'];
+            $rules = [
+                'required' => [
+                    ['first_name'],
+                    ['last_name'],
+                    ['age'],
+                    ['marital_status'],
+                    ['prosecutor_id'],
+                ],
+                'lengthMax' => [
+                    ['first_name', 40],
+                    ['last_name', 40],
+                ],
+                'in' => [
+                    ['marital_status', $allowed_marital_status],
+                ],
+                'numeric' => [
+                    ['age', 'prosecutor_id'],
+                ],
+            ];
         }
 
         $validator = new Validator($data);
