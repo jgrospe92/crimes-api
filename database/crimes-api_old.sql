@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 23, 2023 at 03:26 PM
+-- Generation Time: Mar 25, 2023 at 04:55 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -19,10 +19,10 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `crimes-api`
+--
 DROP DATABASE IF EXISTS `crimes-api`;
 CREATE DATABASE `crimes-api`;
-Use `crimes-api`;
-
+USE `crimes-api`;
 
 -- --------------------------------------------------------
 
@@ -105,7 +105,7 @@ CREATE TABLE `courts` (
   `court_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `date` date NOT NULL,
-  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `time` time DEFAULT NULL,
   `address_id` int(11) NOT NULL,
   `judge_id` int(11) NOT NULL,
   `verdict_id` int(11) NOT NULL
@@ -116,11 +116,11 @@ CREATE TABLE `courts` (
 --
 
 INSERT INTO `courts` (`court_id`, `name`, `date`, `time`, `address_id`, `judge_id`, `verdict_id`) VALUES
-(1, 'Toronto Courthouse', '2023-04-15', '06:00:00', 1, 1, 1),
-(2, 'Court of Appeal', '2023-04-17', '11:00:00', 2, 2, 2),
-(3, 'Supreme Court of Canada', '2023-04-18', '12:00:00', 3, 3, 3),
-(4, 'Provincial Court of Alberta', '2023-04-19', '13:00:00', 4, 4, 4),
-(5, 'Courts Administration Service', '2023-04-20', '14:00:00', 5, 5, 5);
+(1, 'Toronto Courthouse', '2023-04-15', '06:11:14', 1, 1, 1),
+(2, 'Court of Appeal', '2023-04-17', '11:15:02', 2, 2, 2),
+(3, 'Supreme Court of Canada', '2023-04-18', '17:08:13', 3, 3, 3),
+(4, 'Provincial Court of Alberta', '2023-04-19', '07:06:00', 4, 4, 4),
+(5, 'Courts Administration Service', '2023-04-20', '15:22:00', 5, 5, 5);
 
 -- --------------------------------------------------------
 
@@ -137,15 +137,15 @@ CREATE TABLE `court_addresses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `courts_addresses`
+-- Dumping data for table `court_addresses`
 --
 
 INSERT INTO `court_addresses` (`address_id`, `city`, `street`, `postal_code`, `building_#`) VALUES
-(1, 'Toronto', ' University Ave', 'M5G 1T3','361'),
-(2, 'Vancouver', 'Smithe St', 'V6Z 2E1','800'),
-(3, 'Ottawa', 'Wellington St', 'K1A 0J1','301 '),
-(4, 'Calgary', '5 St SW', 'T2P 5P7','601'),
-(5, 'Montreal', 'Mcgill St.', 'H2Y 3Z7','30');
+(1, 'Toronto', ' University Ave', 'M5G 1T3', '361'),
+(2, 'Vancouver', 'Smithe St', 'V6Z 2E1', '800'),
+(3, 'Ottawa', 'Wellington St', 'K1A 0J1', '301 '),
+(4, 'Calgary', '5 St SW', 'T2P 5P7', '601'),
+(5, 'Montreal', 'Mcgill St.', 'H2Y 3Z7', '30');
 
 -- --------------------------------------------------------
 
@@ -268,6 +268,8 @@ CREATE TABLE `offenders` (
 --
 
 INSERT INTO `offenders` (`offender_id`, `first_name`, `last_name`, `age`, `marital_status`, `arrest_date`, `arrest_timestamp`, `defendant_id`) VALUES
+(1, 'John', 'Bastista', 30, 'married', '2022-02-14', '21:04:56',3),
+(2, 'Mike', 'Gustos', 41, 'single', '2023-91-22', '16:56:57',3),
 (3, 'Jeremy', 'Elbertson', 36, 'single', '2020-01-30', '12:07:57', 3),
 (4, 'Andrew', 'Tate', 41, 'married', '2022-04-01', '16:56:57', 1),
 (5, 'Peach', 'Toadstool', 24, 'married', '2023-02-14', '23:56:57', 4),
@@ -586,6 +588,7 @@ ALTER TABLE `victims`
 -- Constraints for table `cases`
 --
 ALTER TABLE `cases`
+  ADD CONSTRAINT `cases_court_id_fk` FOREIGN KEY (`court_id`) REFERENCES `courts` (`court_id`),
   ADD CONSTRAINT `cases_crime_scenes_fk` FOREIGN KEY (`crime_sceneID`) REFERENCES `crime_scenes` (`crime_sceneID`) ON DELETE CASCADE,
   ADD CONSTRAINT `cases_investigator_id_fk` FOREIGN KEY (`investigator_id`) REFERENCES `investigators` (`investigator_id`) ON DELETE CASCADE;
 
@@ -604,10 +607,31 @@ ALTER TABLE `cases_victims`
   ADD CONSTRAINT `victim_id` FOREIGN KEY (`victim_id`) REFERENCES `victims` (`victim_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `courts`
+--
+ALTER TABLE `courts`
+  ADD CONSTRAINT `address_id_courts` FOREIGN KEY (`address_id`) REFERENCES `court_addresses` (`address_id`),
+  ADD CONSTRAINT `judge_id_courts` FOREIGN KEY (`judge_id`) REFERENCES `judges` (`judge_id`),
+  ADD CONSTRAINT `verdict_id_courts` FOREIGN KEY (`verdict_id`) REFERENCES `verdicts` (`verdict_id`);
+
+--
 -- Constraints for table `offenders`
 --
 ALTER TABLE `offenders`
   ADD CONSTRAINT `offenders_defendant_id_fk` FOREIGN KEY (`defendant_id`) REFERENCES `defendants` (`defendant_id`);
+
+--
+-- Constraints for table `offender_details`
+--
+ALTER TABLE `offender_details`
+  ADD CONSTRAINT `case_id_details` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`),
+  ADD CONSTRAINT `offender_id_details` FOREIGN KEY (`offender_id`) REFERENCES `offenders` (`offender_id`);
+
+--
+-- Constraints for table `victims`
+--
+ALTER TABLE `victims`
+  ADD CONSTRAINT `prosecuter_id_victims` FOREIGN KEY (`prosecutor_id`) REFERENCES `prosecutors` (`prosecutor_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

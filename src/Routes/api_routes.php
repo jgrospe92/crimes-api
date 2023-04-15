@@ -34,13 +34,26 @@ $app->get('/cases', [CasesController::class, 'handleGetCases']);
 $app->get('/cases/{case_id}/offenses', [CasesController::class, 'handleOffensesByCase']);
 $app->get('/cases/{case_id}/victims', [CasesController::class, 'handleVictimsByCase']);
 $app->get('/cases/{case_id}/offenders', [CasesController::class, 'handleOffendersByCase']);
+// POST /cases
+$app->post('/cases', [CasesController::class, 'handlePostCases']);
+// PUT /cases
+$app->put('/cases', [CasesController::class, 'handlePutCases']);
 
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);
 $app->get('/offenses/{offense_id}', [OffensesController::class, 'handleOffensesById']);
+// POST /offenses
+$app->post('/offenses', [OffensesController::class, 'handlePostOffenses']);
+// PUT /offenses
+$app->put('/offenses', [OffensesController::class, 'handlePutOffenses']);
+
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
 $app->get('/investigators/{investigator_id}', [InvestigatorsController::class, 'handleInvestigatorsById']);
+// POST /investigators
+$app->post('/investigators', [InvestigatorsController::class, 'handlePostInvestigators']);
+// PUT /investigators
+$app->put('/investigators', [InvestigatorsController::class, 'handlePutInvestigators']);
 
 // Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
