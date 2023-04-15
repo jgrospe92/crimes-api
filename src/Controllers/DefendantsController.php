@@ -158,19 +158,20 @@ class DefendantsController extends BaseController
     public function handlePostDefendants(Request $request, Response $response)
     {
         $data = $request->getParsedBody();
-        foreach ($data as $key => $defendant)
-        {
-            $this->defendant_model->postDefendant($defendant);
-        }
+        var_dump($data);
+        exit;
+        // foreach ($data as $key => $defendant)
+        // {
+        //     $this->defendant_model->postDefendant($defendant);
+        // }
 
-        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        // return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
     public function handlePutDefendant(Request $request, Response $response, array $uri_args)
     {
         $defendant_id = $uri_args['defendant_id'];
         $data = $request->getParsedBody();
-        var_dump($data);
         return $this->defendant_model->putDefendant($defendant_id, $data);
     }
 
