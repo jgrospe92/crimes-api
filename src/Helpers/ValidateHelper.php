@@ -536,8 +536,11 @@ class ValidateHelper
             [
                 'Admiralty Law',
                 'Business Law',
+                'Corporate Law',
+                'Family Law',
                 'Constitutional Law',
                 'Criminal Law',
+                'Immigration Law',
                 'Environmental Law',
                 'First Amendment Law',
                 'Health Care Law',
@@ -632,109 +635,184 @@ class ValidateHelper
      */
     public static function validatePutMethods(array $data, string $label)
     {
-        if ($label == "cases") {
+        if ($label == "cases") 
+        {
             $rules =
+            [
+                'required' =>
                 [
-                    'required' =>
-                    [
-                        ['case_id'],
-                        ['description'],
-                        ['date_reported'],
-                        ['misdemeanor'],
-                        ['crime_sceneID'],
-                        ['investigator_id'],
-                        ['court_id'],
-                        ['offense_id'],
-                        ['victim_id'],
-                        ['offender_id']
+                    ['case_id'],
+                    ['description'],
+                    ['date_reported'],
+                    ['misdemeanor'],
+                    ['crime_sceneID'],
+                    ['investigator_id'],
+                    ['court_id'],
+                    ['offense_id'],
+                    ['victim_id'],
+                    ['offender_id']
+                ],
+                'min' =>
+                [
+                    ['case_id', 1],
+                    //['offense_id', 0],
+                    //['victim_id', 0],
+                    //['offender_id', 0],
+                    ['investigator_id', 1],
+                    ['court_id', 1],
+                    ['misdemeanor', 1]
+                ],
+                'max' =>
+                [
+                    ['misdemeanor', 1]
+                ],
+                'lengthMax' =>
+                [
+                    ['description', 300]
+                ],
+                'numeric' =>
+                [
+                    ['misdemeanor'],
+                    ['crime_sceneID'],
+                    ['investigator_id'],
+                    ['court_id']
+                ],
+                'date' =>
+                [
+                    ['date_reported']
+                ]
+            ];
+        } 
+        else if ($label == 'investigator') 
+        {
+            $allowed_ranks = 
+            [
+                'Certified Legal Investigator', 
+                'Board Certified Investigator', 
+                'Certified Forensic Investigator', 
+                'Certified Fraud Examiner'
+            ];
 
+            $rules =
+            [
+                'required' =>
+                [
+                    ['investigator_id'],
+                    ['badge_number'],
+                    ['first_name'],
+                    ['last_name'],
+                    ['rank']
+                ],
+                'regex' =>
+                [
+                    ['badge_number', '/^[0-9]{4,7}$/']
+                ],
+                'lengthMax' =>
+                [
+                    ['first_name', 40],
+                    ['last_name', 40],
+                    ['rank', 80],
+                ],
+                'in' =>
+                [
+                    ['rank', $allowed_ranks]
+                ],
+                'min' =>
+                [
+                    ['investigator_id',1],
+                ]
+            ];
+        } 
+        else if ($label == "offense") 
+        {
+            $allowed_classification = 
+            [
+                'Felony', 
+                'Misdemeanor', 
+                'White-collar crime', 
+                'Violent crime', 
+                'Property crime', 
+                'Drug crime', 
+                'Cyber-crime'
+            ];
 
-                    ],
-                    'min' =>
-                    [
-                        ['case_id', 1],
-                        //['offense_id', 0],
-                        //['victim_id', 0],
-                        //['offender_id', 0],
-                        ['investigator_id', 1],
-                        ['court_id', 1],
-                        ['misdemeanor', 1]
-                    ],
-                    'max' =>
-                    [
-                        ['misdemeanor', 1]
-                    ],
-                    'lengthMax' =>
-                    [
-                        ['description', 300]
-                    ],
-                    'numeric' =>
-                    [
-                        ['misdemeanor'],
-                        ['crime_sceneID'],
-                        ['investigator_id'],
-                        ['court_id']
-                    ],
-                    'date' =>
-                    [
-                        ['date_reported']
-                    ]
-                ];
-        } else if ($label == 'investigator') {
-            $allowed_ranks = ['Certified Legal Investigator', 'Board Certified Investigator', 'Certified Forensic Investigator', 'Certified Fraud Examiner'];
             $rules =
+            [
+                'required' =>
                 [
-                    'required' =>
-                    [
-                        ['investigator_id'],
-                        ['badge_number'],
-                        ['first_name'],
-                        ['last_name'],
-                        ['rank']
-                    ],
-                    'regex' =>
-                    [
-                        ['badge_number', '/^[0-9]{4,7}$/']
-                    ],
-                    'lengthMax' =>
-                    [
-                        ['first_name', 40],
-                        ['last_name', 40],
-                        ['rank', 80],
-                    ],
-                    'in' =>
-                    [
-                        ['rank', $allowed_ranks]
-                    ],
-                    'min' =>
-                    [
-                        ['investigator_id',1],
-                    ]
-                ];
-        } else if ($label == "offense") {
-            $allowed_classification = ['Felony', 'Misdemeanor', 'White-collar crime', 'Violent crime', 'Property crime', 'Drug crime', 'Cyber-crime',];
-            $rules =
+                    ['offense_id'],
+                    ['name'],
+                    ['description'],
+                    ['classification']
+                ],
+                'lengthMax' =>
                 [
-                    'required' =>
-                    [
-                        ['offense_id'],
-                        ['name'],
-                        ['description'],
-                        ['classification'],
-                    ],
-                    'lengthMax' =>
-                    [
-                        ['name', 40],
-                        ['description', 300],
-                        ['classification', 80],
-                    ],
-                    'in' =>
-                    [
-                        ['classification', $allowed_classification]
-                    ]
-                ];
+                    ['name', 40],
+                    ['description', 300],
+                    ['classification', 80]
+                ],
+                'in' =>
+                [
+                    ['classification', $allowed_classification]
+                ]
+            ];
         }
+        else if ($label == 'prosecutor' || $label == 'defendant')
+        {
+            $allowed_specialization =
+            [
+                'Admiralty Law',
+                'Business Law',
+                'Corporate Law',
+                'Family Law',
+                'Constitutional Law',
+                'Criminal Law',
+                'Immigration Law',
+                'Environmental Law',
+                'First Amendment Law',
+                'Health Care Law',
+                'Intellectual Property Law',
+                'Joint Degree Programs',
+                'Patent Law'
+            ];
 
+            $label_id = '';
+            $label == 'prosecutor' ? $label_id = 'prosecutor_id' : $label_id = 'defendant_id';
+
+            $rules =
+            [
+                'required' =>
+                [
+                    [$label_id],
+                    ['first_name'],
+                    ['last_name'],
+                    ['age'],
+                    ['specialization']
+                ],
+                'min' =>
+                [
+                    [$label_id, 1],
+                    ['age', 21]
+                ],
+                'max' =>
+                [
+                    ['age', 99]
+                ],
+                'lengthMax' =>
+                [
+                    ['first_name', 100],
+                    ['last_name', 100]
+                ],
+                'numeric' =>
+                [
+                    ['age']
+                ],
+                'in' =>
+                [
+                    ['specialization', $allowed_specialization]
+                ]
+            ];
+        }
 
         $validator = new Validator($data);
         $validator->rules($rules);

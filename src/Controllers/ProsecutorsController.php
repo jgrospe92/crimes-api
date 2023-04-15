@@ -193,11 +193,37 @@ class ProsecutorsController extends BaseController
         return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
-    public function handlePutProsecutor(Request $request, Response $response, array $uri_args)
+    public function handlePutProsecutor(Request $request, Response $response)
     {
-        $prosecutor_id = $uri_args['prosecutor_id'];
         $data = $request->getParsedBody();
-        return $this->prosecutor_model->putProsecutor($prosecutor_id, $data);
+
+        // Check if the JSON body is empty
+        if (!$data)
+        { 
+            throw new HttpBadRequestException($request, 'No data to be added.');
+        }
+
+        foreach ($data as $prosecutor)
+        {
+            // Check if $data is empty
+            if (!$prosecutor)
+            {
+                throw new HttpBadRequestException($request, 'No data to be added.');
+            }
+
+            if (!ValidateHelper::validatePutMethods($prosecutor, 'prosecutor'))
+            {
+                throw new HttpBadRequestException($request, 'Either you are missing needed columns, or you are passing in invalid values. Refer to documentation.');
+            }
+
+            if (!$this->prosecutor_model->checkIfResourceExists('prosecutors', ['prosecutor_id' => $prosecutor['prosecutor_id']]))
+            {
+                throw new HttpNotFoundException($request, 'Either the requested prosecutor does not exist, or it has been deleted.');
+            }
+            $this->prosecutor_model->putProsecutor($prosecutor);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_OK);
     }
 
     public function handleDeleteProsecutor(Request $request, Response $response)

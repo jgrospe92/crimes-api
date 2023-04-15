@@ -87,9 +87,11 @@ class DefendantsModel extends BaseModel
         return $this->insert($this->table_name, $data);
     }
 
-    public function putDefendant($defendant_id, array $data)
+    public function putDefendant($defendant)
     {
-        return $this->update($this->table_name, $data, ['defendant_id' => $defendant_id]);
+        $defendant_id = $defendant['defendant_id'];
+        unset($defendant['defendant_id']);
+        $this->update($this->table_name, $defendant, ['defendant_id' => $defendant_id]);
     }
 
     public function deleteDefendant()

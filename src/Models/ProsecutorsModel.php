@@ -88,9 +88,11 @@ class ProsecutorsModel extends BaseModel
         return $this->insert($this->table_name, $data);
     }
 
-    public function putProsecutor($prosecutor_id, array $data)
+    public function putProsecutor($prosecutor)
     {
-        return $this->update($this->table_name, $data, ['prosecutor_id' => $prosecutor_id]);
+        $prosecutor_id = $prosecutor['prosecutor_id'];
+        unset($prosecutor['prosecutor_id']);
+        return $this->update($this->table_name, $prosecutor, ['prosecutor_id' => $prosecutor_id]);
     }
 
     public function deleteProsecutor()

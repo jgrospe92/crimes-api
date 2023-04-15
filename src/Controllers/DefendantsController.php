@@ -10,6 +10,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\Exceptions\HttpUnprocessableContent;
 
 // Helpers
@@ -193,11 +194,37 @@ class DefendantsController extends BaseController
         return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
-    public function handlePutDefendant(Request $request, Response $response, array $uri_args)
+    public function handlePutDefendant(Request $request, Response $response)
     {
-        $defendant_id = $uri_args['defendant_id'];
         $data = $request->getParsedBody();
-        return $this->defendant_model->putDefendant($defendant_id, $data);
+
+        // Check if the JSON body is empty
+        if (!$data)
+        { 
+            throw new HttpBadRequestException($request, 'No data to be added.');
+        }
+
+        foreach ($data as $defendant)
+        {
+            // Check if $data is empty
+            if (!$defendant)
+            {
+                throw new HttpBadRequestException($request, 'No data to be added.');
+            }
+
+            if (!ValidateHelper::validatePutMethods($defendant, 'defendant'))
+            {
+                throw new HttpBadRequestException($request, 'Either you are missing needed columns, or you are passing in invalid values. Refer to documentation.');
+            }
+
+            if (!$this->defendant_model->checkIfResourceExists('defendants', ['defendant_id' => $defendant['defendant_id']]))
+            {
+                throw new HttpNotFoundException($request, 'Either the requested defendant does not exist, or it has been deleted.');
+            }
+            $this->defendant_model->putDefendant($defendant);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_OK);
     }
 
     public function handleDeleteDefendant(Request $request, Response $response)
