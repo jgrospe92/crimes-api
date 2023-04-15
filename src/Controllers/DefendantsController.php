@@ -10,7 +10,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
-use Vanier\Api\exceptions\HttpUnprocessableContent;
+use Vanier\Api\Exceptions\HttpUnprocessableContent;
 
 // Helpers
 use Vanier\Api\Helpers\ValidateHelper;
@@ -155,17 +155,42 @@ class DefendantsController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
+    /**
+     * Summary of handlePostDefendants
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpBadRequestException
+     * @return Response
+     */
     public function handlePostDefendants(Request $request, Response $response)
     {
         $data = $request->getParsedBody();
-        var_dump($data);
-        exit;
-        // foreach ($data as $key => $defendant)
-        // {
-        //     $this->defendant_model->postDefendant($defendant);
-        // }
 
-        // return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        // Check if the JSON body is empty
+        if (!$data)
+        { 
+            throw new HttpBadRequestException($request, 'No data to be added.');
+        }
+
+        foreach ($data as $defendant)
+        {
+            // Check if $data is empty
+            if (!$data)
+            {
+                throw new HttpBadRequestException($request, 'No data to be added.');
+            }
+            
+            foreach ($data as $defendant) 
+            {
+                if (!ValidateHelper::validatePostMethods($defendant, "prosecutor")) 
+                {
+                    throw new HttpBadRequestException($request, 'Either you are missing needed columns, or you are passing in invalid values. Refer to documentation.');
+                }
+                $this->defendant_model->postDefendant($defendant);
+            }
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
     public function handlePutDefendant(Request $request, Response $response, array $uri_args)
