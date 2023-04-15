@@ -4,12 +4,12 @@ namespace Vanier\Api\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Fig\Http\Message\StatusCodeInterface;
 
 // HTTP exceptions
 use Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
-use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 
 // Helpers
@@ -35,6 +35,8 @@ class ProsecutorsController extends BaseController
         'pageSize',
         'sort'
     ];
+
+    private $column_names = ['first_name', 'last_name', 'age', 'specialization'];
 
     /**
      * Summary of __construct
@@ -153,5 +155,70 @@ class ProsecutorsController extends BaseController
         if (!$data['prosecutors']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
+    }
+
+    public function handlePostProsecutors(Request $request, Response $response)
+    {
+        $data = $request->getParsedBody();
+
+        // Check if $data is empty
+        if (!$data) 
+        { 
+            throw new HttpBadRequestException($request, 'No columns to be added into the database.');
+        }
+
+        
+        foreach ($data as $prosecutor)
+        {
+            // Check if $prosecutors are empty in $data
+            if (!$prosecutor) 
+            { 
+                throw new HttpBadRequestException($request, 'One or more objects have no columns to be added into the database.'); 
+            }
+
+            // Check for missing columns
+            $missing_columns = "";
+            foreach ($this->column_names as $column)
+            {
+                if (!isset($prosecutor[$column])) { $missing_columns .= $column . ", "; }
+            }
+
+            if (!empty($missing_columns)) 
+            {
+                throw new HttpBadRequestException($request, 'Missing columns: ' . $missing_columns); 
+            }
+
+            // Check for missing values in the columns
+            $missing_values = "";
+            foreach ($prosecutor as $key => $column)
+            {
+                if (strlen($column) == 0) { $missing_values .= $key . ", "; }
+                
+            }
+
+            if (!empty($missing_values))
+            {
+                throw new HttpBadRequestException($request, 'Missing values for: ' . $missing_values);
+            }
+        }
+
+        foreach($data as $prosecutor)
+        {
+            $this->prosecutor_model->postProsecutor($prosecutor);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+    }
+
+    public function handlePutProsecutor(Request $request, Response $response, array $uri_args)
+    {
+        $prosecutor_id = $uri_args['prosecutor_id'];
+        $data = $request->getParsedBody();
+        return $this->prosecutor_model->putProsecutor($prosecutor_id, $data);
+    }
+
+    public function handleDeleteProsecutor(Request $request, Response $response)
+    {
+        
     }
 }

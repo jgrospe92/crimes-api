@@ -7,7 +7,8 @@ namespace Vanier\Api\Models;
  */
 class ProsecutorsModel extends BaseModel
 {
-    private $sql = "SELECT * FROM prosecutors WHERE 1 ";
+    private $table_name;
+    private $sql;
 
     /**
      * Summary of __construct
@@ -15,6 +16,8 @@ class ProsecutorsModel extends BaseModel
     public function __construct() 
     {
         parent::__construct();
+        $this->table_name = 'prosecutors';
+        $this->sql = "SELECT * FROM $this->table_name WHERE 1 ";
     }
 
     /**
@@ -78,5 +81,20 @@ class ProsecutorsModel extends BaseModel
         }
 
         return $this->paginate($this->sql, $query_values,'prosecutors');
+    }
+
+    public function postProsecutor(array $data)
+    {
+        return $this->insert($this->table_name, $data);
+    }
+
+    public function putProsecutor($prosecutor_id, array $data)
+    {
+        return $this->update($this->table_name, $data, ['prosecutor_id' => $prosecutor_id]);
+    }
+
+    public function deleteProsecutor()
+    {
+        
     }
 }
