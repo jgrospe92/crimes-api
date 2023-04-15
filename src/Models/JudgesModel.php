@@ -80,10 +80,10 @@ class JudgesModel extends BaseModel
 
     /**
      * Inserts a Judge in the database
-     * @param array $judge_data
+     * @param $judge
      */
-    public function createJudge(array $judge_data) {
-        return $this->insert($this->table_name, $judge_data);
+    public function createJudge($judge) {
+        return $this->insert('judges', $judge);
     }
 
      /**

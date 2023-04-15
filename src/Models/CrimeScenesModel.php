@@ -70,4 +70,12 @@ class CrimeScenesModel extends BaseModel
 
         return $this->run($sql, $query_values)->fetchAll();
     }
+
+     /**
+     * Inserts a crime scene in the database
+     * @param $crime_scene
+     */
+    public function createCrimeScene($crime_scene) {
+        return $this->insert('crime_scenes', $crime_scene);
+    }
 }

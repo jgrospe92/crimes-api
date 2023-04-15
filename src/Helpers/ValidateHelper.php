@@ -408,51 +408,6 @@ class ValidateHelper
         }
     }
 
-    public static function validatePostJudges(array $data, string $label)
-    {
-        $body = array("description" => $data['description']);
-        if ($label == "judges")
-        {
-            $rules = 
-            [
-               
-                'required' => 'description',
-                 // 'min' => 
-                // [
-                //     ['misdemeanor', 0]
-                // ],
-                // 'lengthMax' =>
-                // [
-                //     ['description', 300]
-                // ],
-                // 'numeric' => 
-                // [
-                //     ['misdemeanor'],
-                //     ['crime_sceneID'],
-                //     ['investigator_id'],
-                //     ['court_id']
-                // ],
-                // 'date' =>
-                // [
-                //     ['date_reported']
-                // ]
-            ]; 
-
-        }  
-
-        $validator = new Validator($body);
-        $validator->rule("required", 'description')->message('{field} is required')->label('Desc');
-
-        if ($validator->validate())
-        {
-            echo "not valid";
-            return true;
-        } else {
-            echo "not valid";
-            return false;
-        }
-    }
-
     /**
      * Summary of validatePostMethods
      * @param array $data
@@ -554,8 +509,41 @@ class ValidateHelper
                         ['classification', $allowed_classification]
                     ]
                 ];
+        } else if ($label == 'judge')  {
+            $rules = [
+                'required' => 
+                [
+                    ['first_name'],
+                    ['last_name'],
+                    ['age']
+                ],
+                'lengthMax' => [
+                    ['first_name', 40],
+                    ['last_name', 40]
+                ],
+                'numeric' => [
+                    ['age']
+                ],
+                'min' => [
+                    ['age', 18]
+                ]
+            ];
+        } else if ($label == 'crime_scene') {
+            $rules = [
+                'required' => [
+                    ['province'],
+                    ['city'],
+                    ['street'],
+                    ['building_number']
+                ],
+                'lengthMax' => [
+                    ['province', 40],
+                    ['city', 40],
+                    ['street', 80],
+                    ['building_number', 9]
+                ]
+            ];
         }
-
 
         $validator = new Validator($data);
         $validator->rules($rules);

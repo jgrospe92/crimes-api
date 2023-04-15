@@ -92,3 +92,4 @@ $app->post('/judges', [JudgesController::class, 'createJudge']);
 
 $app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
 $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);
+$app->post('/crime_scenes', [CrimeScenesController::class, 'createCrimeScene']);

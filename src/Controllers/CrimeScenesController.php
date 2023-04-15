@@ -15,6 +15,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
+use Vanier\Api\exceptions\HttpConflict;
 
 /**
  * Summary of CrimeScenesController
@@ -108,6 +109,52 @@ class CrimeScenesController extends BaseController
         }
 
         return $this->prepareOkResponse($response, $data);
+    }
+
+    /**
+     * This function creates a new crime scene
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return mixed response
+     */
+    public function createCrimeScene(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data
+        if (!ValidateHelper::validatePostMethods($data, "crime_scene")) {
+            $exception = new HttpConflict($request, "Something is not valid");
+            $payload['statusCode'] = $exception->getCode();
+            $payload['error']['description'] = $exception->getDescription();
+            $payload['error']['message'] = $exception->getMessage();
+
+            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_NOT_ACCEPTABLE);
+        }
+
+        // Create a new crime scene
+        $newCrimeScene = [
+            'province' => $data['province'],
+            'city' => $data['city'],
+            'street' => $data['street'],
+            'building_number' => $data['building_number']
+        ];
+
+        $this->crime_scenes_model->createCrimeScene($newCrimeScene);
+
+        $reponseMessage = "You have successfully created a new crime scene.";
+        $responseData = [
+            'message' => $reponseMessage,
+            'crime_scene' => $newCrimeScene
+        ];
+        
+        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
     /**

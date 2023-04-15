@@ -16,6 +16,7 @@ use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\exceptions\HttpNotAcceptableException;
+use Vanier\Api\exceptions\HttpConflict;
 
 /**
  * Summary of JudgesController
@@ -120,18 +121,43 @@ class JudgesController extends BaseController
      */
     public function createJudge(Request $request, Response $response)
     {
-        $judges_data = $request->getParsedBody();
+        // Retrieve data
+        $data = $request->getParsedBody();
 
-        // Validate the data
-        if ($judges_data === null) {
-            throw new HttpNotAcceptableException($request, "Please enter the required data");
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
         }
 
-        // validate the body
-        ValidateHelper::validatePostJudges($judges_data, 'judges');
+        // Validate the received data
+        if (!ValidateHelper::validatePostMethods($data, "judge")) {
+            $exception = new HttpConflict($request);
+            $payload['statusCode'] = $exception->getCode();
+            $payload['error']['description'] = $exception->getDescription();
+            $payload['error']['message'] = $exception->getMessage();
 
-        return $this->preparedResponse($response, $judges_data, StatusCodeInterface::STATUS_CREATED);
+            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Create a new judge
+        $newJudge = [
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'age' => $data['age']
+        ];
+
+        $this->judges_model->createJudge($newJudge);
+
+        $reponseMessage = "You have successfully created a new judge.";
+        $responseData = [
+            'message' => $reponseMessage,
+            'judge' => $newJudge
+        ];
+        
+
+        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
+
 
     /**
     * Validates the filters for retrieving all victims
