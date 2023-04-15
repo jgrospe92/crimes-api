@@ -140,4 +140,15 @@ class VictimsModel extends BaseModel
         return $this->insert('victims', $victim);
     }
 
+    /**
+     * Summary of updateVictim
+     * @param mixed $victim
+     * @return void
+     */
+    public function updateVictim($victim, $victim_id)
+    {
+        unset($victim['victim_id']);
+        return $this->update('victims', $victim, ['victim_id' => $victim_id]);
+    }
+
 }

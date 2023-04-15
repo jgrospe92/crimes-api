@@ -158,6 +158,55 @@ class JudgesController extends BaseController
         return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
+    public function updateJudge(Request $request, Response $response, array $args)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // Check if data is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data
+        if (!ValidateHelper::validatePutMethods($data, "judge")) {
+            $exception = new HttpConflict($request, "Something is not valid");
+            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Check if judge_id is provided in the URI
+        $judge_id = $args['judge_id'] ?? null;
+        if (!$judge_id) {
+            $exception = new HttpConflict($request, "Please provide judge_id in the URI");
+            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Check if the judge resource exists
+        $judge = $this->judges_model->handleGetJudgeById($judge_id);
+        if (!$judge) {
+            $exception = new HttpConflict($request);
+            $exception->setDescription("judge_id is invalid");
+            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Update the judge resource
+        $updatedJudge = [
+            'judge_id' => $judge_id,
+            'first_name' => $data['first_name'] ?? $judge['first_name'],
+            'last_name' => $data['last_name'] ?? $judge['last_name'],
+            'age' => $data['age'] ?? $judge['age'],
+        ];
+
+        $this->judges_model->updateJudge($updatedJudge);
+
+        $reponseMessage = "You have successfully updated the judge.";
+        $responseData = [
+            'message' => $reponseMessage,
+            'judge' => $updatedJudge,
+        ];
+
+        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
+    }
 
     /**
     * Validates the filters for retrieving all victims

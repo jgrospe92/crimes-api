@@ -87,24 +87,14 @@ class JudgesModel extends BaseModel
     }
 
      /**
-     * Updates a Judges
-     * @param int $id 
-     * @param mixed $data 
+     * Summary of updateJudge
+     * @param mixed $judge
+     * @return void
      */
-    public function updateJudges($id, $data) {
-        $this->update($this->table_name, $data, ['judge_id' => $id]);
-    }
-
-    /**
-     * Delete a Judge
-     * @param int $id
-     */
-    public function deleteJudge($id)
+    public function updateJudge($judge)
     {
-        // Delete the customer from the database
-        $result = $this->delete($this->table_name, ['judge_id' => $id]);
-
-        // Return the number of rows affected
-        return $result->rowCount();
+        $judge_id = $judge['judge_id'];
+        unset($judge['judge_id']);
+        $this->update('judges', $judge ,['judge_id'=>$judge_id]);
     }
 }

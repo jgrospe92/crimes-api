@@ -178,6 +178,47 @@ class VictimsController extends BaseController
         return $this->prepareOkResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
+    public function updateVictim(Request $request, Response $response, $args)
+    {
+        // Get victim_id from URI path
+        $victim_id = $args['victim_id'];
+
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // Check if data is empty, throw an exception otherwise
+        if (empty($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data
+        if (!ValidateHelper::validatePutMethods($data, "victim")) {
+            $exception = new HttpConflict($request, "Something is not valid");
+            return $this->parsedError($response, $data,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Get current victim data
+        $currentVictim = $this->victims_model->handleGetVictimById($victim_id);
+
+        // Update the resource
+        $updatedVictim = [
+            'first_name' => $data['first_name'] ?? $currentVictim['first_name'],
+            'last_name' => $data['last_name'] ?? $currentVictim['last_name'],
+            'age' => $data['age'] ?? $currentVictim['age'],
+            'marital_status' => $data['marital_status'] ?? $currentVictim['marital_status'],
+            'prosecutor_id' => $data['prosecutor_id'] ?? $currentVictim['prosecutor_id'],
+        ];
+        $this->victims_model->updateVictim($updatedVictim, $victim_id);
+
+        $responseMessage = "You have successfully updated the victim.";
+        $responseData = [
+            'message' => $responseMessage,
+            'victim' => $updatedVictim
+        ];
+
+        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_OK);
+    }
+
     /**
     * Validates the filters for retrieving all victims
     *

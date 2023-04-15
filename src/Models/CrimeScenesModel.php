@@ -78,4 +78,16 @@ class CrimeScenesModel extends BaseModel
     public function createCrimeScene($crime_scene) {
         return $this->insert('crime_scenes', $crime_scene);
     }
+
+    /**
+     * Summary of updateCrimeScene
+     * @param mixed $crime_scene
+     * @return void
+     */
+    public function updateCrime_Scene($crime_scene)
+    {
+        $crime_scene_id = $crime_scene['crime_sceneID'];
+        unset($crime_scene['crime_sceneID']);
+        $this->update('crime_scenes', $crime_scene ,['crime_sceneID'=>$crime_scene_id]);
+    }
 }
