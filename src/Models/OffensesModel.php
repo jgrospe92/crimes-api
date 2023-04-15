@@ -82,4 +82,26 @@ class OffensesModel extends BaseModel
 
         return $this->paginate($sql, $query_values, 'offenses');
     }
+
+    /**
+     * Summary of updateOffense
+     * @param mixed $offense
+     * @return void
+     */
+    public function updateOffense($offense)
+    {
+        $offense_id = $offense['offense_id'];
+        unset($offense['offense_id']);
+        $this->update('offenses', $offense, ['offense_id'=>$offense_id]);
+    }
+
+    /**
+     * Summary of createOffenses
+     * @param mixed $offense
+     * @return bool|string
+     */
+    public function createOffenses($offense)
+    {
+        return $this->insert('offenses', $offense);
+    }
 }

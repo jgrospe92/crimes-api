@@ -375,4 +375,19 @@ class BaseModel
         }
         return 0; 
     }
+
+        /**
+     * Summary of checkIfResourceExists
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return bool
+     */
+    public function checkIfResourceExists($table, $whereClause): bool
+    {
+
+        if (!$this->getById($table, $whereClause)) {
+            return false;
+        }
+        return true;
+    }
 }

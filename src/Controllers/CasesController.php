@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 // exceptions
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
@@ -24,7 +25,7 @@ class CasesController extends BaseController
     private string $CASES_TABLE = 'cases';
     private array $FILTER_PARAMS = [
         'description', 'misdemeanor', 'classification', 'name',
-        'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize','time_stamp'
+        'crime_sceneID', 'investigator_id', 'court_id', 'date_from', 'date_to', 'sort_by', 'page', 'pageSize', 'time_stamp'
     ];
 
     /**
@@ -51,8 +52,7 @@ class CasesController extends BaseController
             throw new HttpBadRequest($request, "please enter a valid id");
         }
         $filters = $request->getQueryParams();
-        if ($filters)
-        {
+        if ($filters) {
             throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
         }
         $whereClause = ['case_id' => $case_id];
@@ -83,8 +83,8 @@ class CasesController extends BaseController
             throw new HttpBadRequest($request, "please enter a valid id");
         }
         $whereClause = ['case_id' => $case_id];
-          // validate filters
-          if ($filters) {
+        // validate filters
+        if ($filters) {
             foreach ($filters as $key => $value) {
                 if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
@@ -121,8 +121,8 @@ class CasesController extends BaseController
             throw new HttpBadRequest($request, "please enter a valid id");
         }
         $whereClause = ['case_id' => $case_id];
-          // validate filters
-          if ($filters) {
+        // validate filters
+        if ($filters) {
             foreach ($filters as $key => $value) {
                 if (!ValidateHelper::validateParams($key, $this->FILTER_PARAMS)) {
                     throw new HttpUnprocessableContent($request, 'Invalid query parameter: ' . ' {' . $key . '}');
@@ -184,7 +184,7 @@ class CasesController extends BaseController
         }
         return $this->preparedResponse($response, $data);
     }
-    
+
     /**
      * Summary of handleGetCases
      * @param Request $request
@@ -215,21 +215,19 @@ class CasesController extends BaseController
             }
         }
         // validate date
-        if (isset($filters['date_from']))
-        {
+        if (isset($filters['date_from'])) {
             $date_format = $filters['date_from'];
-            if (!ValidateHelper::validateDateFormat($date_format)){
+            if (!ValidateHelper::validateDateFormat($date_format)) {
                 throw new HttpUnprocessableContent($request, 'Invalid date: ' . ' {' . $date_format . '}');
             }
         }
-        if (isset($filters['date_to']))
-        {
+        if (isset($filters['date_to'])) {
             $date_format = $filters['date_to'];
-            if (!ValidateHelper::validateDateFormat($date_format)){
+            if (!ValidateHelper::validateDateFormat($date_format)) {
                 throw new HttpUnprocessableContent($request, 'Invalid date: ' . ' {' . $date_format . '}');
             }
         }
-        if (isset($filters['misdemeanor'])){
+        if (isset($filters['misdemeanor'])) {
 
             if (!ValidateHelper::validateNumericInput(['misdemeanor' => $filters['misdemeanor']])) {
                 throw new HttpBadRequest($request, "expected numeric but received alpha");
@@ -266,5 +264,170 @@ class CasesController extends BaseController
 
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
+    }
+
+    // POST METHOD
+    /**
+     * Summary of handlePostCases
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpConflict
+     * @return Response
+     * TODO refactor
+     */
+    public function handlePostCases(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+        // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+        foreach ($data as $case) {
+            // validate if the provided data is correct
+            if (!ValidateHelper::validatePostMethods($case, "cases")) {
+                $exception = new HttpConflict($request);
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // checks if all Foreign keys exist
+            if (!$this->case_model->checkIfResourceExists('crime_scenes', ['crime_sceneID' => $case['crime_sceneID']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("Crime-sceneID is invalid");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            if (!$this->case_model->checkIfResourceExists('investigators', ['investigator_id' => $case['investigator_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("investigator_id is invalid");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            if (!$this->case_model->checkIfResourceExists('courts', ['court_id' => $case['court_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("court_id is invalid");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            // Uri Relationships
+            // validate to make sure keys are unique
+            if (!ValidateHelper::arrayIsUnique($case['offense_id']) || !ValidateHelper::arrayIsUnique($case['victim_id']) || !ValidateHelper::arrayIsUnique($case['offender_id']))
+            {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("duplicate keys are not allowed");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            foreach ($case['offense_id'] as $id) {
+                if (!ValidateHelper::validateNumIsPositive($id) || !$this->case_model->checkIfResourceExists('offenses', ['offense_id' => $id])) {
+                    $exception = new HttpConflict($request);
+                    $exception->setDescription("offense_id is invalid, make sure it exists or not a negative number");
+                    return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+                }
+            }
+            foreach ($case['victim_id'] as $id) {
+                if (!ValidateHelper::validateNumIsPositive($id) || !$this->case_model->checkIfResourceExists('victims', ['victim_id' => $id])) {
+                    $exception = new HttpConflict($request);
+                    $exception->setDescription("victim_id is invalid, make sure it exists or not a negative number");
+                    return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+                }
+            }
+            foreach ($case['offender_id'] as $id) {
+                if (!ValidateHelper::validateNumIsPositive($id) || !$this->case_model->checkIfResourceExists('offenders', ['offender_id' => $id])) {
+                    $exception = new HttpConflict($request);
+                    $exception->setDescription("offender_id is invalid, make sure it exists or not a negative number");
+                    return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+                }
+            }
+
+            try {
+                $this->case_model->createCases($case);
+            } catch (Exception $e) {
+                throw new HttpConflict($request, "Remove case_id from your body");
+            }
+        }
+
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
+
+    /**
+     * Summary of handlePutCases
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpConflict
+     * @throws HttpBadRequest
+     * @return Response
+     * TODO refactor
+     */
+    public function handlePutCases(Request $request, Response $response)
+    {
+        // Retrieve body
+        $data = $request->getParsedBody();
+        // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        foreach ($data as $case) {
+            // validate if the provided data is correct
+            if (!ValidateHelper::validatePutMethods($case, "cases")) {
+                $exception = new HttpConflict($request);
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // validate if the case_id exists
+            if (!$this->case_model->checkIfResourceExists('cases', ['case_id' => $case['case_id']])) {
+
+                $exception = new HttpConflict($request);
+                $exception->setDescription("case_id is invalid");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // checks if all Foreign keys exist
+            if (!$this->case_model->checkIfResourceExists('crime_scenes', ['crime_sceneID' => $case['crime_sceneID']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("Crime-sceneID is invalid");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            if (!$this->case_model->checkIfResourceExists('investigators', ['investigator_id' => $case['investigator_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("investigator_id is invalid");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            if (!$this->case_model->checkIfResourceExists('courts', ['court_id' => $case['court_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("court_id is invalid");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // URi Relationships
+            // validate to make sure keys are unique
+            if (!ValidateHelper::arrayIsUnique($case['offense_id']) || !ValidateHelper::arrayIsUnique($case['victim_id']) || !ValidateHelper::arrayIsUnique($case['offender_id']))
+            {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("duplicate keys are not allowed");
+                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            foreach ($case['offense_id'] as $id) {
+                if (!ValidateHelper::validateNumIsPositive($id) || !$this->case_model->checkIfResourceExists('offenses', ['offense_id' => $id])) {
+                    $exception = new HttpConflict($request);
+                    $exception->setDescription("offense_id is invalid, make sure it exists or not a negative number");
+                    return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+                }
+            }
+            foreach ($case['victim_id'] as $id) {
+                if (!ValidateHelper::validateNumIsPositive($id) || !$this->case_model->checkIfResourceExists('victims', ['victim_id' => $id])) {
+                    $exception = new HttpConflict($request);
+                    $exception->setDescription("victim_id is invalid, make sure it exists or not a negative number");
+                    return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+                }
+            }
+            foreach ($case['offender_id'] as $id) {
+                if (!ValidateHelper::validateNumIsPositive($id) || !$this->case_model->checkIfResourceExists('offenders', ['offender_id' => $id])) {
+                    $exception = new HttpConflict($request);
+                    $exception->setDescription("offender_id is invalid, make sure it exists or not a negative number");
+                    return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+                }
+            }
+
+            $this->case_model->updateCase($case);
+        }
+
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
     }
 }
