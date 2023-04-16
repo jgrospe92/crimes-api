@@ -212,9 +212,40 @@ class VictimsController extends BaseController
         return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 
-    public function deleteVictims(Request $request, Response $response, $args)
+    public function deleteVictims(Request $request, Response $response, array $args)
     {
-        
+        $victim_ids = $request->getParsedBody()['victim_id'];
+
+        // Check if ids are provided
+        if (empty($victim_ids) || !is_array($victim_ids)) {
+            throw new HttpConflict($request, "Please provide an id");
+        }
+
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($victim_ids)) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+
+        // Check if each ID exists before deleting
+        foreach ($victim_ids as $victim_id) {
+            if (!$this->victims_model->victimExists($victim_id)) {
+                throw new HttpConflict($request, "Victim with id $victim_id does not exist");
+            }
+        }
+
+        // Delete the judges
+        $deletedCount = 0;
+        foreach ($victim_ids as $victim_id) {
+            $deletedCount++;
+            $this->victims_model->deleteVictim($victim_id);
+        }
+
+        // Prepare response message
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount victim(s).",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 
     /**

@@ -71,6 +71,15 @@ class CrimeScenesModel extends BaseModel
         return $this->run($sql, $query_values)->fetchAll();
     }
 
+    public function CrimeSceneExists($crime_sceneID) {
+        $sql = "SELECT COUNT(*) FROM $this->table_name WHERE crime_sceneID = :crime_sceneID";
+        $query_values = [":crime_sceneID" => $crime_sceneID];
+    
+        $result = $this->run($sql, $query_values)->fetchColumn();
+    
+        return ($result > 0);
+    }
+
      /**
      * Inserts a crime scene in the database
      * @param $crime_scene
@@ -99,5 +108,17 @@ class CrimeScenesModel extends BaseModel
             unset($crime_scene['crime_sceneID']);
             $this->update('crime_scenes', $crime_scene, ['crime_sceneID' => $crime_sceneID]);
         }
+    }
+
+    /**
+     * Summary of deleteCrimeScene
+     * @param mixed $crime_sceneID
+     * @return void
+     */
+    public function deleteJudge($crime_sceneID)
+    {
+        $where = ['crime_sceneID' => $crime_sceneID];
+        $deletedCount = $this->delete($this->table_name, $where);
+        return $deletedCount;
     }
 }

@@ -132,6 +132,15 @@ class VictimsModel extends BaseModel
         return ['Victim' => $victim_data, 'Prosecutor' => $prosecutor_data];
     }
 
+    public function victimExists($victim_id) {
+        $sql = "SELECT COUNT(*) FROM $this->table_name WHERE victim_id = :victim_id";
+        $query_values = [":victim_id" => $victim_id];
+    
+        $result = $this->run($sql, $query_values)->fetchColumn();
+    
+        return ($result > 0);
+    }
+
      /**
      * Inserts a Victim in the database
      * @param $victim
@@ -164,7 +173,9 @@ class VictimsModel extends BaseModel
      */
     public function deleteVictim($victim_id)
     {
-        return $this->delete('victims', ['victim_id' => $victim_id]);
+        $where = ['victim_id' => $victim_id];
+        $deletedCount = $this->delete($this->table_name, $where);
+        return $deletedCount;
     }
 
 

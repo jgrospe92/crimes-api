@@ -190,6 +190,43 @@ class CrimeScenesController extends BaseController
         return $this->preparedResponse($response, $reponseMessage, StatusCodeInterface::STATUS_OK);
     }
 
+    public function deleteCrimeScenes(Request $request, Response $response, array $args)
+    {
+        $crime_scene_ids = $request->getParsedBody()['crime_sceneID'];
+
+        // Check if ids are provided
+        if (empty($crime_scene_ids) || !is_array($crime_scene_ids)) {
+            throw new HttpConflict($request, "Please provide an id");
+        }
+
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($crime_scene_ids)) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+
+        // Check if each ID exists before deleting
+        foreach ($crime_scene_ids as $crime_scene_id) {
+            if (!$this->crime_scenes_model->CrimeSceneExists($crime_scene_id)) {
+                throw new HttpConflict($request, "CrimeScenes with id $crime_scene_id does not exist");
+            }
+        }
+
+        // Delete the judges
+        $deletedCount = 0;
+        foreach ($crime_scene_ids as $crime_scene_id) {
+            $deletedCount++;
+            $this->crime_scenes_model->deleteJudge($crime_scene_id);
+        }
+
+        // Prepare response message
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount crime(s).",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
+    }
+
+
     /**
     *
     * @param array $filters
