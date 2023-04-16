@@ -178,49 +178,38 @@ class VictimsController extends BaseController
         return $this->prepareOkResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
-    public function updateVictim(Request $request, Response $response, $args)
+    public function updateVictims(Request $request, Response $response)
     {
         // Retrieve data
         $data = $request->getParsedBody();
 
-        // Check if data is empty, throw an exception otherwise
-        if (empty($data)) {
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
 
-        // Validate the received data
-        if (!ValidateHelper::validatePutMethods($data, "victim")) {
-            $exception = new HttpConflict($request, "Something is not valid");
-            return $this->parsedError($response, $data,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+        // Validate the received data for each victim
+        foreach ($data['victims'] as $victim) {
+            if (!ValidateHelper::validatePutMethods($victim, 'victim')) {
+                $exception = new HttpConflict($request, "Something is not valid");
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
         }
 
-        $updatedVictims = [];
-        foreach ($data as $victimData) {
-            // Get victim_id from victim data
-            $victim_id = $victimData['victim_id'];
-        
-            // Update the victim data
-            $updatedVictim = [
-                'victim_id' => $victim_id,
-                'first_name' => $victimData['first_name'] ?? null,
-                'last_name' => $victimData['last_name'] ?? null,
-                'age' => $victimData['age'] ?? null,
-                'marital_status' => $victimData['marital_status'] ?? null,
-                'prosecutor_id' => $victimData['prosecutor_id'] ?? null,
-            ];
-        
-            $updatedVictims[] = $updatedVictim;
-        }
-        
-        $this->victims_model->updateVictims($updatedVictims);
+        // Update the victims
+        $victims = $data['victims'];
+        $this->victims_model->updateVictims($victims);
 
-        $responseMessage = "You have successfully updated the victims.";
-        $responseData = [
-            'message' => $responseMessage,
-            'victims' => $updatedVictims
+        $responseMessage = [
+            "message" => "You have successfully updated the victims.",
+            "victims" => $victims
         ];
 
-        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_OK);
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 
     public function deleteVictims(Request $request, Response $response, $args)

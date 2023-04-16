@@ -140,14 +140,17 @@ class VictimsModel extends BaseModel
         return $this->insert('victims', $victim);
     }
 
-    /**
-     * Summary of updateVictim
+     /**
+     * Summary of updateVictims
      * @param mixed $victim
      * @return void
      */
     public function updateVictims($victims)
     {
         foreach ($victims as $victim) {
+            if (!is_array($victim) || !array_key_exists('victim_id', $victim)) {
+                continue;
+            }
             $victim_id = $victim['victim_id'];
             unset($victim['victim_id']);
             $this->update('victims', $victim, ['victim_id' => $victim_id]);

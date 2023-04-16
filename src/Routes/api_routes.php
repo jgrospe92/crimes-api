@@ -86,7 +86,7 @@ $app->get('/defendants/{defendant_id}', [DefendantsController::class, 'handleGet
 $app->get('/victims', [VictimsController::class, 'handleGetAllVictims']);
 $app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimById']);
 $app->post('/victims', [VictimsController::class, 'createVictims']);
-$app->put('/victims', [VictimsController::class, 'updateVictim']);
+$app->put('/victims', [VictimsController::class, 'updateVictims']);
 $app->delete('/victims', [VictimsController::class, 'deleteVictim']);
 
 $app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
