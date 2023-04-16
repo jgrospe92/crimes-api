@@ -192,6 +192,41 @@ class JudgesController extends BaseController
         return $this->preparedResponse($response, $reponseMessage, StatusCodeInterface::STATUS_OK);
     }
 
+    public function deleteJudges(Request $request, Response $response, array $args)
+    {
+        $judgeIds = $request->getParsedBody()['judge_id'];
+
+        // Check if ids are provided
+        if (empty($judgeIds) || !is_array($judgeIds)) {
+            throw new HttpConflict($request, "Please provide an id");
+        }
+
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($judgeIds)) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+
+        // Check if each ID exists before deleting
+        foreach ($judgeIds as $judgeId) {
+            if (!$this->judges_model->judgeExists($judgeId)) {
+                throw new HttpConflict($request, "Judge with id $judgeId does not exist");
+            }
+        }
+
+        // Delete the judges
+        $judgeIdsStr = implode(",", $judgeIds);
+        $deletedCount = $this->judges_model->deleteJudges($judgeIdsStr);
+
+        // Prepare response message
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount judges.",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
+    }
+
+
+
     /**
     * Validates the filters for retrieving all victims
     *

@@ -78,6 +78,15 @@ class JudgesModel extends BaseModel
         return $this->run($sql, $query_values)->fetchAll();
     }
 
+    public function judgeExists($judge_id) {
+        $sql = "SELECT COUNT(*) FROM $this->table_name WHERE judge_id = :judge_id";
+        $query_values = [":judge_id" => $judge_id];
+    
+        $result = $this->run($sql, $query_values)->fetchColumn();
+    
+        return ($result > 0);
+    }
+
     /**
      * Inserts a Judge in the database
      * @param $judge
@@ -101,6 +110,18 @@ class JudgesModel extends BaseModel
             unset($judge['judge_id']);
             $this->update('judges', $judge, ['judge_id' => $judge_id]);
         }
+    }
+
+     /**
+     * Summary of deleteJudges
+     * @param mixed $judgeIds
+     * @return void
+     */
+    public function deleteJudges($judgeIds)
+    {
+        $where = ['judge_id' => $judgeIds];
+        $deletedCount = $this->delete($this->table_name, $where);
+        return $deletedCount;
     }
     
 }
