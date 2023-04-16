@@ -117,9 +117,9 @@ class JudgesModel extends BaseModel
      * @param mixed $judgeIds
      * @return void
      */
-    public function deleteJudges($judgeIds)
+    public function deleteJudge($judgeId)
     {
-        $where = ['judge_id' => $judgeIds];
+        $where = ['judge_id' => $judgeId];
         $deletedCount = $this->delete($this->table_name, $where);
         return $deletedCount;
     }

@@ -214,18 +214,19 @@ class JudgesController extends BaseController
         }
 
         // Delete the judges
-        $judgeIdsStr = implode(",", $judgeIds);
-        $deletedCount = $this->judges_model->deleteJudges($judgeIdsStr);
+        $deletedCount = 0;
+        foreach ($judgeIds as $judgeId) {
+            $deletedCount++;
+            $this->judges_model->deleteJudge($judgeId);
+        }
 
         // Prepare response message
         $responseMessage = [
-            "message" => "You have successfully deleted $deletedCount judges.",
+            "message" => "You have successfully deleted $deletedCount judge(s).",
         ];
 
         return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
-
-
 
     /**
     * Validates the filters for retrieving all victims
