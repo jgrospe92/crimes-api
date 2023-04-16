@@ -15,6 +15,8 @@ use Fig\Http\Message\StatusCodeInterface;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
+use Vanier\Api\exceptions\HttpNotAcceptableException;
+use Vanier\Api\exceptions\HttpConflict;
 
 /**
  * Summary of JudgesController
@@ -108,6 +110,122 @@ class JudgesController extends BaseController
         }
 
         return $this->prepareOkResponse($response, $data);
+    }
+
+    /**
+     * This function creates a judge
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return mixed response
+     */
+    public function createJudge(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data
+        if (!ValidateHelper::validatePostMethods($data, "judge")) {
+            $exception = new HttpConflict($request);
+            $payload['statusCode'] = $exception->getCode();
+            $payload['error']['description'] = $exception->getDescription();
+            $payload['error']['message'] = $exception->getMessage();
+
+            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Create a new judge
+        $newJudge = [
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'age' => $data['age']
+        ];
+
+        $this->judges_model->createJudge($newJudge);
+
+        $reponseMessage = "You have successfully created a new judge.";
+        $responseData = [
+            'message' => $reponseMessage,
+            'judge' => $newJudge
+        ];
+        
+
+        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
+    }
+
+    public function updateJudges(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data for each judge
+        foreach ($data['judges'] as $judge) {
+            if (!ValidateHelper::validatePutMethods($judge, 'judge')) {
+                $exception = new HttpConflict($request, "Something is not valid");
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
+        }
+
+        // Update the judges
+        $judges = $data['judges'];
+        $this->judges_model->updateJudges($judges);
+
+        $reponseMessage = [
+            "message" => "You have successfully updated the judges.",
+            "judges" => $judges
+        ];
+
+        return $this->preparedResponse($response, $reponseMessage, StatusCodeInterface::STATUS_OK);
+    }
+
+    public function deleteJudges(Request $request, Response $response, array $args)
+    {
+        $judgeIds = $request->getParsedBody()['judge_id'];
+
+        // Check if ids are provided
+        if (empty($judgeIds) || !is_array($judgeIds)) {
+            throw new HttpConflict($request, "Please provide an id");
+        }
+
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($judgeIds)) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+
+        // Check if each ID exists before deleting
+        foreach ($judgeIds as $judgeId) {
+            if (!$this->judges_model->judgeExists($judgeId)) {
+                throw new HttpConflict($request, "Judge with id $judgeId does not exist");
+            }
+        }
+
+        // Delete the judges
+        $deletedCount = 0;
+        foreach ($judgeIds as $judgeId) {
+            $deletedCount++;
+            $this->judges_model->deleteJudge($judgeId);
+        }
+
+        // Prepare response message
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount judge(s).",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 
     /**
