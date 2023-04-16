@@ -97,4 +97,4 @@ $app->put('/judges', [JudgesController::class, 'updateJudges']);
 $app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
 $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);
 $app->post('/crime_scenes', [CrimeScenesController::class, 'createCrimeScene']);
-$app->put('/crime_scenes', [CrimeScenesController::class, 'updateCrime_Scenes']);
+$app->put('/crime_scenes', [CrimeScenesController::class, 'updateCrimeScenes']);
