@@ -145,10 +145,24 @@ class VictimsModel extends BaseModel
      * @param mixed $victim
      * @return void
      */
-    public function updateVictim($victim, $victim_id)
+    public function updateVictims($victims)
     {
-        unset($victim['victim_id']);
-        return $this->update('victims', $victim, ['victim_id' => $victim_id]);
+        foreach ($victims as $victim) {
+            $victim_id = $victim['victim_id'];
+            unset($victim['victim_id']);
+            $this->update('victims', $victim, ['victim_id' => $victim_id]);
+        }
     }
+
+    /**
+     * Summary of deleteVictim
+     * @param mixed $victim_id
+     * @return void
+     */
+    public function deleteVictim($victim_id)
+    {
+        return $this->delete('victims', ['victim_id' => $victim_id]);
+    }
+
 
 }

@@ -84,10 +84,20 @@ class CrimeScenesModel extends BaseModel
      * @param mixed $crime_scene
      * @return void
      */
-    public function updateCrime_Scene($crime_scene)
+     /**
+     * Summary of updateCrime_Scenes
+     * @param mixed $crime_scenes
+     * @return void
+     */
+    public function updateCrime_Scenes($crime_scenes)
     {
-        $crime_scene_id = $crime_scene['crime_sceneID'];
-        unset($crime_scene['crime_sceneID']);
-        $this->update('crime_scenes', $crime_scene ,['crime_sceneID'=>$crime_scene_id]);
+        foreach ($crime_scenes as $crime_scene) {
+            if (!is_array($crime_scene) || !array_key_exists('crime_sceneID', $crime_scene)) {
+                continue;
+            }
+            $crime_sceneID = $crime_scene['crime_sceneID'];
+            unset($crime_scene['crime_sceneID']);
+            $this->update('crime_scenes', $crime_scene, ['crime_sceneID' => $crime_sceneID]);
+        }
     }
 }

@@ -158,54 +158,38 @@ class JudgesController extends BaseController
         return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
-    public function updateJudge(Request $request, Response $response, array $args)
+    public function updateJudges(Request $request, Response $response)
     {
         // Retrieve data
         $data = $request->getParsedBody();
 
-        // Check if data is empty or not an array, throw an exception otherwise
+        // check if body is empty or not an array, throw an exception otherwise
         if (empty($data) || !is_array($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
 
-        // Validate the received data
-        if (!ValidateHelper::validatePutMethods($data, "judge")) {
-            $exception = new HttpConflict($request, "Something is not valid");
-            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
+        // Validate the received data for each judge
+        foreach ($data['judges'] as $judge) {
+            if (!ValidateHelper::validatePutMethods($judge, 'judge')) {
+                $exception = new HttpConflict($request, "Something is not valid");
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
         }
 
-        // Check if judge_id is provided in the URI
-        $judge_id = $args['judge_id'] ?? null;
-        if (!$judge_id) {
-            $exception = new HttpConflict($request, "Please provide judge_id in the URI");
-            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
-        }
+        // Update the judges
+        $judges = $data['judges'];
+        $this->judges_model->updateJudges($judges);
 
-        // Check if the judge resource exists
-        $judge = $this->judges_model->handleGetJudgeById($judge_id);
-        if (!$judge) {
-            $exception = new HttpConflict($request);
-            $exception->setDescription("judge_id is invalid");
-            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
-        }
-
-        // Update the judge resource
-        $updatedJudge = [
-            'judge_id' => $judge_id,
-            'first_name' => $data['first_name'] ?? $judge['first_name'],
-            'last_name' => $data['last_name'] ?? $judge['last_name'],
-            'age' => $data['age'] ?? $judge['age'],
+        $reponseMessage = [
+            "message" => "You have successfully updated the judges.",
+            "judges" => $judges
         ];
 
-        $this->judges_model->updateJudge($updatedJudge);
-
-        $reponseMessage = "You have successfully updated the judge.";
-        $responseData = [
-            'message' => $reponseMessage,
-            'judge' => $updatedJudge,
-        ];
-
-        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
+        return $this->preparedResponse($response, $reponseMessage, StatusCodeInterface::STATUS_OK);
     }
 
     /**

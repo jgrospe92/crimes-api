@@ -547,6 +547,7 @@ class ValidateHelper
             $allowed_marital_status = ['married', 'single', 'divorced'];
             $rules = [
                 'required' => [
+                    ['victim_id'],
                     ['first_name'],
                     ['last_name'],
                     ['age'],
@@ -561,7 +562,7 @@ class ValidateHelper
                     ['marital_status', $allowed_marital_status],
                 ],
                 'numeric' => [
-                    ['age', 'prosecutor_id'],
+                    ['age', 'prosecutor_id', 'victim_id'],
                 ],
             ];
         }

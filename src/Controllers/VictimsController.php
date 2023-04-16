@@ -180,9 +180,6 @@ class VictimsController extends BaseController
 
     public function updateVictim(Request $request, Response $response, $args)
     {
-        // Get victim_id from URI path
-        $victim_id = $args['victim_id'];
-
         // Retrieve data
         $data = $request->getParsedBody();
 
@@ -197,26 +194,38 @@ class VictimsController extends BaseController
             return $this->parsedError($response, $data,  $exception, StatusCodeInterface::STATUS_CONFLICT);
         }
 
-        // Get current victim data
-        $currentVictim = $this->victims_model->handleGetVictimById($victim_id);
+        $updatedVictims = [];
+        foreach ($data as $victimData) {
+            // Get victim_id from victim data
+            $victim_id = $victimData['victim_id'];
+        
+            // Update the victim data
+            $updatedVictim = [
+                'victim_id' => $victim_id,
+                'first_name' => $victimData['first_name'] ?? null,
+                'last_name' => $victimData['last_name'] ?? null,
+                'age' => $victimData['age'] ?? null,
+                'marital_status' => $victimData['marital_status'] ?? null,
+                'prosecutor_id' => $victimData['prosecutor_id'] ?? null,
+            ];
+        
+            $updatedVictims[] = $updatedVictim;
+        }
+        
+        $this->victims_model->updateVictims($updatedVictims);
 
-        // Update the resource
-        $updatedVictim = [
-            'first_name' => $data['first_name'] ?? $currentVictim['first_name'],
-            'last_name' => $data['last_name'] ?? $currentVictim['last_name'],
-            'age' => $data['age'] ?? $currentVictim['age'],
-            'marital_status' => $data['marital_status'] ?? $currentVictim['marital_status'],
-            'prosecutor_id' => $data['prosecutor_id'] ?? $currentVictim['prosecutor_id'],
-        ];
-        $this->victims_model->updateVictim($updatedVictim, $victim_id);
-
-        $responseMessage = "You have successfully updated the victim.";
+        $responseMessage = "You have successfully updated the victims.";
         $responseData = [
             'message' => $responseMessage,
-            'victim' => $updatedVictim
+            'victims' => $updatedVictims
         ];
 
         return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_OK);
+    }
+
+    public function deleteVictims(Request $request, Response $response, $args)
+    {
+        
     }
 
     /**

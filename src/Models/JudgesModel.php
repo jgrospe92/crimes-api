@@ -91,10 +91,16 @@ class JudgesModel extends BaseModel
      * @param mixed $judge
      * @return void
      */
-    public function updateJudge($judge)
+    public function updateJudges($judges)
     {
-        $judge_id = $judge['judge_id'];
-        unset($judge['judge_id']);
-        $this->update('judges', $judge ,['judge_id'=>$judge_id]);
+        foreach ($judges as $judge) {
+            if (!is_array($judge) || !array_key_exists('judge_id', $judge)) {
+                continue;
+            }
+            $judge_id = $judge['judge_id'];
+            unset($judge['judge_id']);
+            $this->update('judges', $judge, ['judge_id' => $judge_id]);
+        }
     }
+    
 }

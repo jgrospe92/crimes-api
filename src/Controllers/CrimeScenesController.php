@@ -157,55 +157,37 @@ class CrimeScenesController extends BaseController
         return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
-    public function updateCrime_Scenes(Request $request, Response $response, array $args)
+    public function updateCrimeScenes(Request $request, Response $response)
     {
         // Retrieve data
         $data = $request->getParsedBody();
 
-        // Check if data is empty or not an array, throw an exception otherwise
+        // check if body is empty or not an array, throw an exception otherwise
         if (empty($data) || !is_array($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
 
-        // Validate the received data
-        if (!ValidateHelper::validatePutMethods($data, "crime_scene")) {
-            $exception = new HttpConflict($request, "Something is not valid");
-            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
-        }
+        // Validate the received data for each judge
+        foreach ($data['crime_scenes'] as $crime_scene) {
+            if (!ValidateHelper::validatePutMethods($crime_scene, 'crime_scene')) {
+                $exception = new HttpConflict($request, "Something is not valid");
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
 
-        // Check if judge_id is provided in the URI
-        $crime_scene_id = $args['crime_sceneID'] ?? null;
-        if (!$crime_scene_id) {
-            $exception = new HttpConflict($request, "Please provide crime_scene_id in the URI");
-            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
         }
+        // Update the crime_scenes
+        $crime_scenes = $data['crime_scenes'];
+        $this->crime_scenes_model->updateCrime_Scenes($crime_scenes);
 
-        // Check if the judge resource exists
-        $crime_scene = $this->crime_scenes_model->handleGetCrimeSceneById($crime_scene_id);
-        if (!$crime_scene) {
-            $exception = new HttpConflict($request);
-            $exception->setDescription("crime_scene_id is invalid");
-            return $this->parsedError($response, $data, $exception, StatusCodeInterface::STATUS_CONFLICT);
-        }
-
-        // Update the crime_scene resource
-        $updatedCrime_Scene = [
-            'crime_sceneID' => $crime_scene_id,
-            'province' => $data['province'] ?? $crime_scene['province'],
-            'city' => $data['city'] ?? $crime_scene['city'],
-            'street' => $data['street'] ?? $crime_scene['street'],
-            'building_number' => $data['building_number'] ?? $crime_scene['building_number']
+        $reponseMessage = [
+            "message" => "You have successfully updated the crime_Scenes.",
+            "crime_scenes" => $crime_scenes
         ];
 
-        $this->crime_scenes_model->updateCrime_Scene($updatedCrime_Scene);
-
-        $reponseMessage = "You have successfully updated the crime_scene(s).";
-        $responseData = [
-            'message' => $reponseMessage,
-            'crime_scene' => $updatedCrime_Scene,
-        ];
-
-        return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
+        return $this->preparedResponse($response, $reponseMessage, StatusCodeInterface::STATUS_OK);
     }
 
     /**

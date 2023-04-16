@@ -86,14 +86,15 @@ $app->get('/defendants/{defendant_id}', [DefendantsController::class, 'handleGet
 $app->get('/victims', [VictimsController::class, 'handleGetAllVictims']);
 $app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimById']);
 $app->post('/victims', [VictimsController::class, 'createVictims']);
-$app->put('/victims/{victim_id}', [VictimsController::class, 'updateVictim']);
+$app->put('/victims', [VictimsController::class, 'updateVictim']);
+$app->delete('/victims', [VictimsController::class, 'deleteVictim']);
 
 $app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
 $app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById']);
 $app->post('/judges', [JudgesController::class, 'createJudge']);
-$app->put('/judges/{judge_id}', [JudgesController::class, 'updateJudge']);
+$app->put('/judges', [JudgesController::class, 'updateJudges']);
 
 $app->get('/crime_scenes', [CrimeScenesController::class, 'handleGetAllCrimeScenes']);
 $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handleGetCrimeById']);
 $app->post('/crime_scenes', [CrimeScenesController::class, 'createCrimeScene']);
-$app->put('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'updateCrime_Scenes']);
+$app->put('/crime_scenes', [CrimeScenesController::class, 'updateCrime_Scenes']);
