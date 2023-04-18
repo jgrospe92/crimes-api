@@ -103,14 +103,29 @@ class VerdictsController extends BaseController
         return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
+    public function handleUpdateVerdictById(Request $request, Response $response, array $args)
+    {
+        /*
+            Validate:
+            - verdict id exists
+            - name, description contain numbers and letters
+            - sentence is number
+        */
 
-
-
-
-
-
-
-
+        $verdict_data = $request->getParsedBody();
+        foreach ($verdict_data as $key => $verdict) {
+            $verdict_id = $verdict['verdict_id'];
+            unset($verdict['verdict_id']);
+            $this->verdicts_model->handleUpdateVerdictById($verdict, $verdict_id);
+        }
+        if(!$response->withStatus(StatusCodeInterface::STATUS_CREATED)){
+            throw new HttpBadRequest($request,"The data entered was improperly formatted");
+        }
+        else{
+            echo"hello there the update worked!!";
+            return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        }
+    }
 
 
 }

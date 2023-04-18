@@ -18,7 +18,7 @@ use Vanier\Api\Models\CourtAddressesModel;
 class CourtAddressesController extends BaseController
 {
     private $court_addresses_model = null;
-    private array $filter_params = ['address_id', 'city', 'street', 'postal_code'];
+    private array $filter_params = ['address_id', 'city', 'street', 'postal_code', 'building_num'];
 
     /**
      * Summary of __construct
@@ -54,7 +54,7 @@ class CourtAddressesController extends BaseController
         }
         if (isset($filters['address_id'])){
 
-            if (!ValidateHelper::validateNumericInput(['verdict_id' => $filters['verdict_id']])) {
+            if (!ValidateHelper::validateNumericInput(['address_id' => $filters['address_id']])) {
                 throw new HttpBadRequest($request, "expected numeric but received alpha");
             }
         }
@@ -91,10 +91,40 @@ class CourtAddressesController extends BaseController
         foreach ($address_data as $key =>$address) {
             $this->court_addresses_model->handleCreateAddresses($address);
         }
-
         return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
-
     }
 
+    public function handleUpdateAddressById(Request $request, Response $response, array $args)
+    {
+        /*
+            Validate:
+            - address id exist
+            - city, street are well formatted
+            - postal code is proper format
+            - building num is only numbers        
+        */
+
+        $address_data = $request->getParsedBody();
+        foreach ($address_data as $key => $address) {
+            $address_id = $address["address_id"];
+            unset($address["address_id"]);
+            //var_dump($address);exit;
+            $this->court_addresses_model->handleUpdateAddressById($address,$address_id);
+          
+        }
+
+        //validation for address id exist
+
+
+
+
+        if(!$response->withStatus(StatusCodeInterface::STATUS_CREATED)){
+            throw new HttpBadRequest($request,"The data entered was improperly formatted");
+        }
+        else{
+            echo"hello there the update worked!!";
+            return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        }
+    }
 
 }

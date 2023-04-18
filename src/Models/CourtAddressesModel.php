@@ -81,4 +81,10 @@ class CourtAddressesModel extends BaseModel
         return $this->insert($this->table_name, $address);
     }
 
+    public function handleUpdateAddressById(array $address, String $address_id)
+    {  
+        return $this->update($this->table_name, $address, ["address_id" => $address_id]);
+    }
+
+
 }

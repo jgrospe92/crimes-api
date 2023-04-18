@@ -105,4 +105,31 @@ class CourtsController extends BaseController
         return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
+    public function handleUpdateCourtsById(Request $request, Response $response, array $args)
+    {
+        /* 
+        validate:
+        - court id exists
+        - date is correctly formatted
+        - time is properly formatted
+        - foreign keys exits
+        */
+
+        $court_data = $request->getParsedBody();
+        foreach ($court_data as $key => $court) {
+            $court_id = $court['court_id'];
+            unset($court['court_id']);
+            $this->courts_model->handleUpdateCourtsById($court,$court_id);
+        }
+        if(!$response->withStatus(StatusCodeInterface::STATUS_CREATED)){
+            throw new HttpBadRequest($request,"The data entered was improperly formatted");
+        }
+        else{
+            echo"hello there the update worked!!";
+            return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        }
+        
+    }
+
+
 }

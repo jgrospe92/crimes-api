@@ -73,7 +73,10 @@ class VerdictsModel extends BaseModel
         return $this->insert($this->table_name, $verdict);
     }
 
-
+    public function handleUpdateVerdictById(array $verdict, String $verdict_id)
+    {
+        return $this->update($this->table_name, $verdict, ["verdict_id" => $verdict_id]);
+    }
 
 
 

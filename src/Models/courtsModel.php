@@ -131,9 +131,14 @@ class CourtsModel extends BaseModel
         return $this->insert($this->table_name, $courts);
     }
 
-    public function handleCreateCourtsById(array $courts)
+    public function handleUpdateCourtsById(array $court, String $court_id)
     {
-        # finish this later
+        return $this->update('courts',$court, ["court_id" => $court_id]);
+    }
+
+    public function handleDeleteCourtsById(array $courts)
+    {
+        # code...
     }
 
 }
