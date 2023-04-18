@@ -15,7 +15,8 @@ use Fig\Http\Message\StatusCodeInterface;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
-
+use Vanier\Api\exceptions\HttpConflict;
+use Vanier\Api\Models\ProsecutorsModel;
 
 /**
  * Summary of VictimsController
@@ -23,6 +24,8 @@ use Vanier\Api\exceptions\HttpUnprocessableContent;
 class VictimsController extends BaseController
 {
     private $victims_model = null;
+    private $prosecutors_model = null;
+
 
     /**
      * Summary of __construct
@@ -30,6 +33,7 @@ class VictimsController extends BaseController
     public function __construct()
     {
         $this->victims_model = new VictimsModel();
+        $this->prosecutors_model = new ProsecutorsModel();
     }
 
     /**
@@ -93,9 +97,16 @@ class VictimsController extends BaseController
     public function handleGetVictimById(Request $request, Response $response, array $uri_args) {     
 
         $victim_id = $uri_args ["victim_id"];
-
+        $filters = $request->getQueryParams();
         // Instantiate the VictimsModel to retrieve the victim data.
         $victims_model = new VictimsModel();
+        if (!ValidateHelper::validateId(['id' => $victim_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        if ($filters)
+        {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
         $data = $victims_model->handleGetVictimById($victim_id);
 
         // Http Exception
@@ -113,6 +124,128 @@ class VictimsController extends BaseController
             'Prosecutor' => $prosecutor_data
         ];
         return $this->prepareOkResponse($response, $response_data);
+    }
+
+
+    public function createVictims(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data
+        if (!ValidateHelper::validatePostMethods($data, "victim")) {
+            $exception = new HttpConflict($request, "Something is not valid");
+            $payload['statusCode'] = $exception->getCode();
+            $payload['error']['description'] = $exception->getDescription();
+            $payload['error']['message'] = $exception->getMessage();
+
+            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Check if the prosecutor exists
+        $prosecutor = $this->prosecutors_model->getProsecutorById($data['prosecutor_id']);
+        if (!$prosecutor) {
+            $exception = new HttpConflict($request, "Prosecutor not found.");
+            $payload['statusCode'] = $exception->getCode();
+            $payload['error']['description'] = $exception->getDescription();
+            $payload['error']['message'] = $exception->getMessage();
+
+            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+        }
+
+        // Create a new victim
+        $newVictim = [
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'age' => $data['age'],
+            'marital_status' => $data['marital_status'],
+            'prosecutor_id' => $data['prosecutor_id']
+        ];
+
+        $this->victims_model->createVictim($newVictim);
+
+        $responseMessage = "You have successfully created a new victim.";
+        $responseData = [
+            'message' => $responseMessage,
+            'victim' => $newVictim
+        ];
+
+        return $this->prepareOkResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
+    }
+
+    public function updateVictims(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+
+        // check if body is empty or not an array, throw an exception otherwise
+        if (empty($data) || !is_array($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        // Validate the received data for each victim
+        foreach ($data['victims'] as $victim) {
+            if (!ValidateHelper::validatePutMethods($victim, 'victim')) {
+                $exception = new HttpConflict($request, "Something is not valid");
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
+        }
+
+        // Update the victims
+        $victims = $data['victims'];
+        $this->victims_model->updateVictims($victims);
+
+        $responseMessage = [
+            "message" => "You have successfully updated the victims.",
+            "victims" => $victims
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
+    }
+
+    public function deleteVictims(Request $request, Response $response, array $args)
+    {
+        $victim_ids = $request->getParsedBody()['victim_id'];
+
+        // Check if ids are provided
+        if (empty($victim_ids) || !is_array($victim_ids)) {
+            throw new HttpConflict($request, "Please provide an id");
+        }
+
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($victim_ids)) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+
+        // Check if each ID exists before deleting
+        foreach ($victim_ids as $victim_id) {
+            if (!$this->victims_model->victimExists($victim_id)) {
+                throw new HttpConflict($request, "Victim with id $victim_id does not exist");
+            }
+        }
+
+        // Delete the judges
+        $deletedCount = 0;
+        foreach ($victim_ids as $victim_id) {
+            $deletedCount++;
+            $this->victims_model->deleteVictim($victim_id);
+        }
+
+        // Prepare response message
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount victim(s).",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 
     /**

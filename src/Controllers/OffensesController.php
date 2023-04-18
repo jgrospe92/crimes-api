@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 // exceptions
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
@@ -96,5 +97,104 @@ class OffensesController extends BaseController
 
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
+    }
+
+    /**
+     * Summary of handleOffensesById
+     * @param Request $request
+     * @param Response $response
+     * @param array $uri_args
+     * @throws HttpBadRequest
+     * @throws HttpUnprocessableContent
+     * @throws HttpNotFound
+     * @return Response
+     */
+    public function handleOffensesById(Request $request, Response $response, array $uri_args)
+    {
+        $offense_id = $uri_args['offense_id'];
+        if (!ValidateHelper::validateId(['id' => $offense_id])) {
+            throw new HttpBadRequest($request, "please enter a valid id");
+        }
+        $filters = $request->getQueryParams();
+        if ($filters) {
+            throw new HttpUnprocessableContent($request, "Resource does not support filtering or pagination");
+        }
+
+        $whereClause = ['offense_id' => $offense_id];
+        $data['offense'] = $this->offenses_model->getOffensesById("offenses", $whereClause);
+
+        if (!$data['offense']) {
+            throw new HttpNotFound($request, "please check your query parameter or consult the documentation");
+        }
+
+        return $this->preparedResponse($response, $data);
+    }
+
+    /**
+     * Summary of handlePostOffenses
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpConflict
+     * @return Response
+     */
+    public function handlePostOffenses(Request $request, Response $response)
+    {
+        // Retrieve data
+        $data = $request->getParsedBody();
+        // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        foreach ($data as $offense) {
+            if (!ValidateHelper::validatePostMethods($offense, "offense")) {
+                $exception = new HttpConflict($request);
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+                $payload['reason'] = $offense;
+
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            $this->offenses_model->createOffenses($offense);
+        }
+
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
+
+    /**
+     * Summary of handlePutOffenses
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpConflict
+     * @return Response
+     */
+    public function handlePutOffenses(Request $request, Response $response)
+    {
+        // retrieve the body
+        $data = $request->getParsedBody();
+         // check if body is empty, throw an exception otherwise
+        if (!isset($data)) {
+            throw new HttpConflict($request, "Please provide required data");
+        }
+
+        foreach($data as $offense)
+        {
+            // validate if the provided data is correct
+            if (!ValidateHelper::validatePutMethods($offense, "offense")) {
+                $exception = new HttpConflict($request);
+                return $this->parsedError($response, $offense,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // validate if the offense_id exists
+            if (!$this->offenses_model->checkIfResourceExists('offenses', ['offense_id' => $offense['offense_id']])) {
+
+                $exception = new HttpConflict($request);
+                $exception->setDescription("offense_id is invalid");
+                return $this->parsedError($response, $offense,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // updte the resource
+            $this->offenses_model->updateOffense($offense);
+        }
+        return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
     }
 }

@@ -74,4 +74,43 @@ class InvestigatorsModel extends BaseModel
         return $this->paginate($sql, $query_values, 'investigators');
 
     }
+
+    /**
+     * Summary of getInvestigatorById
+     * @param mixed $table
+     * @param mixed $whereClause
+     * @return object|null
+     */
+    public function getInvestigatorById($table, $whereClause)
+    {
+        $investigator = $this->getById($table, $whereClause);
+        if (!$investigator){
+            return null;
+        }
+        return $investigator;
+
+    }
+
+
+    /**
+     * Summary of createInvestigator
+     * @param mixed $investigator
+     * @return bool|string
+     */
+    public function createInvestigator($investigator)
+    {
+        return $this->insert('investigators', $investigator);
+    }
+
+    /**
+     * Summary of updateInvestigator
+     * @param mixed $investigator
+     * @return void
+     */
+    public function updateInvestigator($investigator)
+    {
+        $investigator_id = $investigator['investigator_id'];
+        unset($investigator['investigator_id']);
+        $this->update('investigators', $investigator ,['investigator_id'=>$investigator_id]);
+    }
 }

@@ -7,7 +7,8 @@ namespace Vanier\Api\Models;
  */
 class DefendantsModel extends BaseModel
 {
-    private $sql = "SELECT * FROM defendants WHERE 1 ";
+    private $table_name;
+    private $sql;
 
     /**
      * Summary of __construct
@@ -15,6 +16,8 @@ class DefendantsModel extends BaseModel
     public function __construct() 
     {
         parent::__construct();
+        $this->table_name = 'defendants';
+        $this->sql = "SELECT * FROM $this->table_name WHERE 1 ";
     }
 
     /**
@@ -76,6 +79,21 @@ class DefendantsModel extends BaseModel
             elseif ($sort == "specialization")   { $this->sql .= " ORDER BY specialization"; }
         }
 
-        return $this->paginate($this->sql, $query_values,'defendants');
+        return $this->paginate($this->sql, $query_values, 'defendants');
+    }
+
+    public function postDefendant(array $data)
+    {
+        return $this->insert($this->table_name, $data);
+    }
+
+    public function putDefendant($defendant_id, array $data)
+    {
+        return $this->update($this->table_name, $data, ['defendant_id' => $defendant_id]);
+    }
+
+    public function deleteDefendant()
+    {
+        
     }
 }
