@@ -102,6 +102,7 @@ class ValidateHelper
         $currentDate = date("Y-m-d");
         $rules = array(
             'dateBefore' => [['date_data', $currentDate]],
+            'dateFormat' => [['date_data', 'Y-m-d']]
         );
         $validator = new Validator($data, [], 'en');
         // Important: map the validation rules before calling validate()
@@ -124,7 +125,7 @@ class ValidateHelper
             [
                 'regex' =>
                 [
-                    ['time_stamp', '/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/']
+                    ['time_stamp', '/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)$/']
                 ]
             ];
         $validator = new Validator($data, [], 'en');
@@ -564,6 +565,23 @@ class ValidateHelper
                 'numeric' => [
                     ['age', 'prosecutor_id', 'victim_id'],
                 ],
+            ];
+        } else if ($label == 'courts') {
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['date'],
+                    ['time'],
+                    ['address_id'],
+                    ['judge_id'],
+                    ['verdict_id']
+                ],
+                'lengthMax' =>[
+                    ['name', 40]
+                ],
+                'numeric' => [
+                    ['address_id','judge_id','verdict_id']
+                ]
             ];
         }
 

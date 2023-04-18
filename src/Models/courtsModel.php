@@ -122,6 +122,11 @@ class CourtsModel extends BaseModel
         return $courts;
     }
 
+    public function handleCreateCourts(array $courts)
+    {
+        return $this->insert($this->table_name, $courts);
+    }
+
     public function handleUpdateCourtsById(array $court, String $court_id)
     {
         return $this->update('courts',$court, ["court_id" => $court_id]);
