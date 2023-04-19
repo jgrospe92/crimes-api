@@ -580,6 +580,68 @@ class ValidateHelper
                     ['specialization', $allowed_specialization]
                 ]
             ];
+        } 
+        else if ($label == 'judge')  
+        {
+            $rules = [
+                'required' => 
+                [
+                    ['first_name'],
+                    ['last_name'],
+                    ['age']
+                ],
+                'lengthMax' => [
+                    ['first_name', 40],
+                    ['last_name', 40]
+                ],
+                'numeric' => [
+                    ['age']
+                ],
+                'min' => [
+                    ['age', 18]
+                ]
+            ];
+        } 
+        else if ($label == 'crime_scene') 
+        {
+            $rules = [
+                'required' => [
+                    ['province'],
+                    ['city'],
+                    ['street'],
+                    ['building_number']
+                ],
+                'lengthMax' => [
+                    ['province', 40],
+                    ['city', 40],
+                    ['street', 80],
+                    ['building_number', 9]
+                ]
+            ];
+        }  
+        else if ($label == 'victim') 
+        {
+            $allowed_marital_status = ['married', 'single', 'divorced'];
+            $rules = [
+                'required' => [
+                    ['victim_id'],
+                    ['first_name'],
+                    ['last_name'],
+                    ['age'],
+                    ['marital_status'],
+                    ['prosecutor_id'],
+                ],
+                'lengthMax' => [
+                    ['first_name', 40],
+                    ['last_name', 40],
+                ],
+                'in' => [
+                    ['marital_status', $allowed_marital_status],
+                ],
+                'numeric' => [
+                    ['age', 'prosecutor_id', 'victim_id'],
+                ],
+            ];
         }
         else if ($label == 'offender')
         {
@@ -629,7 +691,7 @@ class ValidateHelper
                 ]
             ];
         }
-
+        
         $validator = new Validator($data);
         $validator->rules($rules);
 
@@ -860,6 +922,67 @@ class ValidateHelper
                     ['specialization', $allowed_specialization]
                 ]
             ];
+        } 
+        else if ($label == "judge") 
+        {
+            $rules = [
+                'required' => 
+                [
+                    ['first_name'],
+                    ['last_name'],
+                    ['age']
+                ],
+                'lengthMax' => [
+                    ['first_name', 40],
+                    ['last_name', 40]
+                ],
+                'numeric' => [
+                    ['age']
+                ],
+                'min' => [
+                    ['age', 18]
+                ]
+            ];
+        } 
+        else if ($label == 'crime_scene') 
+        {
+            $rules = [
+                'required' => [
+                    ['province'],
+                    ['city'],
+                    ['street'],
+                    ['building_number']
+                ],
+                'lengthMax' => [
+                    ['province', 40],
+                    ['city', 40],
+                    ['street', 80],
+                    ['building_number', 9]
+                ]
+            ];
+        }
+        else if ($label == 'victim') 
+        {
+            $allowed_marital_status = ['married', 'single', 'divorced'];
+            $rules = [
+                'required' => [
+                    ['first_name'],
+                    ['last_name'],
+                    ['age'],
+                    ['marital_status'],
+                    ['prosecutor_id'],
+                ],
+                'lengthMax' => [
+                    ['first_name', 40],
+                    ['last_name', 40],
+                ],
+                'in' => [
+                    ['marital_status', $allowed_marital_status],
+                ],
+                'numeric' => [
+                    ['age', 'prosecutor_id'],
+                ],
+            ];
         }
         else if ($label == 'offender')
         {
@@ -868,7 +991,7 @@ class ValidateHelper
                 'single', 'Single',
                 'married', 'Married'
             ];
-
+            
             $rules =
             [
                 'required' =>
@@ -912,7 +1035,7 @@ class ValidateHelper
                 ]
             ];
         }
-
+        
         $validator = new Validator($data);
         $validator->rules($rules);
 

@@ -403,9 +403,9 @@ CREATE TABLE `offenses` (
 INSERT INTO `offenses` (`offense_id`, `name`, `description`, `classification`) VALUES
 (1, 'Arson', 'Felonies are serious crimes that are usually punishable by more than one year in prison. Examples of felonies include murder, rape, burglary, and drug trafficking.', 'Felony'),
 (2, 'Domestic Violence', 'Misdemeanors are less serious crimes that are usually punishable by less than one year in jail. Examples of misdemeanors include petty theft, disorderly conduct, and minor drug offenses.', 'Misdemeanor'),
-(3, 'Inseider trading', 'White-collar crimes are nonviolent offenses that are typically committed in a professional or business setting. Examples of white-collar crimes include fraud, embezzlement, and insider trading.', 'White-collar crime'),
+(3, 'Insider trading', 'White-collar crimes are nonviolent offenses that are typically committed in a professional or business setting. Examples of white-collar crimes include fraud, embezzlement, and insider trading.', 'White-collar crime'),
 (4, 'Homecide', 'Violent crimes involve the use of force or threat of force against another person. Examples of violent crimes include assault, battery, and homicide.', 'Violent crime'),
-(5, 'Roberry', 'Property crimes involve the taking or destruction of another person\'s property. Examples of property crimes include theft, robbery, and arson.', 'Property crime'),
+(5, 'Roberry', 'Property crimes involve the taking or destruction of another person/s property. Examples of property crimes include theft, robbery, and arson.', 'Property crime'),
 (6, 'Phishing', 'Cybercrimes are crimes that are committed using a computer or the internet. Examples of cybercrimes include hacking, identity theft, and online fraud', 'Cyber-crime'),
 (7, 'Drug trafficking', 'Drug crimes involve the possession, sale, or distribution of illegal drugs. Examples of drug crimes include drug possession, drug trafficking, and drug manufacturing.', 'Drug crime');
 
@@ -707,7 +707,7 @@ ALTER TABLE `cases_victims`
 --
 ALTER TABLE `courts`
   ADD CONSTRAINT `address_id_courts` FOREIGN KEY (`address_id`) REFERENCES `court_addresses` (`address_id`),
-  ADD CONSTRAINT `judge_id_courts` FOREIGN KEY (`judge_id`) REFERENCES `judges` (`judge_id`),
+  ADD CONSTRAINT `judge_id_courts` FOREIGN KEY (`judge_id`) REFERENCES `judges` (`judge_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `verdict_id_courts` FOREIGN KEY (`verdict_id`) REFERENCES `verdicts` (`verdict_id`);
 
 --
@@ -728,7 +728,7 @@ ALTER TABLE `offender_details`
 --
 ALTER TABLE `victims`
   ADD CONSTRAINT `prosecuter_id_victims` FOREIGN KEY (`prosecutor_id`) REFERENCES `prosecutors` (`prosecutor_id`);
-COMMIT;
+COMMIT; 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
