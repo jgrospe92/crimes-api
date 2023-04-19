@@ -193,7 +193,15 @@ class ProsecutorsController extends BaseController
         return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
-    public function handlePutProsecutor(Request $request, Response $response)
+    /**
+     * Summary of handlePutProsecutor
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpBadRequestException
+     * @throws HttpNotFoundException
+     * @return Response
+     */
+    public function handlePutProsecutors(Request $request, Response $response)
     {
         $data = $request->getParsedBody();
 

@@ -82,11 +82,21 @@ class DefendantsModel extends BaseModel
         return $this->paginate($this->sql, $query_values, 'defendants');
     }
 
+    /**
+     * Summary of postDefendant
+     * @param array $data
+     * @return bool|string
+     */
     public function postDefendant(array $data)
     {
         return $this->insert($this->table_name, $data);
     }
 
+    /**
+     * Summary of putDefendant
+     * @param mixed $defendant
+     * @return void
+     */
     public function putDefendant($defendant)
     {
         $defendant_id = $defendant['defendant_id'];
