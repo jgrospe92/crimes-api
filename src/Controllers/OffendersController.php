@@ -2,6 +2,7 @@
 
 namespace Vanier\Api\Controllers;
 
+use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -178,7 +179,7 @@ class OffendersController extends BaseController
         catch (Exception $e) { throw new HttpBadRequestException($request); }
 
         // Throw a HttpNotFound error if data is empty
-        if (!$data) { throw new HttpNotFoundException($request); }
+        if (!$data['offenders']) { throw new HttpNotFoundException($request); }
 
         return $this->prepareOkResponse($response, $data);
     }
@@ -242,14 +243,97 @@ class OffendersController extends BaseController
         return $this->prepareOkResponse($response, $data);
     }
 
-    public function handlePostOffender(Request $request, Response $response)
+    /**
+     * Summary of handlePostOffender
+     * @param Request $request
+     * @param Response $response
+     * @throws HttpBadRequestException
+     * @throws HttpBadRequest
+     * @return Response
+     */
+    public function handlePostOffenders(Request $request, Response $response)
     {
-        
+        $data = $request->getParsedBody();
+
+        // Check if the JSON body is empty
+        if (!$data)
+        { 
+            throw new HttpBadRequestException($request, 'No data to be added.');
+        }
+
+        foreach ($data as $offender)
+        {
+            // Check if $data is empty
+            if (!$data)
+            {
+                throw new HttpBadRequestException($request, 'No data to be added.');
+            }
+
+            // Checks if the foreign key is not a negative integer
+            if (!ValidateHelper::validateNumIsPositive($offender['defendant_id'])) 
+            {
+                throw new HttpBadRequest($request, 'Make sure the Id is not a negative integer');
+            }
+
+            if (!$this->offenders_model->checkIfResourceExists('defendants', ['defendant_id' => $offender['defendant_id']]))
+            {
+                throw new HttpBadRequest($request, 'That defendant never existed, or it has been deleted.');
+            }
+
+            if (!ValidateHelper::validatePostMethods($offender, "offender")) 
+            {
+                throw new HttpBadRequestException($request, 'Either you are missing needed columns, or you are passing in invalid values. Refer to documentation.');
+            }
+            $this->offenders_model->postOffender($offender);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
     }
 
-    public function handlePutOffender(Request $request, Response $response, array $uri_args)
+    public function handlePutOffenders(Request $request, Response $response)
     {
-        
+        $data = $request->getParsedBody();
+
+        // Check if the JSON body is empty
+        if (!$data)
+        { 
+            throw new HttpBadRequestException($request, 'No data to be added.');
+        }
+
+        foreach ($data as $offender)
+        {
+            // Check if $data is empty
+            if (!$offender)
+            {
+                throw new HttpBadRequestException($request, 'No data to be added.');
+            }
+
+            // Checks if the foreign key is not a negative integer
+            if (!ValidateHelper::validateNumIsPositive($offender['offender_id'])) 
+            {
+                throw new HttpBadRequest($request, 'Make sure the Id is not a negative integer');
+            }
+
+            if (!ValidateHelper::validateNumIsPositive($offender['defendant_id'])) 
+            {
+                throw new HttpBadRequest($request, 'Make sure the Id is not a negative integer');
+            }
+
+            // Check if the foreign key exists
+            if (!$this->offenders_model->checkIfResourceExists('offenders', ['offender_id' => $offender['offender_id']]))
+            {
+                throw new HttpNotFoundException($request, 'Either the requested prosecutor does not exist, or it has been deleted.');
+            }
+
+            if (!ValidateHelper::validatePutMethods($offender, 'offender'))
+            {
+                throw new HttpBadRequestException($request, 'Either you are missing needed columns, or you are passing in invalid values. Refer to documentation.');
+            }
+
+            $this->offenders_model->putOffender($offender);
+        }
+
+        return $response->withStatus(StatusCodeInterface::STATUS_OK);
     }
 
     public function handleDeleteOffender(Request $request, Response $response)

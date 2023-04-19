@@ -83,14 +83,26 @@ class ProsecutorsModel extends BaseModel
         return $this->paginate($this->sql, $query_values,'prosecutors');
     }
 
+    /**
+     * Summary of postProsecutor
+     * @param array $data
+     * @return bool|string
+     */
     public function postProsecutor(array $data)
     {
         return $this->insert($this->table_name, $data);
     }
 
-    public function putProsecutor($prosecutor_id, array $data)
+    /**
+     * Summary of putProsecutor
+     * @param mixed $prosecutor
+     * @return mixed
+     */
+    public function putProsecutor($prosecutor)
     {
-        return $this->update($this->table_name, $data, ['prosecutor_id' => $prosecutor_id]);
+        $prosecutor_id = $prosecutor['prosecutor_id'];
+        unset($prosecutor['prosecutor_id']);
+        return $this->update($this->table_name, $prosecutor, ['prosecutor_id' => $prosecutor_id]);
     }
 
     public function deleteProsecutor()
