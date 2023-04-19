@@ -861,6 +861,57 @@ class ValidateHelper
                 ]
             ];
         }
+        else if ($label == 'offender')
+        {
+            $allowed_marital_status =
+            [
+                'single', 'Single',
+                'married', 'Married'
+            ];
+
+            $rules =
+            [
+                'required' =>
+                [
+                    ['offender_id'],
+                    ['first_name'],
+                    ['last_name'],
+                    ['age'],
+                    ['marital_status'],
+                    ['arrest_date'],
+                    ['arrest_timestamp'],
+                    ['defendant_id']
+                ],
+                'min' =>
+                [   
+                    ['offender_id', 1],
+                    ['defendant_id', 1]
+                ],
+                'max' =>
+                [
+                    ['age', 99]
+                ],
+                'lengthMax' =>
+                [
+                    ['first_name', 100],
+                    ['last_name', 100]
+                ],
+                'numeric' =>
+                [
+                    ['offender_id', 1],
+                    ['age'],
+                    ['defendant_id']
+                ],
+                'in' =>
+                [
+                    ['marital_status', $allowed_marital_status]
+                ],
+                'date' =>
+                [
+                    ['arrest_timestamp']
+                ]
+            ];
+        }
 
         $validator = new Validator($data);
         $validator->rules($rules);
