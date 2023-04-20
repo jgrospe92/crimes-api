@@ -1,5 +1,7 @@
 <?php
 namespace Vanier\Api\Controllers;
+
+use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -101,12 +103,25 @@ class VerdictsController extends BaseController
     public function handleCreateVerdicts(Request $request, Response $response)
     {
         $verdicts_data = $request->getParsedBody();
-        foreach($verdicts_data as $key =>$verdict){
-            $this->verdicts_model->handleCreateVerdicts($verdict);
-            //var_dump($this->verdicts_model->handleCreateVerdicts($verdict));
-            //echo "hi";exit;
+        // to check if body is correct
+        if(!isset($verdicts_data)){
+            throw new HttpBadRequest($request, "the request body is invalid");
         }
-        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        
+        foreach($verdicts_data as $key =>$verdicts){
+            if(!ValidateHelper::validatePostMethods($verdicts,'verdict')){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $verdicts,$exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+        }
+        
+        try{
+            $this->verdicts_model->handleCreateVerdicts($verdicts);
+        } catch(Exception $e){
+            throw new HttpBadRequest($request, "Remove verdict_id from body");
+        }
+
+        return $this->prepareOkResponse($response,$verdicts_data);
     }
 
     public function handleUpdateVerdictById(Request $request, Response $response, array $args)

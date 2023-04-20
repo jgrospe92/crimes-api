@@ -644,7 +644,6 @@ class ValidateHelper
             $allowed_marital_status = ['married', 'single', 'divorced'];
             $rules = [
                 'required' => [
-                    ['victim_id'],
                     ['first_name'],
                     ['last_name'],
                     ['age'],
@@ -740,6 +739,23 @@ class ValidateHelper
                 'date' =>
                 [
                     ['arrest_timestamp']
+                ]
+            ]; 
+        }else if($label == "verdict"){
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['description'],
+                    ['sentence'],
+                    ['fine']
+                ],
+                'min' => [
+                    ['sentence', 0],
+                    ['fine', 0]
+                ],
+                'numeric' => [
+                    ['sentence'],
+                    ['fine']
                 ]
             ];
         }
