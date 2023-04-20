@@ -13,8 +13,7 @@ class OffendersModel extends BaseModel
     /**
      * Summary of __construct
      */
-    public function __construct() 
-    {
+    public function __construct() {
         parent::__construct();
         $this->table_name = "offenders";
         $this->sql =  
@@ -41,8 +40,7 @@ class OffendersModel extends BaseModel
      * @param mixed $offender_id
      * @return array<array>
      */
-    public function getOffenderById($offender_id) 
-    {
+    public function getOffenderById($offender_id) {
         $this->sql .= "AND offender_id = :offender_id ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
 
@@ -87,8 +85,7 @@ class OffendersModel extends BaseModel
      * @return array
      * Supported filters for ID, first_name, last_name, age, marital_status, date, and time
      */
-    public function getAllOffenders(array $filters = []) 
-    {
+    public function getAllOffenders(array $filters = []) {
         $query_values = [];
 
         if (isset($filters["id"]))
@@ -99,19 +96,19 @@ class OffendersModel extends BaseModel
         
         if (isset($filters["first-name"]))
         {
-            $this->sql .= " AND first_name LIKE CONCAT(:first_name,'%') ";
-            $query_values[":first_name"] = $filters["first-name"]."%";
+            $this->sql .= " AND offenders.first_name LIKE CONCAT(:first_name,'%') ";
+            $query_values[":first_name"] = $filters["first-name"] . "%";
         }
 
         if (isset($filters["last-name"]))
         {
-            $this->sql .= " AND last_name LIKE CONCAT(:last_name,'%') ";
-            $query_values[":last_name"] = $filters["last-name"]."%";
+            $this->sql .= " AND offenders.last_name  LIKE CONCAT(:last_name,'%') ";
+            $query_values[":last_name"] = $filters["last-name"] . "%";
         }
 
         if (isset($filters["age"]))
         {
-            $this->sql .= " AND age = :age ";
+            $this->sql .= " AND offenders.age = :age ";
             $query_values[":age"] = $filters["age"];
         }
 
@@ -173,6 +170,7 @@ class OffendersModel extends BaseModel
 
         $result = $this->paginate($this->sql, $query_values, 'offenders');
 
+        $offenders = [];
         // Put each person's data in an associative array
         foreach ($result["offenders"] as $row)
         {
@@ -203,6 +201,11 @@ class OffendersModel extends BaseModel
         return $result;
     }
 
+    /**
+     * Summary of getDefendantOfOffender
+     * @param mixed $offender_id
+     * @return array
+     */
     public function getDefendantOfOffender($offender_id) {
         $this->sql .= "AND offender_id = :offender_id ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
@@ -228,6 +231,11 @@ class OffendersModel extends BaseModel
         }
     }
 
+    /**
+     * Summary of getCaseOfOffender
+     * @param mixed $offender_id
+     * @return array<array>
+     */
     public function getCaseOfOffender($offender_id) {
         $this->sql = 
             "SELECT 
@@ -285,8 +293,8 @@ class OffendersModel extends BaseModel
                 [
                     "court_id"          => $result["court_id"],
                     "name"              => $result["badge_number"],
-                    "date"              => $result["first_name"],
-                    "time"              => $result["last_name"],
+                    "date"              => $result["name"],
+                    "time"              => $result["date"],
                     "address_id"        => $result["address_id"],
                     "judge_id"          => $result["judge_id"],
                     "verdict_id"        => $result["verdict_id"]
@@ -302,18 +310,27 @@ class OffendersModel extends BaseModel
         }
     }
 
-    public function postOffender()
-    {
-        
+    /**
+     * Summary of postOffender
+     * @param array $data
+     * @return bool|string
+     */
+    public function postOffender(array $data) {
+        return $this->insert($this->table_name, $data);
     }
 
-    public function putOffender($offender_id)
-    {
-        
+    /**
+     * Summary of putOffender
+     * @param mixed $offender
+     * @return mixed
+     */
+    public function putOffender($offender) {
+        $offender_id = $offender['offender_id'];
+        unset($offender['offender_id']);
+        return $this->update($this->table_name, $offender, ['offender_id' => $offender_id]);
     }
 
-    public function deleteOffender()
-    {
+    public function deleteOffender() {
         
     }
 }
