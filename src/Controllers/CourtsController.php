@@ -6,10 +6,12 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
 use Vanier\Api\exceptions\HttpBadRequest;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
 use Vanier\Api\Models\CourtsModel;
+use Exception;
 
 /**
  * Summary of CourtsController
@@ -154,8 +156,11 @@ class CourtsController extends BaseController
                 return $this->parsedError($response, $courts, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
             }
 
-
-            //$this->courts_model->handleCreateCourts($courts);
+            try {
+                $this->courts_model->handleCreateCourts($courts);
+            } catch (Exception $e) {
+                throw new HttpConflict($request, "Remove court_id from your body");
+            }
         }
         return $this->prepareOkResponse($response, $courts_data);
         //hello friend

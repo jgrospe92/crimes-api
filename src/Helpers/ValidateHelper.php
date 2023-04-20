@@ -138,6 +138,25 @@ class ValidateHelper
         }
     }
 
+    public static function validatePostalCode($postal){
+        $data = ['postal_code' => $postal];
+        $rules = 
+        [
+            'regex' =>
+            [
+                ['postal_code', '/^([a-zA-Z]\d[a-zA-Z])\ {0,1}(\d[a-zA-Z]\d)$/']
+            ]
+        ];
+
+        $validator = new Validator($data,[],'en');
+        if($validator->validate()){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
     function testValidatePersonInfo()
     {
         // The array containing the data to be validated.
@@ -566,7 +585,7 @@ class ValidateHelper
                     ['age', 'prosecutor_id', 'victim_id'],
                 ],
             ];
-        } else if ($label == 'courts') {
+        } else if ($label == 'court') {
             $rules = [
                 'required' => [
                     ['name'],
@@ -581,6 +600,21 @@ class ValidateHelper
                 ],
                 'numeric' => [
                     ['address_id','judge_id','verdict_id']
+                ]
+            ];
+        } else if($label == 'address'){
+            $rules = [
+                'required' => [
+                    ['city'],
+                    ['street'],
+                    ['postal_code'],
+                    ['building_num']
+                ],
+                'lengthMax' =>[
+                    ['city', 50],
+                    ['street', 50],
+                    ['postal_code', 50],
+                    ['building_num', 50]
                 ]
             ];
         }

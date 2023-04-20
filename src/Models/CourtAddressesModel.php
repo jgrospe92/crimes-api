@@ -38,18 +38,18 @@ class CourtAddressesModel extends BaseModel
             $sql .= " AND street LIKE CONCAT(:street, '%') ";
             $query_values["street"] = $filters["street"];
         }
-        /* will not work because of the # in the attribute "building_#"!!!!
-        if(isset($filters["building_#"])){
-            $sql .= " AND `building_#` LIKE CONCAT(`:building_#`, '%') ";
-            $query_values["building_#"] = $filters["building_#"];
+        // will not work because of the # in the attribute "building_#"!!!!
+        if(isset($filters["building_num"])){
+            $sql .= " AND building_num LIKE CONCAT(:building_num, '%') ";
+            $query_values["building_num"] = $filters["building_num"];
         }
-        */
+        
         if(isset($filters["postal_code"])){
             $sql .= " AND postal_code LIKE CONCAT(:postal_code, '%') ";
             $query_values["postal_code"] = $filters["postal_code"];
         }
 
-        if(isset($filters["sort_by"])){
+        if(isset($filters["sorted_by"])){
             $sort_by = $filters["sort_by"];
             if($sort_by == "address_id"){
                 $sql .= " ORDER BY address_id";
@@ -59,6 +59,8 @@ class CourtAddressesModel extends BaseModel
                 $sql .= " ORDER BY street";
             }elseif ($sort_by == "postal_code") {
                 $sql .= " ORDER BY postal_code";
+            }elseif($sort_by == "building_num"){
+                $sql .= " ORDER BY building_num";
             }
         }
 
