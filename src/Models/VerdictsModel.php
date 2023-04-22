@@ -78,12 +78,11 @@ class VerdictsModel extends BaseModel
         return $this->update($this->table_name, $verdict, ["verdict_id" => $verdict_id]);
     }
 
-
-
-
-
-
-
-
-
+    public function checkIfResourceExists($table, $whereClause): bool
+    {
+        if (!$this->getById($table, $whereClause)) {
+            return false;
+        }
+        return true;
+    }
 }

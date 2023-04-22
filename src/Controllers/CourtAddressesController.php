@@ -121,29 +121,43 @@ class CourtAddressesController extends BaseController
 
     public function handleUpdateAddressById(Request $request, Response $response, array $args)
     {
-        /*
-            Validate:
-            - address id exist
-            - city, street are well formatted
-            - postal code is proper format
-            - building num is only numbers        
-        */
-
         $address_data = $request->getParsedBody();
-        foreach ($address_data as $key => $address) {
-            $address_id = $address["address_id"];
-            unset($address["address_id"]);
+        // to check if body is correct
+        if(!isset($address_data)){
+            throw new HttpBadRequest($request,"the request body is invalid");
+        }
+
+        foreach ($address_data as $key => $addresses) {
+            if(!ValidateHelper::validatePostMethods($addresses, 'address')){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $addresses, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if postal_code is well formatted
+            if(!ValidateHelper::validatePostalCode($addresses['postal_code'])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("Postal_Code format is invalid");
+                return $this->parsedError($response,$addresses,$exception,StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if address_id exists
+            if (!$this->court_addresses_model->checkIfResourceExists('court_addresses', ['address_id' => $addresses['address_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("address_id is invalid");
+                return $this->parsedError($response, $addresses,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            $address_id = $addresses["address_id"];
+            unset($addresses["address_id"]);
             //var_dump($address);exit;
-            $this->court_addresses_model->handleUpdateAddressById($address,$address_id);
-          
+            $this->court_addresses_model->handleUpdateAddressById($addresses,$address_id);
         }
 
         if(!$response->withStatus(StatusCodeInterface::STATUS_CREATED)){
             throw new HttpBadRequest($request,"The data entered was improperly formatted");
         }
         else{
-            echo"hello there the update worked!!";
-            return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+            return $this->prepareOkResponse($response,$address_data);
         }
     }
 

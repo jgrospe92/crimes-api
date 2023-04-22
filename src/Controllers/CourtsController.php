@@ -11,7 +11,10 @@ use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
 use Vanier\Api\Models\CourtsModel;
+use Vanier\Api\Models\CourtAddressesModel;
 use Exception;
+use Vanier\Api\Models\JudgesModel;
+use Vanier\Api\Models\VerdictsModel;
 
 /**
  * Summary of CourtsController
@@ -19,6 +22,9 @@ use Exception;
 class CourtsController extends BaseController
 {
     private $courts_model = null;
+    private $court_addresses_model = null;
+    private $verdicts_model = null;
+    private $judges_model = null;
     private array $filter_params = ['court_id', 'name', 'date', 'time', 'address_id', 'judge_id', 'verdict_id'];
 
     /**
@@ -27,6 +33,9 @@ class CourtsController extends BaseController
     public function __construct()
     {
         $this->courts_model = new CourtsModel();
+        $this->court_addresses_model = new CourtAddressesModel();
+        $this->verdicts_model = new VerdictsModel();
+        $this->judges_model = new JudgesModel();
     }
 
     /**
@@ -168,16 +177,73 @@ class CourtsController extends BaseController
 
     public function handleUpdateCourtsById(Request $request, Response $response, array $args)
     {
-        /* 
-        validate:
-        - court id exists
-        - date is correctly formatted
-        - time is properly formatted
-        - foreign keys exits
-        */
-
         $court_data = $request->getParsedBody();
+
+        // to check if body is correct
+        if(!isset($court_data)){
+            throw new HttpBadRequest($request, "Please provide required data");
+        }
+
         foreach ($court_data as $key => $court) {
+            if(!ValidateHelper::validatePutMethods($court, "court")){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if foreign keys exists
+            if(!$this->courts_model->checkIfResourceExists('court_addresses',['address_id' => $court['address_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("address_id is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!$this->courts_model->checkIfResourceExists('judges', ['judge_id' => $court['judge_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("judge_id is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!$this->courts_model->checkIfResourceExists('verdicts', ['verdict_id' => $court['verdict_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("verdict_id is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if time and date are well formatted
+            if(!ValidateHelper::validateDateFormat($court['date'])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("date format is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!ValidateHelper::validateTimeStamp($court['time'])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("timestamp format is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if court_id exists
+            if (!$this->courts_model->checkIfResourceExists('courts', ['court_id' => $court['court_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("court_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // to check if address_id exists
+            if (!$this->court_addresses_model->checkIfResourceExists('court_addresses', ['address_id' => $court['address_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("address_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // to check if verdict_id exists
+            if (!$this->verdicts_model->checkIfResourceExists('verdicts', ['verdict_id' => $court['verdict_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("verdict_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // to check if judge_id exists
+            if(!$this->judges_model->checkIfResourceExists('judges',['judge_id' => $court['judge_id']])){
+                $exception = new HttpConflict($request);
+                $exception->setDescription("judge_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
             $court_id = $court['court_id'];
             unset($court['court_id']);
             $this->courts_model->handleUpdateCourtsById($court,$court_id);
@@ -186,11 +252,7 @@ class CourtsController extends BaseController
             throw new HttpBadRequest($request,"The data entered was improperly formatted");
         }
         else{
-            echo"hello there the update worked!!";
-            return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
-        }
-        
+            return $this->prepareOkResponse($response,$court_data);
+        }   
     }
-
-
 }

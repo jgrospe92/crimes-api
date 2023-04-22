@@ -88,5 +88,12 @@ class CourtAddressesModel extends BaseModel
         return $this->update($this->table_name, $address, ["address_id" => $address_id]);
     }
 
+    public function checkIfResourceExists($table, $whereClause): bool
+    {
+        if (!$this->getById($table, $whereClause)) {
+            return false;
+        }
+        return true;
+    }
 
 }

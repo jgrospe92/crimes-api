@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
 use Vanier\Api\exceptions\HttpBadRequest;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
@@ -126,15 +127,25 @@ class VerdictsController extends BaseController
 
     public function handleUpdateVerdictById(Request $request, Response $response, array $args)
     {
-        /*
-            Validate:
-            - verdict id exists
-            - name, description contain numbers and letters
-            - sentence is number
-        */
-
         $verdict_data = $request->getParsedBody();
+        // to check if body is correct
+        if(!isset($verdicts_data)){
+            throw new HttpBadRequest($request, "the request body is invalid");
+        }
+
         foreach ($verdict_data as $key => $verdict) {
+            if(!ValidateHelper::validatePostMethods($verdict,'verdict')){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $verdict, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if verdict_id exists
+            if (!$this->verdicts_model->checkIfResourceExists('verdicts', ['verdict_id' => $verdict['verdict_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("verdict_id is invalid");
+                return $this->parsedError($response, $verdict,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
             $verdict_id = $verdict['verdict_id'];
             unset($verdict['verdict_id']);
             $this->verdicts_model->handleUpdateVerdictById($verdict, $verdict_id);
@@ -143,8 +154,7 @@ class VerdictsController extends BaseController
             throw new HttpBadRequest($request,"The data entered was improperly formatted");
         }
         else{
-            echo"hello there the update worked!!";
-            return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+            return $this->prepareOkResponse($response,$verdict_data);
         }
     }
 

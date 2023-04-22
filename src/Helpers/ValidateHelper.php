@@ -149,6 +149,7 @@ class ValidateHelper
         ];
 
         $validator = new Validator($data,[],'en');
+        $validator->rules($rules);
         if($validator->validate()){
             return true;
         }else{
@@ -1100,6 +1101,55 @@ class ValidateHelper
                 'date' =>
                 [
                     ['arrest_timestamp']
+                ]
+            ];
+        }else if($label == 'court') {
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['date'],
+                    ['time'],
+                    ['address_id'],
+                    ['judge_id'],
+                    ['verdict_id']
+                ],
+                'lengthMax' =>[
+                    ['name', 40]
+                ],
+                'numeric' => [
+                    ['address_id','judge_id','verdict_id']
+                ]
+            ];
+        } else if($label == 'address'){
+            $rules = [
+                'required' => [
+                    ['city'],
+                    ['street'],
+                    ['postal_code'],
+                    ['building_num']
+                ],
+                'lengthMax' =>[
+                    ['city', 50],
+                    ['street', 50],
+                    ['postal_code', 50],
+                    ['building_num', 50]
+                ]
+            ];
+        } else if($label == "verdict"){
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['description'],
+                    ['sentence'],
+                    ['fine']
+                ],
+                'min' => [
+                    ['sentence', 0],
+                    ['fine', 0]
+                ],
+                'numeric' => [
+                    ['sentence'],
+                    ['fine']
                 ]
             ];
         }

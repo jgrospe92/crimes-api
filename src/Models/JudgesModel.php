@@ -124,4 +124,11 @@ class JudgesModel extends BaseModel
         return $deletedCount;
     }
     
+    public function checkIfResourceExists($table, $whereClause): bool
+    {
+        if (!$this->getById($table, $whereClause)) {
+            return false;
+        }
+        return true;
+    }
 }
