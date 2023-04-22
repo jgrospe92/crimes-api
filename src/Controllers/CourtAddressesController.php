@@ -20,7 +20,7 @@ use Vanier\Api\Models\CourtAddressesModel;
 class CourtAddressesController extends BaseController
 {
     private $court_addresses_model = null;
-    private array $filter_params = ['address_id', 'city', 'street', 'postal_code', 'building_num'];
+    private array $filter_params = ['address_id', 'city', 'street', 'postal_code', 'building_num', 'sort_by'];
 
     /**
      * Summary of __construct

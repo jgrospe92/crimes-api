@@ -40,7 +40,7 @@ class ProsecutorsModel extends BaseModel
     public function getAllProsecutors(array $filters = []) 
     {
         $query_values = [];
-
+        
         if (isset($filters["id"]))
         {
             $this->sql .= " AND prosecutor_id = :prosecutor_id ";

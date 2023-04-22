@@ -19,7 +19,7 @@ use Vanier\Api\Models\VerdictsModel;
 class VerdictsController extends BaseController
 {
     private $verdicts_model = null;
-    private array $filter_params = ['verdict_id', 'name', 'description', 'sentence', 'fine'];
+    private array $filter_params = ['verdict_id', 'name', 'description', 'sentence', 'fine', 'sort_by'];
 
     /**
      * Summary of __construct
@@ -42,6 +42,7 @@ class VerdictsController extends BaseController
         $filters = $request->getQueryParams();
         $verdicts_model = new VerdictsModel();
 
+        //var_dump($filters);exit;
         // validation for filters
         if($filters){
             foreach ($filters as $key => $value) {

@@ -48,12 +48,27 @@ class CourtsModel extends BaseModel
             $sort_by = $filters["sort_by"];
             if($sort_by == "courts_id"){
                 $sql .= " ORDER BY courts_id";
-            }elseif ($sort_by == "name") {
+            }
+            elseif ($sort_by == "name") {
                 $sql .= " ORDER BY name";
-            }elseif ($sort_by == "date") {
+            }elseif ($sort_by == "name.asc") {
+                $sql .= " ORDER BY name asc";
+            }elseif ($sort_by == "name.desc") {
+                $sql .= " ORDER BY name desc";
+            }
+            elseif ($sort_by == "date") {
                 $sql .= " ORDER BY date";
-            }elseif ($sort_by == "time") {
+            }elseif ($sort_by == "date.asc") {
+                $sql .= " ORDER BY date asc";
+            }elseif ($sort_by == "date.desc") {
+                $sql .= " ORDER BY date desc";
+            }
+            elseif ($sort_by == "time") {
                 $sql .= " ORDER BY time";
+            }elseif ($sort_by == "time.asc") {
+                $sql .= " ORDER BY time asc";
+            }elseif ($sort_by == "time.desc") {
+                $sql .= " ORDER BY time desc";
             }
         }
 
