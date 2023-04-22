@@ -1,13 +1,20 @@
 <?php
 namespace Vanier\Api\Controllers;
+
+use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
 use Vanier\Api\exceptions\HttpBadRequest;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
 use Vanier\Api\Models\CourtsModel;
+use Vanier\Api\Models\CourtAddressesModel;
+use Exception;
+use Vanier\Api\Models\JudgesModel;
+use Vanier\Api\Models\VerdictsModel;
 
 /**
  * Summary of CourtsController
@@ -15,6 +22,9 @@ use Vanier\Api\Models\CourtsModel;
 class CourtsController extends BaseController
 {
     private $courts_model = null;
+    private $court_addresses_model = null;
+    private $verdicts_model = null;
+    private $judges_model = null;
     private array $filter_params = ['court_id', 'name', 'date', 'time', 'address_id', 'judge_id', 'verdict_id'];
 
     /**
@@ -23,6 +33,9 @@ class CourtsController extends BaseController
     public function __construct()
     {
         $this->courts_model = new CourtsModel();
+        $this->court_addresses_model = new CourtAddressesModel();
+        $this->verdicts_model = new VerdictsModel();
+        $this->judges_model = new JudgesModel();
     }
 
     /**
@@ -112,11 +125,134 @@ class CourtsController extends BaseController
     public function handleCreateCourts(Request $request, Response $response)
     {
         $courts_data = $request->getParsedBody();
-        foreach ($courts_data as $key => $courts) {
-            $this->courts_model->handleCreateCourts($courts);
+        // To check is body is correct
+        if(!isset($courts_data)){
+            throw new HttpBadRequest($request,"the request body is invalid");
         }
-        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+
+        foreach ($courts_data as $key => $courts) {
+            if(!ValidateHelper::validatePostMethods($courts, "court")){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $courts, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if foreign keys exists
+            if(!$this->courts_model->checkIfResourceExists('court_addresses',['address_id' => $courts['address_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("address_id is Invalid");
+                return $this->parsedError($response, $courts, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!$this->courts_model->checkIfResourceExists('judges', ['judge_id' => $courts['judge_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("judge_id is Invalid");
+                return $this->parsedError($response, $courts, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!$this->courts_model->checkIfResourceExists('verdicts', ['verdict_id' => $courts['verdict_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("verdict_id is Invalid");
+                return $this->parsedError($response, $courts, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if time and date are well formatted
+            if(!ValidateHelper::validateDateFormat($courts['date'])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("date format is Invalid");
+                return $this->parsedError($response, $courts, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!ValidateHelper::validateTimeStamp($courts['time'])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("timestamp format is Invalid");
+                return $this->parsedError($response, $courts, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            try {
+                $this->courts_model->handleCreateCourts($courts);
+            } catch (Exception $e) {
+                throw new HttpConflict($request, "Remove court_id from your body");
+            }
+        }
+        return $this->prepareOkResponse($response, $courts_data);
         //hello friend
     }
 
+    public function handleUpdateCourtsById(Request $request, Response $response, array $args)
+    {
+        $court_data = $request->getParsedBody();
+
+        // to check if body is correct
+        if(!isset($court_data)){
+            throw new HttpBadRequest($request, "Please provide required data");
+        }
+
+        foreach ($court_data as $key => $court) {
+            if(!ValidateHelper::validatePutMethods($court, "court")){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if foreign keys exists
+            if(!$this->courts_model->checkIfResourceExists('court_addresses',['address_id' => $court['address_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("address_id is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!$this->courts_model->checkIfResourceExists('judges', ['judge_id' => $court['judge_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("judge_id is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!$this->courts_model->checkIfResourceExists('verdicts', ['verdict_id' => $court['verdict_id']])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("verdict_id is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if time and date are well formatted
+            if(!ValidateHelper::validateDateFormat($court['date'])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("date format is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+            if(!ValidateHelper::validateTimeStamp($court['time'])){
+                $exception = new HttpBadRequest($request);
+                $exception->setDescription("timestamp format is Invalid");
+                return $this->parsedError($response, $court, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+
+            // to check if court_id exists
+            if (!$this->courts_model->checkIfResourceExists('courts', ['court_id' => $court['court_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("court_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // to check if address_id exists
+            if (!$this->court_addresses_model->checkIfResourceExists('court_addresses', ['address_id' => $court['address_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("address_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // to check if verdict_id exists
+            if (!$this->verdicts_model->checkIfResourceExists('verdicts', ['verdict_id' => $court['verdict_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("verdict_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+            // to check if judge_id exists
+            if(!$this->judges_model->checkIfResourceExists('judges',['judge_id' => $court['judge_id']])){
+                $exception = new HttpConflict($request);
+                $exception->setDescription("judge_id is invalid");
+                return $this->parsedError($response, $court,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
+
+            $court_id = $court['court_id'];
+            unset($court['court_id']);
+            $this->courts_model->handleUpdateCourtsById($court,$court_id);
+        }
+        if(!$response->withStatus(StatusCodeInterface::STATUS_CREATED)){
+            throw new HttpBadRequest($request,"The data entered was improperly formatted");
+        }
+        else{
+            return $this->prepareOkResponse($response,$court_data);
+        }   
+    }
 }

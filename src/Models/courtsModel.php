@@ -121,4 +121,27 @@ class CourtsModel extends BaseModel
         $courts['addresses'] = $addresses;
         return $courts;
     }
+
+    public function handleCreateCourts(array $courts)
+    {
+        return $this->insert($this->table_name, $courts);
+    }
+
+    public function handleUpdateCourtsById(array $court, String $court_id)
+    {
+        return $this->update('courts',$court, ["court_id" => $court_id]);
+    }
+
+    public function handleDeleteCourtsById(array $courts)
+    {
+        # code...
+    }
+
+    public function checkIfResourceExists($table, $whereClause): bool
+    {
+        if (!$this->getById($table, $whereClause)) {
+            return false;
+        }
+        return true;
+    }
 }

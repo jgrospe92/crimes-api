@@ -1,10 +1,13 @@
 <?php
 namespace Vanier\Api\Controllers;
+
+use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\controllers\BaseController;
 use Vanier\Api\exceptions\HttpBadRequest;
+use Vanier\Api\exceptions\HttpConflict;
 use Vanier\Api\exceptions\HttpNotFound;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
 use Vanier\Api\Helpers\ValidateHelper;
@@ -101,22 +104,59 @@ class VerdictsController extends BaseController
     public function handleCreateVerdicts(Request $request, Response $response)
     {
         $verdicts_data = $request->getParsedBody();
-        foreach($verdicts_data as $key =>$verdict){
-            $this->verdicts_model->handleCreateVerdicts($verdict);
-            //var_dump($this->verdicts_model->handleCreateVerdicts($verdict));
-            //echo "hi";exit;
+        // to check if body is correct
+        if(!isset($verdicts_data)){
+            throw new HttpBadRequest($request, "the request body is invalid");
         }
-        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        
+        foreach($verdicts_data as $key =>$verdicts){
+            if(!ValidateHelper::validatePostMethods($verdicts,'verdict')){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $verdicts,$exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
+        }
+        
+        try{
+            $this->verdicts_model->handleCreateVerdicts($verdicts);
+        } catch(Exception $e){
+            throw new HttpBadRequest($request, "Remove verdict_id from body");
+        }
+
+        return $this->prepareOkResponse($response,$verdicts_data);
     }
 
+    public function handleUpdateVerdictById(Request $request, Response $response, array $args)
+    {
+        $verdict_data = $request->getParsedBody();
+        // to check if body is correct
+        if(!isset($verdicts_data)){
+            throw new HttpBadRequest($request, "the request body is invalid");
+        }
 
+        foreach ($verdict_data as $key => $verdict) {
+            if(!ValidateHelper::validatePostMethods($verdict,'verdict')){
+                $exception = new HttpBadRequest($request);
+                return $this->parsedError($response, $verdict, $exception, StatusCodeInterface::STATUS_BAD_REQUEST);
+            }
 
+            // to check if verdict_id exists
+            if (!$this->verdicts_model->checkIfResourceExists('verdicts', ['verdict_id' => $verdict['verdict_id']])) {
+                $exception = new HttpConflict($request);
+                $exception->setDescription("verdict_id is invalid");
+                return $this->parsedError($response, $verdict,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            }
 
-
-
-
-
-
+            $verdict_id = $verdict['verdict_id'];
+            unset($verdict['verdict_id']);
+            $this->verdicts_model->handleUpdateVerdictById($verdict, $verdict_id);
+        }
+        if(!$response->withStatus(StatusCodeInterface::STATUS_CREATED)){
+            throw new HttpBadRequest($request,"The data entered was improperly formatted");
+        }
+        else{
+            return $this->prepareOkResponse($response,$verdict_data);
+        }
+    }
 
 
 }

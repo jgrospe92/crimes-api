@@ -102,6 +102,7 @@ class ValidateHelper
         $currentDate = date("Y-m-d");
         $rules = array(
             'dateBefore' => [['date_data', $currentDate]],
+            'dateFormat' => [['date_data', 'Y-m-d']]
         );
         $validator = new Validator($data, [], 'en');
         // Important: map the validation rules before calling validate()
@@ -124,7 +125,7 @@ class ValidateHelper
             [
                 'regex' =>
                 [
-                    ['time_stamp', '/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/']
+                    ['time_stamp', '/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)$/']
                 ]
             ];
         $validator = new Validator($data, [], 'en');
@@ -135,6 +136,26 @@ class ValidateHelper
         } else {
             return false;
         }
+    }
+
+    public static function validatePostalCode($postal){
+        $data = ['postal_code' => $postal];
+        $rules = 
+        [
+            'regex' =>
+            [
+                ['postal_code', '/^([a-zA-Z]\d[a-zA-Z])\ {0,1}(\d[a-zA-Z]\d)$/']
+            ]
+        ];
+
+        $validator = new Validator($data,[],'en');
+        $validator->rules($rules);
+        if($validator->validate()){
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
     function testValidatePersonInfo()
@@ -624,7 +645,6 @@ class ValidateHelper
             $allowed_marital_status = ['married', 'single', 'divorced'];
             $rules = [
                 'required' => [
-                    ['victim_id'],
                     ['first_name'],
                     ['last_name'],
                     ['age'],
@@ -641,6 +661,38 @@ class ValidateHelper
                 'numeric' => [
                     ['age', 'prosecutor_id', 'victim_id'],
                 ],
+            ];
+        } else if ($label == 'court') {
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['date'],
+                    ['time'],
+                    ['address_id'],
+                    ['judge_id'],
+                    ['verdict_id']
+                ],
+                'lengthMax' =>[
+                    ['name', 40]
+                ],
+                'numeric' => [
+                    ['address_id','judge_id','verdict_id']
+                ]
+            ];
+        } else if($label == 'address'){
+            $rules = [
+                'required' => [
+                    ['city'],
+                    ['street'],
+                    ['postal_code'],
+                    ['building_num']
+                ],
+                'lengthMax' =>[
+                    ['city', 50],
+                    ['street', 50],
+                    ['postal_code', 50],
+                    ['building_num', 50]
+                ]
             ];
         }
         else if ($label == 'offender')
@@ -688,6 +740,23 @@ class ValidateHelper
                 'date' =>
                 [
                     ['arrest_timestamp']
+                ]
+            ]; 
+        }else if($label == "verdict"){
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['description'],
+                    ['sentence'],
+                    ['fine']
+                ],
+                'min' => [
+                    ['sentence', 0],
+                    ['fine', 0]
+                ],
+                'numeric' => [
+                    ['sentence'],
+                    ['fine']
                 ]
             ];
         }
@@ -1032,6 +1101,55 @@ class ValidateHelper
                 'date' =>
                 [
                     ['arrest_timestamp']
+                ]
+            ];
+        }else if($label == 'court') {
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['date'],
+                    ['time'],
+                    ['address_id'],
+                    ['judge_id'],
+                    ['verdict_id']
+                ],
+                'lengthMax' =>[
+                    ['name', 40]
+                ],
+                'numeric' => [
+                    ['address_id','judge_id','verdict_id']
+                ]
+            ];
+        } else if($label == 'address'){
+            $rules = [
+                'required' => [
+                    ['city'],
+                    ['street'],
+                    ['postal_code'],
+                    ['building_num']
+                ],
+                'lengthMax' =>[
+                    ['city', 50],
+                    ['street', 50],
+                    ['postal_code', 50],
+                    ['building_num', 50]
+                ]
+            ];
+        } else if($label == "verdict"){
+            $rules = [
+                'required' => [
+                    ['name'],
+                    ['description'],
+                    ['sentence'],
+                    ['fine']
+                ],
+                'min' => [
+                    ['sentence', 0],
+                    ['fine', 0]
+                ],
+                'numeric' => [
+                    ['sentence'],
+                    ['fine']
                 ]
             ];
         }
