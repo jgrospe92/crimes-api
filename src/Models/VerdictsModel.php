@@ -29,33 +29,54 @@ class VerdictsModel extends BaseModel
         }
         if(isset($filters["name"])){
             $sql .= " AND name LIKE CONCAT(:name,'%') ";
-            $query_values[":name"] = $filters["name"];
+            $query_values[":name"] = $filters["name"]. "%";
         }
         if(isset($filters["description"])){
             $sql .= " AND description like CONCAT(:description,'%') ";
-            $query_values[":description"] = $filters["description"];
+            $query_values[":description"] = $filters["description"]."%";
         }
         if(isset($filters["sentence"])){
             $sql .= " AND sentence like CONCAT(:sentence,'%') ";
-            $query_values[":sentence"] = $filters["sentence"];
+            $query_values[":sentence"] = $filters["sentence"]."%";
         }
         if(isset($filters["fine"])){
             $sql .= " AND fine LIKE CONCAT(:fine, '%') ";
             $query_values[":fine"] = $filters["fine"];
         }
 
+        
         if(isset($filters["sort_by"])){
             $sort_by = $filters["sort_by"];
             if($sort_by == "verdict_id"){
                 $sql .= " ORDER BY verdict_id";
-            }elseif ($sort_by == "name") {
-                $sql .= " ORDER BY name";
-            }elseif ($sort_by == "description") {
+            }
+            elseif ($sort_by == "name") {
+                $sql .= " GROUP BY name";
+            }elseif ($sort_by == "name.asc") {
+                $sql .= " GROUP BY name asc";
+            }elseif ($sort_by == "name.desc") {
+                $sql .= " GROUP BY name desc";
+            }
+            elseif ($sort_by == "description") {
                 $sql .= " ORDER BY description";
-            }elseif ($sort_by == "sentence") {
+            }elseif ($sort_by == "description.asc") {
+                $sql .= " ORDER BY description asc";
+            }elseif ($sort_by == "description.desc") {
+                $sql .= " ORDER BY description desc";
+            }
+            elseif ($sort_by == "sentence") {
                 $sql .= " ORDER BY sentence";
-            }elseif ($sort_by == "fine") {
+            }elseif ($sort_by == "sentence.asc") {
+                $sql .= " ORDER BY sentence asc";
+            }elseif ($sort_by == "sentence.desc") {
+                $sql .= " ORDER BY sentence desc";
+            }
+            elseif ($sort_by == "fine") {
                 $sql .= " ORDER BY fine";
+            }elseif ($sort_by == "fine.asc") {
+                $sql .= " ORDER BY fine asc";
+            }elseif ($sort_by == "fine.desc") {
+                $sql .= " ORDER BY fine desc";
             }
         }
         

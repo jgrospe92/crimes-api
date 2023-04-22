@@ -25,7 +25,7 @@ class CourtsController extends BaseController
     private $court_addresses_model = null;
     private $verdicts_model = null;
     private $judges_model = null;
-    private array $filter_params = ['court_id', 'name', 'date', 'time', 'address_id', 'judge_id', 'verdict_id'];
+    private array $filter_params = ['court_id', 'name', 'date', 'time', 'address_id', 'judge_id', 'verdict_id', 'sort_by'];
 
     /**
      * Summary of __construct

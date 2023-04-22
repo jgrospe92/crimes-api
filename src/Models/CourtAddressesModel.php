@@ -53,14 +53,34 @@ class CourtAddressesModel extends BaseModel
             $sort_by = $filters["sort_by"];
             if($sort_by == "address_id"){
                 $sql .= " ORDER BY address_id";
-            }elseif ($sort_by == "city") {
+            }
+            elseif ($sort_by == "city") {
                 $sql .= " ORDER BY city";
-            }elseif ($sort_by == "street") {
+            }elseif ($sort_by == "city.asc") {
+                $sql .= " ORDER BY city asc";
+            }elseif ($sort_by == "city.desc") {
+                $sql .= " ORDER BY city desc";
+            }
+            elseif ($sort_by == "street") {
                 $sql .= " ORDER BY street";
-            }elseif ($sort_by == "postal_code") {
+            }elseif ($sort_by == "street.asc") {
+                $sql .= " ORDER BY street asc";
+            }elseif ($sort_by == "street.desc") {
+                $sql .= " ORDER BY street desc";
+            }
+            elseif ($sort_by == "postal_code") {
                 $sql .= " ORDER BY postal_code";
-            }elseif($sort_by == "building_num"){
+            }elseif ($sort_by == "postal_code.asc") {
+                $sql .= " ORDER BY postal_code asc";
+            }elseif ($sort_by == "postal_code.desc") {
+                $sql .= " ORDER BY postal_code desc";
+            }
+            elseif($sort_by == "building_num"){
                 $sql .= " ORDER BY building_num";
+            }elseif($sort_by == "building_num.asc"){
+                $sql .= " ORDER BY building_num asc";
+            }elseif($sort_by == "building_num.desc"){
+                $sql .= " ORDER BY building_num desc";
             }
         }
 
