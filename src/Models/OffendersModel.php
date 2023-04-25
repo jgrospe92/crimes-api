@@ -337,8 +337,10 @@ class OffendersModel extends BaseModel
         return $this->update($this->table_name, $offender, ['offender_id' => $offender_id]);
     }
 
-    public function deleteOffender() 
+    public function deleteOffender($offender) 
     {
-        
+        $where = ['offender_id' => $offender['offender_id']];
+        unset($offender['offender_id']);
+        return $this->delete($this->table_name, $where);
     }
 }

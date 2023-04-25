@@ -101,11 +101,13 @@ class DefendantsModel extends BaseModel
     {
         $defendant_id = $defendant['defendant_id'];
         unset($defendant['defendant_id']);
-        $this->update($this->table_name, $defendant, ['defendant_id' => $defendant_id]);
+        return $this->update($this->table_name, $defendant, ['defendant_id' => $defendant_id]);
     }
 
-    public function deleteDefendant()
+    public function deleteDefendant($defendant)
     {
-        
+        $where = ['defendant_id' => $defendant['defendant_id']];
+        unset($defendant['defendant_id']);
+        return $this->delete($this->table_name, $where);
     }
 }

@@ -105,8 +105,10 @@ class ProsecutorsModel extends BaseModel
         return $this->update($this->table_name, $prosecutor, ['prosecutor_id' => $prosecutor_id]);
     }
 
-    public function deleteProsecutor()
+    public function deleteProsecutor($prosecutor)
     {
-        
+        $where = ['prosecutor_id' => $prosecutor['prosecutor_id']];
+        unset($prosecutor['prosecutor_id']);
+        return $this->delete($this->table_name, $where);
     }
 }
