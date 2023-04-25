@@ -13,7 +13,8 @@ class OffendersModel extends BaseModel
     /**
      * Summary of __construct
      */
-    public function __construct() {
+    public function __construct() 
+    {
         parent::__construct();
         $this->table_name = "offenders";
         $this->sql =  
@@ -40,7 +41,8 @@ class OffendersModel extends BaseModel
      * @param mixed $offender_id
      * @return array<array>
      */
-    public function getOffenderById($offender_id) {
+    public function getOffenderById($offender_id) 
+    {
         $this->sql .= "AND offender_id = :offender_id ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
 
@@ -85,7 +87,8 @@ class OffendersModel extends BaseModel
      * @return array
      * Supported filters for ID, first_name, last_name, age, marital_status, date, and time
      */
-    public function getAllOffenders(array $filters = []) {
+    public function getAllOffenders(array $filters = []) 
+    {
         $query_values = [];
 
         if (isset($filters["id"]))
@@ -206,7 +209,8 @@ class OffendersModel extends BaseModel
      * @param mixed $offender_id
      * @return array
      */
-    public function getDefendantOfOffender($offender_id) {
+    public function getDefendantOfOffender($offender_id) 
+    {
         $this->sql .= "AND offender_id = :offender_id ";
         $result = $this->run($this->sql, [':offender_id' => $offender_id])->fetchAll();
 
@@ -236,7 +240,8 @@ class OffendersModel extends BaseModel
      * @param mixed $offender_id
      * @return array<array>
      */
-    public function getCaseOfOffender($offender_id) {
+    public function getCaseOfOffender($offender_id) 
+    {
         $this->sql = 
             "SELECT 
                 offenders.offender_id,
@@ -315,7 +320,8 @@ class OffendersModel extends BaseModel
      * @param array $data
      * @return bool|string
      */
-    public function postOffender(array $data) {
+    public function postOffender(array $data) 
+    {
         return $this->insert($this->table_name, $data);
     }
 
@@ -324,13 +330,15 @@ class OffendersModel extends BaseModel
      * @param mixed $offender
      * @return mixed
      */
-    public function putOffender($offender) {
+    public function putOffender($offender) 
+    {
         $offender_id = $offender['offender_id'];
         unset($offender['offender_id']);
         return $this->update($this->table_name, $offender, ['offender_id' => $offender_id]);
     }
 
-    public function deleteOffender() {
+    public function deleteOffender() 
+    {
         
     }
 }
