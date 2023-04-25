@@ -89,12 +89,14 @@ $app->get('/prosecutors', [ProsecutorsController::class, 'handleGetAllProsecutor
 $app->get('/prosecutors/{prosecutor_id}', [ProsecutorsController::class, 'handleGetProsecutorById']);
 $app->post('/prosecutors', [ProsecutorsController::class, 'handlePostProsecutors']);
 $app->put('/prosecutors', [ProsecutorsController::class, 'handlePutProsecutors']);
+$app->delete('/prosecutors', [ProsecutorsController::class, 'handleDeleteProsecutors']);
 
 // Defendants Routes
 $app->get('/defendants', [DefendantsController::class, 'handleGetAllDefendants']);
 $app->get('/defendants/{defendant_id}', [DefendantsController::class, 'handleGetDefendantById']);
 $app->post('/defendants', [DefendantsController::class, 'handlePostDefendants']);
 $app->put('/defendants', [DefendantsController::class, 'handlePutDefendants']);
+$app->delete('/defendants', [DefendantsController::class, 'handleDeleteDefendants']);
 
 $app->get('/victims', [VictimsController::class, 'handleGetAllVictims']);
 $app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimById']);
