@@ -195,7 +195,11 @@ class ProsecutorsController extends BaseController
         foreach ($data as $prosecutor)
         {
             $this->prosecutor_model->postProsecutor($prosecutor); 
-            if (++$i === $arr_size) 
+            if ($arr_size == 1) 
+            {
+                $names .= $prosecutor["first_name"] . " " . $prosecutor["last_name"] . " ";
+            } 
+            elseif (++$i === $arr_size) 
             {
                 $names .= "and " . $prosecutor["first_name"] . " " . $prosecutor["last_name"] . " ";
             } 
@@ -256,7 +260,11 @@ class ProsecutorsController extends BaseController
         foreach ($data as $prosecutor)
         {
             $this->prosecutor_model->putProsecutor($prosecutor);
-            if (++$i === $arr_size) 
+            if ($arr_size == 1) 
+            {
+                $names .= $prosecutor["prosecutor_id"] . " ";
+            } 
+            elseif (++$i === $arr_size) 
             {
                 $names .= "and " . $prosecutor["prosecutor_id"] . " ";
             } 
@@ -304,7 +312,11 @@ class ProsecutorsController extends BaseController
         foreach ($data as $prosecutor_id)
         {
             $this->prosecutor_model->deleteProsecutor($prosecutor_id);
-            if (++$i === $arr_size) 
+            if ($arr_size == 1) 
+            {
+                $names .= $prosecutor_id . " ";
+            } 
+            elseif (++$i === $arr_size) 
             {
                 $names .= "and " . $prosecutor_id . " ";
             } 

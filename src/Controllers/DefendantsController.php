@@ -297,7 +297,7 @@ class DefendantsController extends BaseController
         {
             if (!$this->defendant_model->checkIfResourceExists('defendants', ['defendant_id' => $defendant_id]))
             {
-                throw new HttpNotFoundException($request, 'One or more prosecutors do not exist, or they have been deleted.');
+                throw new HttpNotFoundException($request, 'One or more defendants do not exist, or they have been deleted.');
             }
         }
 
@@ -309,7 +309,12 @@ class DefendantsController extends BaseController
         foreach ($data as $defendant_id)
         {
             $this->defendant_model->deleteDefendant($defendant_id);
-            if (++$i === $arr_size) 
+
+            if ($arr_size == 1) 
+            {
+                $names .= $defendant_id . " ";
+            } 
+            elseif (++$i === $arr_size) 
             {
                 $names .= "and " . $defendant_id . " ";
             } 
