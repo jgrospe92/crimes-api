@@ -256,7 +256,7 @@ class VictimsController extends BaseController
      */
     private function validateFilters(Request $request, array $filters)
     {
-        $valid_filters = ['last_name', 'marital_status', 'age', 'victim_id', 'prosecutor_id'];
+        $valid_filters = ['last_name', 'marital_status', 'age', 'victim_id', 'prosecutor_id', 'sort_by'];
         foreach ($filters as $filter => $value) {
             if (!in_array($filter, $valid_filters)) {
                 throw new HttpBadRequest($request, "Invalid filter: $filter");
