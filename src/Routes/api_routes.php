@@ -17,6 +17,7 @@ use Vanier\Api\Controllers\JudgesController;
 use Vanier\Api\Controllers\VictimsController;
 use Vanier\Api\Controllers\OffensesController;
 use Vanier\Api\Controllers\InvestigatorsController;
+use Vanier\Api\Controllers\AuthenticationController;
 
 // Import the app instance into this file's scope.
 global $app;
@@ -113,3 +114,7 @@ $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handl
 $app->post('/crime_scenes', [CrimeScenesController::class, 'createCrimeScene']);
 $app->put('/crime_scenes', [CrimeScenesController::class, 'updateCrimeScenes']);
 $app->delete('/crime_scenes', [CrimeScenesController::class, 'deleteCrimeScenes']);
+
+// aa routes
+$app->post('/account', [AuthenticationController::class, 'handleCreateUserAccount']);
+$app->post('/token', [AuthenticationController::class, 'handleGetToken']);

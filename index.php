@@ -5,6 +5,10 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use Vanier\Api\exceptions\HttpErrorHandler;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
 
+define('APP_BASE_DIR', __DIR__);
+// IMPORTANT: This file must be added to your .ignore file. 
+define('APP_ENV_CONFIG', 'config.env');
+
 require __DIR__ . '/vendor/autoload.php';
  // Include the file that contains the application's global configuration settings,
  // database credentials, etc.
