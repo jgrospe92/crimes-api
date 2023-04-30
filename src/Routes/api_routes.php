@@ -105,7 +105,7 @@ $app->delete('/victims', [VictimsController::class, 'deleteVictims']);
 
 $app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
 $app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById']);
-$app->post('/judges', [JudgesController::class, 'createJudge']);
+$app->post('/judges', [JudgesController::class, 'createJudges']);
 $app->put('/judges', [JudgesController::class, 'updateJudges']);
 $app->delete('/judges', [JudgesController::class, 'deleteJudges']);
 
