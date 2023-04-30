@@ -234,7 +234,7 @@ class CrimeScenesController extends BaseController
      */
     private function validateFilters(Request $request, array $filters)
     {
-        $valid_filters = ['street', 'city', 'crime_scene_id', 'sort_by'];
+        $valid_filters = ['street', 'city', 'crime_sceneID', 'sort_by'];
         foreach ($filters as $filter => $value) {
             if (!in_array($filter, $valid_filters)) {
                 throw new HttpBadRequest($request, "Invalid filter: $filter");
