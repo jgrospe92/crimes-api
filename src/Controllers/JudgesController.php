@@ -171,7 +171,12 @@ class JudgesController extends BaseController
         if (empty($data) || !is_array($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
+        
+        // Check if the "judges" key exists and is not null
+        if (!isset($data['judges']) || $data['judges'] === null) {
+            throw new HttpConflict($request, "Please provide judges data");
 
+        }
         // Validate the received data for each judge
         foreach ($data['judges'] as $judge) {
             if (!ValidateHelper::validatePutMethods($judge, 'judge')) {
