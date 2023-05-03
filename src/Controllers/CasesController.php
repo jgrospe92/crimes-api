@@ -379,10 +379,12 @@ class CasesController extends BaseController
                 return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
             }
             // checks if all Foreign keys exist
-            if (!$this->case_model->checkIfResourceExists('crime_scenes', ['crime_sceneID' => $case['crime_sceneID']])) {
-                $exception = new HttpConflict($request);
-                $exception->setDescription("Crime-sceneID is invalid");
-                return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+            if (isset($case['crime_sceneID'])){
+                if (!$this->case_model->checkIfResourceExists('crime_scenes', ['crime_sceneID' => $case['crime_sceneID']])) {
+                    $exception = new HttpConflict($request);
+                    $exception->setDescription("Crime-sceneID is invalid");
+                    return $this->parsedError($response, $case,  $exception, StatusCodeInterface::STATUS_CONFLICT);
+                }
             }
 
             if (!$this->case_model->checkIfResourceExists('investigators', ['investigator_id' => $case['investigator_id']])) {

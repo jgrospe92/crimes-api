@@ -839,7 +839,7 @@ class ValidateHelper
                     //['offender_id', 0],
                     ['investigator_id', 1],
                     ['court_id', 1],
-                    ['misdemeanor', 1]
+                    ['misdemeanor', 0]
                 ],
                 'max' =>
                 [
@@ -921,8 +921,6 @@ class ValidateHelper
                 [
                     ['offense_id'],
                     ['name'],
-                    ['description'],
-                    ['classification']
                 ],
                 'lengthMax' =>
                 [
