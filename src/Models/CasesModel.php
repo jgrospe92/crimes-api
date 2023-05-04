@@ -323,15 +323,13 @@ class CasesModel extends BaseModel
      * @param mixed $cases
      * @return bool
      *
-     */ 
+     */
     public function updateCase($cases): bool
     {
         $old_offenses_id = [];
         $old_victims_id = [];
         $old_offenders_id = [];
 
-        $case = $this->getById('cases', ['case_id'=>$cases['case_id']]);
-        var_dump($case);exit;
         $case_id = $cases['case_id'];
         $new_offense_ids = $cases['offense_id'];
         $new_victim_ids = $cases['victim_id'];
@@ -443,6 +441,4 @@ class CasesModel extends BaseModel
         }
         return true;
     }
-
-    
 }
