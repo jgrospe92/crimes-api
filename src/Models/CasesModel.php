@@ -428,6 +428,17 @@ class CasesModel extends BaseModel
     }
 
     /**
+     * Summary of deleteCase
+     * @param mixed $id
+     * @return void
+     */
+    public function deleteCase($id)
+    {
+        $this->delete('cases', ['case_id' => $id]);
+    }
+
+
+    /**
      * Summary of checkIfResourceExists
      * @param mixed $table
      * @param mixed $whereClause

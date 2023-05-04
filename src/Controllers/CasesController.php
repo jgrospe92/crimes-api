@@ -430,4 +430,53 @@ class CasesController extends BaseController
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
     }
+
+    /**
+     * Summary of handleDeleteCases
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @throws \Vanier\Api\exceptions\HttpConflict
+     * @return Response
+     */
+    public function handleDeleteCases(Request $request, Response $response)
+    {
+        $data = $request->getParsedBody()['case_id'];
+        $case_ids = ['id' => $data];
+
+        // Check if ids are provided
+        if (empty($case_ids['id']) || !is_array($case_ids['id'])) {
+            throw new HttpConflict($request, "Please provide an id");
+        }
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($case_ids['id'])) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+        // Check if each ID exists before deleting
+
+        foreach ($case_ids['id'] as $case_id) {
+            // validate if the case_id is a valid number
+            if (!ValidateHelper::validateNumIsPositive($case_id)) {
+                $msg = "The provided ID : " . "{" . $case_id . "} is not valid number";
+                throw new HttpConflict($request, $msg);
+            }
+            // validate if the case_id exists
+            if (!$this->case_model->checkIfResourceExists('cases', ['case_id' => $case_id])) {
+                throw new HttpConflict($request, "Case with id : $case_id does not exist");
+            }
+        }
+        // delete case
+        $deletedCount = 0;
+        foreach ($case_ids['id'] as $case_id) {
+            $this->case_model->deleteCase(($case_id));
+            $deletedCount++;
+        }
+
+        // Prepare response message
+        $case_format =  $deletedCount > 1 ? "cases" : "case";
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount $case_format.",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
+    }
 }
