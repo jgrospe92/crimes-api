@@ -32,7 +32,7 @@ class OffensesModel extends BaseModel
     public function getOffensesById($table, $whereClause)
     {
         $offense = $this->getById($table, $whereClause);
-        if (!$offense){
+        if (!$offense) {
             return null;
         }
         return $offense;
@@ -49,8 +49,7 @@ class OffensesModel extends BaseModel
 
         $sql = "SELECT * from offenses WHERE 1";
 
-        if (isset($filters['name']))
-        {
+        if (isset($filters['name'])) {
             $sql .= " AND offenses.name LIKE CONCAT(:name, '%') ";
             $query_values[':name'] = $filters['name'];
         }
@@ -76,7 +75,7 @@ class OffensesModel extends BaseModel
                 $sql .= " ORDER BY " .   $column . " " .  $order_by;
             }
         }
-        if (!isset($filters["sort_by"])){
+        if (!isset($filters["sort_by"])) {
             $sql .= " GROUP BY offense_id ";
         }
 
@@ -92,7 +91,7 @@ class OffensesModel extends BaseModel
     {
         $offense_id = $offense['offense_id'];
         unset($offense['offense_id']);
-        $this->update('offenses', $offense, ['offense_id'=>$offense_id]);
+        $this->update('offenses', $offense, ['offense_id' => $offense_id]);
     }
 
     /**
@@ -103,5 +102,15 @@ class OffensesModel extends BaseModel
     public function createOffenses($offense)
     {
         return $this->insert('offenses', $offense);
+    }
+
+    /**
+     * Summary of deleteOffense
+     * @param mixed $id
+     * @return void
+     */
+    public function deleteOffense($id)
+    {
+        $this->delete('offenses', ['offense_id' => $id]);
     }
 }

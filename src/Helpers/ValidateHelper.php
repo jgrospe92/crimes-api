@@ -810,9 +810,6 @@ class ValidateHelper
                     'min' =>
                     [
                         ['case_id', 1],
-                        //['offense_id', 0],
-                        //['victim_id', 0],
-                        //['offender_id', 0],
                         ['investigator_id', 1],
                         ['court_id', 1],
                         ['misdemeanor', 0]

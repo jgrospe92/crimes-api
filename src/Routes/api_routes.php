@@ -49,6 +49,8 @@ $app->get('/offenses/{offense_id}', [OffensesController::class, 'handleOffensesB
 $app->post('/offenses', [OffensesController::class, 'handlePostOffenses']);
 // PUT /offenses
 $app->put('/offenses', [OffensesController::class, 'handlePutOffenses']);
+// DELETE /offenses
+$app->delete("/offenses",  [OffensesController::class, 'handleDeleteOffenses']);
 
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
