@@ -1,4 +1,5 @@
 <?php
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
@@ -38,6 +39,8 @@ $app->get('/cases/{case_id}/offenders', [CasesController::class, 'handleOffender
 $app->post('/cases', [CasesController::class, 'handlePostCases']);
 // PUT /cases
 $app->put('/cases', [CasesController::class, 'handlePutCases']);
+// DELETE cases
+$app->delete('/cases', [CasesController::class, 'handleDeleteCases']);
 
 // Routes : offenses
 $app->get('/offenses', [OffensesController::class, 'handleOffenses']);
@@ -46,6 +49,8 @@ $app->get('/offenses/{offense_id}', [OffensesController::class, 'handleOffensesB
 $app->post('/offenses', [OffensesController::class, 'handlePostOffenses']);
 // PUT /offenses
 $app->put('/offenses', [OffensesController::class, 'handlePutOffenses']);
+// DELETE /offenses
+$app->delete("/offenses",  [OffensesController::class, 'handleDeleteOffenses']);
 
 // Routes : investigators
 $app->get('/investigators', [InvestigatorsController::class, 'handleInvestigators']);
@@ -54,27 +59,29 @@ $app->get('/investigators/{investigator_id}', [InvestigatorsController::class, '
 $app->post('/investigators', [InvestigatorsController::class, 'handlePostInvestigators']);
 // PUT /investigators
 $app->put('/investigators', [InvestigatorsController::class, 'handlePutInvestigators']);
+// DELETE /investigators
+$app->delete('/investigators', [InvestigatorsController::class, 'handleDeleteInvestigators']);
 
 // Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);
-$app->get('/verdicts/{verdict_id}', [VerdictsController::class,'handleGetVerdictById']);
-$app->post('/verdicts',[VerdictsController::class, 'handleCreateVerdicts']);
+$app->get('/verdicts/{verdict_id}', [VerdictsController::class, 'handleGetVerdictById']);
+$app->post('/verdicts', [VerdictsController::class, 'handleCreateVerdicts']);
 $app->put('/verdicts', [VerdictsController::class, 'handleUpdateVerdictById']);
 $app->delete('/verdicts/{verdict_id}', [VerdictsController::class, "handleDeleteVerdictById"]);
 
 // Routes for Court_Addresses
-$app->get('/court_addresses',[CourtAddressesController::class, 'handleGetAllAddresses']);
-$app->get('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleGetAddressById']);
-$app->post('/court_addresses',[CourtAddressesController::class, 'handleCreateAddresses']);
-$app->put('/court_addresses',[CourtAddressesController::class, 'handleUpdateAddressById']);
-$app->delete('/court_addresses/{address_id}',[CourtAddressesController::class, 'handleDeleteAddressById']);
+$app->get('/court_addresses', [CourtAddressesController::class, 'handleGetAllAddresses']);
+$app->get('/court_addresses/{address_id}', [CourtAddressesController::class, 'handleGetAddressById']);
+$app->post('/court_addresses', [CourtAddressesController::class, 'handleCreateAddresses']);
+$app->put('/court_addresses', [CourtAddressesController::class, 'handleUpdateAddressById']);
+$app->delete('/court_addresses/{address_id}', [CourtAddressesController::class, 'handleDeleteAddressById']);
 
 // Routes for Courts
-$app->get('/courts',[CourtsController::class, 'handleGetAllCourts']);
-$app->get('/courts/{court_id}',[CourtsController::class, 'handleGetCourtById']);
-$app->post('/courts',[CourtsController::class, 'handleCreateCourts']);
-$app->put('/courts',[CourtsController::class, 'handleUpdateCourtsById']);
-$app->delete('/courts/{court_id',[CourtsController::class, 'handleDeleteCourtsById']);
+$app->get('/courts', [CourtsController::class, 'handleGetAllCourts']);
+$app->get('/courts/{court_id}', [CourtsController::class, 'handleGetCourtById']);
+$app->post('/courts', [CourtsController::class, 'handleCreateCourts']);
+$app->put('/courts', [CourtsController::class, 'handleUpdateCourtsById']);
+$app->delete('/courts/{court_id', [CourtsController::class, 'handleDeleteCourtsById']);
 
 // Offenders Routes
 $app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);

@@ -173,13 +173,12 @@ class OffensesController extends BaseController
     {
         // retrieve the body
         $data = $request->getParsedBody();
-         // check if body is empty, throw an exception otherwise
+        // check if body is empty, throw an exception otherwise
         if (!isset($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
 
-        foreach($data as $offense)
-        {
+        foreach ($data as $offense) {
             // validate if the provided data is correct
             if (!ValidateHelper::validatePutMethods($offense, "offense")) {
                 $exception = new HttpConflict($request);
@@ -196,5 +195,53 @@ class OffensesController extends BaseController
             $this->offenses_model->updateOffense($offense);
         }
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
+
+    /**
+     * Summary of handleDeleteOffenses
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @throws \Vanier\Api\exceptions\HttpConflict
+     * @return Response
+     */
+    public function handleDeleteOffenses(Request $request, Response $response)
+    {
+        $data = $request->getParsedBody()['offense_id'];
+        $offense_ids = ['id' => $data];
+        // Check if ids are provided
+        if (empty($offense_ids['id']) || !is_array($offense_ids['id'])) {
+            throw new HttpConflict($request, "Please provide a valid id");
+        }
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($offense_ids['id'])) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+        // Check if each ID exists before deleting
+
+        foreach ($offense_ids['id'] as $offense_id) {
+            // validate if the offense id is a valid number
+            if (!ValidateHelper::validateNumIsPositive($offense_id)) {
+                $msg = "The provided ID : " . "{" . $offense_id . "} is not valid number";
+                throw new HttpConflict($request, $msg);
+            }
+            // validate if the offense_id exists
+            if (!$this->offenses_model->checkIfResourceExists('offenses', ['offense_id' => $offense_id])) {
+                throw new HttpConflict($request, "Offense with id : $offense_id does not exist");
+            }
+        }
+        // delete case
+        $deletedCount = 0;
+        foreach ($offense_ids['id'] as $offense_id) {
+            $this->offenses_model->deleteOffense(($offense_id));
+            $deletedCount++;
+        }
+
+        // Prepare response message
+        $format =  $deletedCount > 1 ? "offenses" : "offense";
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount $format.",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 }
