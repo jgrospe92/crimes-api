@@ -59,6 +59,8 @@ $app->get('/investigators/{investigator_id}', [InvestigatorsController::class, '
 $app->post('/investigators', [InvestigatorsController::class, 'handlePostInvestigators']);
 // PUT /investigators
 $app->put('/investigators', [InvestigatorsController::class, 'handlePutInvestigators']);
+// DELETE /investigators
+$app->delete('/investigators', [InvestigatorsController::class, 'handleDeleteInvestigators']);
 
 // Routes for Verdicts
 $app->get('/verdicts', [VerdictsController::class, 'handleGetAllVerdicts']);

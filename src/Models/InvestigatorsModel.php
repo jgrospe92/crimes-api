@@ -72,7 +72,6 @@ class InvestigatorsModel extends BaseModel
         }
 
         return $this->paginate($sql, $query_values, 'investigators');
-
     }
 
     /**
@@ -84,11 +83,10 @@ class InvestigatorsModel extends BaseModel
     public function getInvestigatorById($table, $whereClause)
     {
         $investigator = $this->getById($table, $whereClause);
-        if (!$investigator){
+        if (!$investigator) {
             return null;
         }
         return $investigator;
-
     }
 
 
@@ -111,6 +109,16 @@ class InvestigatorsModel extends BaseModel
     {
         $investigator_id = $investigator['investigator_id'];
         unset($investigator['investigator_id']);
-        $this->update('investigators', $investigator ,['investigator_id'=>$investigator_id]);
+        $this->update('investigators', $investigator, ['investigator_id' => $investigator_id]);
+    }
+
+    /**
+     * Summary of deleteInvestigator
+     * @param mixed $id
+     * @return void
+     */
+    public function deleteInvestigator($id)
+    {
+        $this->delete('investigators', ['investigator_id' => $id]);
     }
 }
