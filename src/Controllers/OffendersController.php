@@ -339,7 +339,7 @@ class OffendersController extends BaseController
     public function handleDeleteOffenders(Request $request, Response $response)
     {
         $data = $request->getParsedBody()['offender_id'];
-//var_dump($data); exit;
+
         // Check if the JSON body is empty
         if (!$data || !is_array($data))
         {
