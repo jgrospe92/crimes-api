@@ -159,7 +159,6 @@ class InvestigatorsController extends BaseController
                 $payload['error']['description'] = $exception->getDescription();
                 $payload['error']['message'] = $exception->getMessage();
                 $payload['reason'] = $investigator;
-
                 return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
             }
             try {

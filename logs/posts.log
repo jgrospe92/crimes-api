@@ -1,0 +1,2 @@
+[2023-05-05T00:16:24.871718-04:00] CREATE.NOTICE: STATUS CODE 201 {"context":"new item has been added"} {"uid":"7d00292","url":"/crimes-api/investigators","ip":"::1","http_method":"POST","server":"localhost","referrer":null}
+[2023-05-05T00:25:14.524661-04:00] CREATE.NOTICE: STATUS CODE 201 {"context":"item updated"} {"uid":"1baf23f","url":"/crimes-api/investigators","ip":"::1","http_method":"PUT","server":"localhost","referrer":null}

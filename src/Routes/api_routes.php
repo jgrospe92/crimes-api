@@ -18,6 +18,7 @@ use Vanier\Api\Controllers\JudgesController;
 use Vanier\Api\Controllers\VictimsController;
 use Vanier\Api\Controllers\OffensesController;
 use Vanier\Api\Controllers\InvestigatorsController;
+use Vanier\Api\Controllers\HackzillaController;
 
 // Import the app instance into this file's scope.
 global $app;
@@ -29,6 +30,8 @@ global $app;
 // ROUTE: /
 $app->get('/', [AboutController::class, 'handleAboutApi']);
 
+// PASSWORD GENERATOR
+$app->post('/password-generator', [HackzillaController::class, 'handlePasswordGenerator']);
 // Routes : cases
 $app->get('/cases/{case_id}', [CasesController::class, 'handleGetCaseById']);
 $app->get('/cases', [CasesController::class, 'handleGetCases']);
