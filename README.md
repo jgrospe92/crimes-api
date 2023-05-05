@@ -14,13 +14,21 @@
   - [Pagination](#pagination)
 - [Resources](#resources)
   - [Root](#root)
-  - [GET /Cases](#get-cases)
-  - [GET/cases/{id}](#getcasesid)
-  - [GET/cases/{id}/victims](#getcasesidvictims)
-  - [GET/cases/{id}/offenders](#getcasesidoffenders)
-  - [POST /cases](#post-cases)
-  - [PUT /cases](#put-cases)
-  - [DELETE /cases](#delete-cases)
+  - [cases](#cases)
+    - [GET /Cases](#get-cases)
+    - [GET/cases/{id}](#getcasesid)
+    - [GET/cases/{id}/victims](#getcasesidvictims)
+    - [GET/cases/{id}/offenders](#getcasesidoffenders)
+    - [POST /cases](#post-cases)
+    - [PUT /cases](#put-cases)
+    - [DELETE /cases](#delete-cases)
+  - [offenses](#offenses)
+    - [GET /offenses](#get-offenses)
+    - [GET/offenses/{id}](#getoffensesid)
+    - [POST /offenses](#post-offenses)
+      - [Condition](#condition)
+    - [PUT /offenses](#put-offenses)
+    - [DELETE /cases](#delete-cases-1)
 - [Teams ⚔](#teams-)
 - [Teacher 🎓](#teacher-)
 
@@ -98,8 +106,8 @@
 - contains information of the crimes-api
 - example request
   - GET /crimes-api/
-
-## GET /Cases
+## cases
+### GET /Cases
 |**Parameter**   |**Description**   |**Example**| **Condition** |
 |---|---|---|--|
 | description  | returns any resource(s) that matches the given value   | description: On 21st   | NA
@@ -109,22 +117,22 @@
 |page|returns the specified page|page : 1| default is 1|
 |pageSize|limit the number of items being displayed base on the value|pageSize : 1| default is 10|
 
-## GET/cases/{id}
+### GET/cases/{id}
 |**Parameter**   |**Description**   |**Example**| **Condition** |
 |---|---|---|--|
 |NA|NA   |NA   |NA   |
 
-## GET/cases/{id}/victims
+### GET/cases/{id}/victims
 |**Parameter**   |**Description**   |**Example**| **Condition** |
 |---|---|---|--|
 |NA|NA   |NA   |NA   |
 
-## GET/cases/{id}/offenders
+### GET/cases/{id}/offenders
 |**Parameter**   |**Description**   |**Example**| **Condition** |
 |---|---|---|--|
 |NA|NA   |NA   |NA   |
 
-## POST /cases
+### POST /cases
 - to create a new case, follow this body structure
 ```json
 [
@@ -167,7 +175,7 @@
 ]
 
 ```
-## PUT /cases
+### PUT /cases
 - To update an existing case, follow this structure
 ```json
 [
@@ -215,15 +223,102 @@
 ]
 ```
 
-## DELETE /cases
+### DELETE /cases
 - To delete a case(s)
 ```json
 {
     "case_id" : [1,2]
 }
 ```
+## offenses
+### GET /offenses
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+| description  | returns any resource(s) that matches the given value| description: Hacker stole 2m...   | NA
+|name   |returns any resource(s) that matches the given value | name: Arson | NA |
+|classification|returns any resource(s) that matches the given value| classification : Cyber-crime| NA |
+|sort_by|returns resources in ascending or descending order based on the parameter value|sort_by : case_id.asc| asc = ascending, desc = descending|
+|page|returns the specified page|page : 1| default is 1|
+|pageSize|limit the number of items being displayed base on the value|pageSize : 1| default is 10|
+
+### GET/offenses/{id}
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|NA|NA   |NA   |NA   |
+
+
+### POST /offenses
+- to create a new offense, follow this body structure
+```json
+[
+    {
+        "name": "Test post offense",
+        "description" : "adding new offense",
+        "classification": "Cyber-crime"
+    }
+]
+
+```
+- You can also create multiple offenses
+```json
+[
+    {
+        "name": "Test post offense 1",
+        "description" : "adding new offense",
+        "classification": "Cyber-crime"
+    },
+     {
+        "name": "Test post offense 2",
+        "description" : "adding new offense",
+        "classification": "Cyber-crime"
+    }
+]
+
+```
+#### Condition
+- for classification, you can choose from Felony, Misdemeanor, White-collar crime, Violent crime, Property crime, Drug crime, Cyber-crime
+- If you try to add different classificatory, you'll be greeted by a http error
+- 
+### PUT /offenses
+- To update an existing offense, follow this structure
+```json
+[
+    {
+        "offense_id" : 1,
+        "name": "Test post offense",
+        "description" : "adding new offense",
+        "classification": "Cyber-crime"
+    }
+]
+
+```
+- You can also create multiple offenses
+```json
+[
+    {
+        "offense_id" : 1,
+        "name": "Test post offense 1",
+        "description" : "adding new offense",
+        "classification": "Cyber-crime"
+    },
+     {
+        "offense_id" : 2,
+        "name": "Test post offense 2",
+        "description" : "adding new offense",
+        "classification": "Cyber-crime"
+    }
+]
+```
+
+### DELETE /cases
+- To delete a offense(s)
+```json
+{
+    "offense" : [1,2]
+}
+```
 # Teams ⚔
-- Jeffrey Grospe
+- Jeffrey Grospe (Team Leader)
 - Md Saqliyan Islam
 - Alex Nguyen
 - Theodore Tsimiklis
