@@ -1,0 +1,2 @@
+[2023-05-05T00:29:21.615303-04:00] CREATE.WARNING: STATUS CODE 200 {"context":"resource deleted successfully"} {"uid":"5ed1c36","url":"/crimes-api/investigators","ip":"::1","http_method":"DELETE","server":"localhost","referrer":null}
+[2023-05-05T00:30:28.855330-04:00] CREATE.WARNING: STATUS CODE 200 {"context":{"message":"You have successfully deleted 2 investigators."}} {"uid":"8521f06","url":"/crimes-api/investigators","ip":"::1","http_method":"DELETE","server":"localhost","referrer":null}
