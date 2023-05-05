@@ -28,7 +28,16 @@
     - [POST /offenses](#post-offenses)
       - [Condition](#condition)
     - [PUT /offenses](#put-offenses)
-    - [DELETE /cases](#delete-cases-1)
+      - [Condition](#condition-1)
+    - [DELETE /offenses](#delete-offenses)
+  - [investigators](#investigators)
+    - [GET /investigators](#get-investigators)
+    - [GET/investigator/{id}](#getinvestigatorid)
+    - [POST /investigators](#post-investigators)
+      - [Condition](#condition-2)
+    - [PUT /investigator](#put-investigator)
+      - [Condition](#condition-3)
+    - [DELETE /offenses](#delete-offenses-1)
 - [Teams ⚔](#teams-)
 - [Teacher 🎓](#teacher-)
 
@@ -137,40 +146,39 @@
 ```json
 [
     {
-    “description” : “On 21st …”,
-    “misdemeanor” : 0,
-    “crime_sceneID” : 1,
-    “investigator_id : 1,
-    “court_id” : 1,
-    “offense_id” : [1,2,3],
-    “victim_id” : [1,2,3],
-    “offender_id” : [1,2,3]
+        "description" : "On 21st …",
+        "misdemeanor" : 0,
+        "crime_sceneID" : 1,
+        "investigator_id" : 1,
+        "court_id" : 1,
+        "offense_id" : [1,2,3],
+        "victim_id" : [1,2,3],
+        "offender_id" : [1,2,3]
     }
 ]
-
 ```
 - You can also create multiple cases
 ```json
 [
     {
-    “description” : “On 21st …”,
-    “misdemeanor” : 0,
-    “crime_sceneID” : 1,
-    “investigator_id : 1,
-    “court_id” : 1,
-    “offense_id” : [1,2,3],
-    “victim_id” : [1,2,3],
-    “offender_id” : [1,2,3]
-    },
-    {
-    “description” : “On 1st …”,
-    “misdemeanor” : 1,
-    “crime_sceneID” : 1,
-    “investigator_id : 1,
-    “court_id” : 1,
-    “offense_id” : [1],
-    “victim_id” : [2],
-    “offender_id” : [3]
+        "description" : "On 21st …",
+        "misdemeanor" : 0,
+        "crime_sceneID" : 1,
+        "investigator_id" : 1,
+        "court_id" : 1,
+        "offense_id" : [1,2,3],
+        "victim_id" : [1,2,3],
+        "offender_id" : [1,2,3]
+    }
+     {
+        "description" : "On 1st …",
+        "misdemeanor" : 0,
+        "crime_sceneID" : 1,
+        "investigator_id" : 1,
+        "court_id" : 1,
+        "offense_id" : [1],
+        "victim_id" : [2],
+        "offender_id" : [2,3]
     }
 ]
 
@@ -180,16 +188,16 @@
 ```json
 [
     {
-    “case_id”: 1,
-    “description” : “On 21st …”,
-    “date_reported” : “2023-02-14 22:08:49”,
-    “misdemeanor” : 0,
-    “crime_sceneID” : 1,
-    “investigator_id : 1,
-    “court_id” : 1,
-    “offense_id” : [1,2,3],
-    “victim_id” : [1,2,3],
-    “offender_id” : [1,2,3]
+        "case_id": 1,
+        "description" : "On 21st …",
+        "date_reported" : "2023-02-14 22:08:49",
+        "misdemeanor" : 0,
+        "crime_sceneID" : 1,
+        "investigator_id" : 1,
+        "court_id" : 1,
+        "offense_id" : [1,2,3],
+        "victim_id" : [1,2,3],
+        "offender_id" : [1,2,3]
     }
 ]
 
@@ -198,27 +206,28 @@
 ```json
 [
     {
-    “case_id”: 1,
-    “description” : “On 21st …”,
-    “date_reported” : “2023-02-14 22:08:49”,
-    “misdemeanor” : 0,
-    “crime_sceneID” : 1,
-    “investigator_id : 1,
-    “court_id” : 1,
-    “offense_id” : [1,2,3],
-    “victim_id” : [1,2,3],
-    “offender_id” : [1,2,3]
-    },
-    {
-    “case_id”: 2,
-    “description” : “On 1st …”,
-    “misdemeanor” : 1,
-    “crime_sceneID” : 1,
-    “investigator_id : 1,
-    “court_id” : 1,
-    “offense_id” : [1],
-    “victim_id” : [2],
-    “offender_id” : [3]
+        "case_id": 1,
+        "description" : "On 21st …",
+        "date_reported" : "2023-02-14 22:08:49",
+        "misdemeanor" : 0,
+        "crime_sceneID" : 1,
+        "investigator_id" : 1,
+        "court_id" : 1,
+        "offense_id" : [1,2,3],
+        "victim_id" : [1,2,3],
+        "offender_id" : [1,2,3]
+    }
+     {
+        "case_id": 2,
+        "description" : "On 1st …",
+        "date_reported" : "2023-02-14 22:08:49",
+        "misdemeanor" : 0,
+        "crime_sceneID" : 1,
+        "investigator_id" : 1,
+        "court_id" : 1,
+        "offense_id" : [1,2,3],
+        "victim_id" : [1,2,3],
+        "offender_id" : [1,2,3]
     }
 ]
 ```
@@ -237,7 +246,7 @@
 | description  | returns any resource(s) that matches the given value| description: Hacker stole 2m...   | NA
 |name   |returns any resource(s) that matches the given value | name: Arson | NA |
 |classification|returns any resource(s) that matches the given value| classification : Cyber-crime| NA |
-|sort_by|returns resources in ascending or descending order based on the parameter value|sort_by : case_id.asc| asc = ascending, desc = descending|
+|sort_by|returns resources in ascending or descending order based on the parameter value|sort_by : offense_id.asc| asc = ascending, desc = descending|
 |page|returns the specified page|page : 1| default is 1|
 |pageSize|limit the number of items being displayed base on the value|pageSize : 1| default is 10|
 
@@ -309,14 +318,115 @@
     }
 ]
 ```
+#### Condition
+- for classification, you can choose from Felony, Misdemeanor, White-collar crime, Violent crime, Property crime, Drug crime, Cyber-crime
+- If you try to add different classificatory, you'll be greeted by a http error
 
-### DELETE /cases
+### DELETE /offenses
 - To delete a offense(s)
 ```json
 {
     "offense" : [1,2]
 }
 ```
+## investigators
+### GET /investigators
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+| first_name  | returns any resource(s) that matches the given value| first_name: John   | NA
+|last_name   |returns any resource(s) that matches the given value | last_name: Doe | NA |
+|badge_number|returns any resource(s) that matches the given value| badge_number : 1234| NA |
+|sort_by|returns resources in ascending or descending order based on the parameter value|sort_by : investigator_id.asc| asc = ascending, desc = descending|
+|page|returns the specified page|page : 1| default is 1|
+|pageSize|limit the number of items being displayed base on the value|pageSize : 1| default is 10|
+
+### GET/investigator/{id}
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|NA|NA   |NA   |NA   |
+
+
+### POST /investigators
+- to create a new investigator, follow this body structure
+```json
+[
+    {
+        "badge_number": "2611",
+        "first_name": "Mark",
+        "last_name": "Marcus",
+        "rank": "Certified Legal Investigator"
+    }
+]
+
+```
+- You can also create multiple investigators
+```json
+[
+    {
+        "badge_number": "2611",
+        "first_name": "Mark",
+        "last_name": "Marcus",
+        "rank": "Certified Legal Investigator"
+    }
+    {
+        "badge_number": "3111",
+        "first_name": "John",
+        "last_name": "Doe",
+        "rank": "Certified Legal Investigator"
+    }
+]
+
+```
+#### Condition
+- badge_number has to be unique, it will throw an exception if the badge_number already exists in the database
+- for rank, you can choose from Certified Legal Investigator, Board Certified Investigator, Certified Forensic Investigator, Certified Fraud Examiner
+- If you try to add different rank, you'll be greeted by a http error
+  
+### PUT /investigator
+- To update an existing investigator, follow this structure
+```json
+[
+    {
+        "investigator_id" : 1,
+        "badge_number": "2611",
+        "first_name": "Mark",
+        "last_name": "Marcus",
+        "rank": "Certified Legal Investigator"
+    }
+]
+```
+- You can also create multiple investigators
+```json
+[
+    {
+        "investigator_id" : 1,
+        "badge_number": "2611",
+        "first_name": "Mark",
+        "last_name": "Marcus",
+        "rank": "Certified Legal Investigator"
+    },
+       {
+        "investigator_id" : 2,
+        "badge_number": "27611",
+        "first_name": "John",
+        "last_name": "Marcus Ark",
+        "rank": "Certified Legal Investigator"
+    }
+]
+```
+#### Condition
+- badge_number has to be unique, it will throw an exception if the badge_number already exists in the database
+- for rank, you can choose from Certified Legal Investigator, Board Certified Investigator, Certified Forensic Investigator, Certified Fraud Examiner
+- If you try to add different rank, you'll be greeted by a http error
+
+### DELETE /offenses
+- To delete a offense(s)
+```json
+{
+    "offense" : [1,2]
+}
+```
+
 # Teams ⚔
 - Jeffrey Grospe (Team Leader)
 - Md Saqliyan Islam
