@@ -74,7 +74,7 @@ $app->get('/courts',[CourtsController::class, 'handleGetAllCourts']);
 $app->get('/courts/{court_id}',[CourtsController::class, 'handleGetCourtById']);
 $app->post('/courts',[CourtsController::class, 'handleCreateCourts']);
 $app->put('/courts',[CourtsController::class, 'handleUpdateCourtsById']);
-$app->delete('/courts/{court_id',[CourtsController::class, 'handleDeleteCourtsById']);
+$app->delete('/courts/{court_id}',[CourtsController::class, 'handleDeleteCourtsById']);
 
 // Offenders Routes
 $app->get('/offenders', [OffendersController::class, 'handleGetAllOffenders']);

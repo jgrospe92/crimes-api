@@ -159,5 +159,12 @@ class VerdictsController extends BaseController
         }
     }
 
-
+    public function handleDeleteVerdictById(Request $request, Response $response, array $args)
+    {
+        $verdict_data = $request->getParsedBody();
+        foreach($verdict_data as $key => $verdict_id){
+            $this->verdicts_model->handleDeleteVerdictById($verdict_id);
+        }
+        return $response->withStatus(StatusCodeInterface::STATUS_OK);
+    }
 }
