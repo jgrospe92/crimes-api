@@ -336,8 +336,55 @@ class OffendersController extends BaseController
         return $response->withStatus(StatusCodeInterface::STATUS_OK);
     }
 
-    public function handleDeleteOffender(Request $request, Response $response)
+    public function handleDeleteOffenders(Request $request, Response $response)
     {
-        
+        $data = $request->getParsedBody()['offender_id'];
+//var_dump($data); exit;
+        // Check if the JSON body is empty
+        if (!$data || !is_array($data))
+        {
+            throw new HttpBadRequestException($request, "No data to be deleted.");
+        }
+
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($data)) 
+        {
+            throw new HttpBadRequestException($request, "One or more IDs are duplicated.");
+        }
+
+        $names = "";
+        $arr_size = count($data);
+        $i = 0;
+
+        // Validation loop
+        foreach ($data as $offender_id)
+        {
+            if (!$this->offenders_model->checkIfResourceExists('offenders', ['offender_id' => $offender_id]))
+            {
+                throw new HttpNotFoundException($request, 'One or more offenders do not exist, or they have been deleted.');
+            }
+        }
+
+        // Deletion loop
+        foreach ($data as $offender_id)
+        {
+            $this->offenders_model->deleteOffender($offender_id);
+            if ($arr_size == 1) 
+            {
+                $names .= $offender_id . " ";
+            } 
+            elseif (++$i === $arr_size) 
+            {
+                $names .= "and " . $offender_id . " ";
+            } 
+            else 
+            {
+                $names .= $offender_id . ", ";
+            }
+        }
+
+        // Prepare response message
+        $message = ["message" => "Offenders " . $names . "have been deleted."];
+        return $this->preparedResponse($response, $message);
     }
 }

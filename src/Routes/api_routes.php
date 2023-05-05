@@ -83,6 +83,7 @@ $app->get('/offenders/{offender_id}/defendants', [OffendersController::class, 'h
 $app->get('/offenders/{offender_id}/cases', [OffendersController::class, 'handleGetCaseOfOffender']);
 $app->post('/offenders', [OffendersController::class, 'handlePostOffenders']);
 $app->put('/offenders', [OffendersController::class, 'handlePutOffenders']);
+$app->delete('/offenders', [OffendersController::class, 'handleDeleteOffenders']);
 
 // Prosecutors Routes
 $app->get('/prosecutors', [ProsecutorsController::class, 'handleGetAllProsecutors']);
