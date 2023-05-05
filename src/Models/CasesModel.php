@@ -322,8 +322,8 @@ class CasesModel extends BaseModel
      * Summary of updateCase
      * @param mixed $cases
      * @return bool
-     * TODO refactor
-     */ 
+     *
+     */
     public function updateCase($cases): bool
     {
         $old_offenses_id = [];
@@ -428,6 +428,17 @@ class CasesModel extends BaseModel
     }
 
     /**
+     * Summary of deleteCase
+     * @param mixed $id
+     * @return void
+     */
+    public function deleteCase($id)
+    {
+        $this->delete('cases', ['case_id' => $id]);
+    }
+
+
+    /**
      * Summary of checkIfResourceExists
      * @param mixed $table
      * @param mixed $whereClause
@@ -441,6 +452,4 @@ class CasesModel extends BaseModel
         }
         return true;
     }
-
-    
 }
