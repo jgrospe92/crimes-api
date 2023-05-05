@@ -1,7 +1,0 @@
-[2023-05-04T23:54:15.981899-04:00] ACCESS.INFO: crimes-api {"context":"message"} {"uid":"40c6f47","url":"/crimes-api/cases","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-04T23:56:02.577626-04:00] ACCESS.INFO: crimes-api {"context":"message"} {"uid":"cfcb750","url":"/crimes-api/courts","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-04T23:57:43.021033-04:00] ACCESS.INFO: crimes-api {"context":"message"} {"uid":"7958815","url":"/crimes-api/courts","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-05T00:21:32.720200-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"access granted"} {"uid":"c98c8a7","url":"/crimes-api/investigators","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-05T00:22:23.019211-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"access granted"} {"uid":"ae40cd0","url":"/crimes-api/investigators?sort_by=investigator_id.asc","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-05T00:22:28.533122-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"access granted"} {"uid":"30625a3","url":"/crimes-api/investigators?sort_by=investigator_id.desc","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-05T00:30:18.053652-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource access successful"} {"uid":"f3d2848","url":"/crimes-api/investigators?sort_by=investigator_id.desc","ip":"::1","http_method":"GET","server":"localhost","referrer":null}

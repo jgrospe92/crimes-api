@@ -53,7 +53,7 @@ class  LoggerMiddleware implements MiddlewareInterface
                     $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::INFO);
                     $log_handler->pushProcessor(new WebProcessor());
                     $logger->pushHandler($log_handler);
-                    $logger->info("STATUS CODE " . $status_code, ["context" => "resource access successful"]);
+                    $logger->info("STATUS CODE " . $status_code, ["context" => "resource accessed successful"]);
                     break;
 
                 case 'POST':
@@ -67,17 +67,17 @@ class  LoggerMiddleware implements MiddlewareInterface
                     $logger->notice("STATUS CODE " . $status_code, ["context" => "resource added successfully"]);
                     break;
                 case 'PUT':
-                    $filename = '/posts.log';
+                    $filename = '/updates.log';
                     $logger = new Logger("CREATE");
                     $logger->setTimezone(new DateTimeZone('America/Toronto'));
                     $logger->pushProcessor(new UidProcessor());
                     $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::NOTICE);
                     $log_handler->pushProcessor(new WebProcessor());
                     $logger->pushHandler($log_handler);
-                    $logger->notice("STATUS CODE " . $status_code, ["context" => "resource update successfully"]);
+                    $logger->notice("STATUS CODE " . $status_code, ["context" => "resource updated successfully"]);
                     break;
                 case 'DELETE':
-                    $filename = '/delete.log';
+                    $filename = '/deletes.log';
                     $logger = new Logger("CREATE");
                     $logger->setTimezone(new DateTimeZone('America/Toronto'));
                     $logger->pushProcessor(new UidProcessor());
