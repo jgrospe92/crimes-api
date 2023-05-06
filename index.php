@@ -15,8 +15,6 @@ define('APP_ENV_CONFIG', 'config.env');
 
 define('APP_JWT_TOKEN_KEY', 'APP_JWT_TOKEN');
 
-define('APP_BASE_DIR', __DIR__);
-
 require __DIR__ . '/vendor/autoload.php';
 // Include the file that contains the application's global configuration settings,
 // database credentials, etc.
