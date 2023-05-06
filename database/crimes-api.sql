@@ -39,6 +39,8 @@ CREATE TABLE `ws_users` (
   `created_at` timestamp NOT NULL DEFAULT '2022-12-01 03:11:50'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+ALTER TABLE ws_users ADD role VARCHAR(10);
+
 -- --------------------------------------------------------
 
 --

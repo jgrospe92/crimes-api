@@ -41,7 +41,12 @@ class UserModel extends BaseModel {
         $row = $this->run($sql, [":email" => $email])->fetchAll();
         if ($row && is_array($row)) {
             if (password_verify($input_password, $row[0]['password'])) {
-                return $row[0];
+                $payload = array(
+                    "user_id" => isset($row[0]['id']) ? $row[0]['id'] : null,
+                    "email" => isset($row[0]['email']) ? $row[0]['email'] : null,
+                    "role" => isset($row[0]['role']) ? $row[0]['role'] : 'user'
+                );
+                return $payload;
             }
         }
         return null;
@@ -57,6 +62,8 @@ class UserModel extends BaseModel {
         $new_user["created_at"] = $this->getCurrentDateAndTime();
         //-- 2) We need to hash the password! 
         $new_user["password"] = $this->getHashedPassword($new_user["password"]);
+        
+        $new_user["role"] = $new_user["role"];
         //var_dump($new_user);exit;
         return $this->insert($this->table_name, $new_user);
     }

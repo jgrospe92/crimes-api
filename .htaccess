@@ -7,4 +7,4 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
 
 # TODO: enable slim-jwt-auth related .
-# RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
