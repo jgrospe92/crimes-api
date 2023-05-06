@@ -12,3 +12,4 @@
 [2023-05-06T17:22:23.674414-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"13364bb","url":"/crimes-api/verdicts","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
 [2023-05-06T17:22:38.183642-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"e2cbc2d","url":"/crimes-api/verdicts","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
 [2023-05-06T17:59:28.834080-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"4405c73","url":"/crimes-api/court_addresses","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-06T19:38:05.156313-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"976ea56","url":"/crimes-api/cases","ip":"::1","http_method":"GET","server":"localhost","referrer":null}

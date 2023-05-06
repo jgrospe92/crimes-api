@@ -129,7 +129,7 @@
   "first_name": "Bob",
   "last_name": "Lee",
   "email": "bob@lee.com",
-  "password" "123abc",
+  "password": "123abc",
   "role": "admin"
 }
 ```
@@ -137,7 +137,7 @@
 ``` 
 {
   "email": "bob@lee.com",
-  "password" "123abc"
+  "password": "123abc"
 }
 ```
 - This will give you a token if the email and password is correct

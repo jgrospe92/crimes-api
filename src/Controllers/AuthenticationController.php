@@ -59,13 +59,12 @@ class AuthenticationController extends BaseController
         $expires_in = time() + 3600; // Expires in 1 hour.
         $user_jwt = JWTManager::generateToken($jwt_user_info, $expires_in);
         //--
-        $response_data = json_encode([
+        $response_data = [
             'status' => 1,
             'token' => $user_jwt,
             'message' => 'User logged in successfully!',
-        ]);
-        $response->getBody()->write($response_data);
-        return $response->withStatus(HTTP_OK);
+        ];
+        return $this->prepareOkResponse($response, $response_data);
     }
 
     // HTTP POST: URI /account 
