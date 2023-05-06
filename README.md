@@ -7,7 +7,7 @@
   - [Resources ⛑](#resources-)
   - [URI Relationship 👫](#uri-relationship-)
   - [composite resource 🎑](#composite-resource-)
-  - [Authentication / Token 👛](#authentication--token-)
+  - [Authentication / Token 🔑](#authentication--token-)
   - [Rate Limit](#rate-limit)
   - [Versioning](#versioning)
   - [Base Uri 🕶](#base-uri-)
@@ -38,6 +38,30 @@
     - [PUT /investigator](#put-investigator)
       - [Condition](#condition-3)
     - [DELETE /offenses](#delete-offenses-1)
+  - [Victims](#victims)
+    - [GET /victims](#get-victims)
+    - [GET/victims/{id}](#getvictimsid)
+    - [POST /victims](#post-victims)
+      - [Condition](#condition-4)
+    - [PUT /victims](#put-victims)
+      - [Condition](#condition-5)
+    - [DELETE /victims](#delete-victims)
+  - [judges](#judges)
+    - [GET /judges](#get-judges)
+    - [GET/judges/{id}](#getjudgesid)
+    - [POST /judges](#post-judges)
+      - [Condition](#condition-6)
+    - [PUT /judges](#put-judges)
+      - [Condition](#condition-7)
+    - [DELETE /judges](#delete-judges)
+  - [crime scenes](#crime-scenes)
+    - [GET /crime\_scenes](#get-crime_scenes)
+    - [GET/crime\_scenes/{id}](#getcrime_scenesid)
+    - [POST /crime\_scenes](#post-crime_scenes)
+      - [Condition](#condition-8)
+    - [PUT /crime\_scenes](#put-crime_scenes)
+      - [Condition](#condition-9)
+    - [DELETE /crime\_scenes](#delete-crime_scenes)
 - [Teams ⚔](#teams-)
 - [Teacher 🎓](#teacher-)
 
@@ -91,7 +115,7 @@
 - /wanter-api
 - /news-api
 
-## Authentication / Token 👛
+## Authentication / Token 🔑
 - coming soon
 
 ## Rate Limit
@@ -106,7 +130,7 @@
 - /crimes-api
 
 ## Pagination
-- You pass it pagination filters to all the supported resources
+- You can pass a pagination filters to all the supported resources
 - `?page=x` for the current page
 - `?pageSize=z` refers to the size of the page
 
@@ -202,7 +226,7 @@
 ]
 
 ```
-- You can also create multiple cases
+- You can also update multiple cases
 ```json
 [
     {
@@ -301,7 +325,7 @@
 ]
 
 ```
-- You can also create multiple offenses
+- You can also update multiple offenses
 ```json
 [
     {
@@ -395,7 +419,7 @@
     }
 ]
 ```
-- You can also create multiple investigators
+- You can also update multiple investigators
 ```json
 [
     {
@@ -426,7 +450,247 @@
     "offense" : [1,2]
 }
 ```
+## Victims
+### GET /victims
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|last_name   |returns any resource(s) that matches the given value | last_name: Doe | NA |
+|marital_status|returns any resource(s) that matches the given value| marital_status : single| NA |
+|age|returns any resource(s) that matches the given value| age : 20| only numeric value |
+|victim_id|returns any resource(s) that matches the given value| victim_id : 12| only numeric value |
+|prosecutor_id|returns any resource(s) that matches the given value| prosecutor_id : 2| only numeric value |
+|sort_by|returns resources in ascending or descending order based on the parameter value|sort_by : victim.asc| asc = ascending, desc = descending|
+|page|returns the specified page|page : 1| default is 1|
+|pageSize|limit the number of items being displayed base on the value|pageSize : 1| default is 10|
 
+### GET/victims/{id}
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|NA|NA   |NA   |NA   |
+
+
+### POST /victims
+- to create a new victim, follow this body structure
+```json
+{
+    "first_name": "Alice",
+    "last_name": "Jones",
+    "age": 32,
+    "marital_status": "single",
+    "prosecutor_id": 1
+} 
+```
+#### Condition
+- for marital status, you can choose from single, married, divorce
+- If you try to add different rank, you'll be greeted by a http error
+  
+### PUT /victims
+- To update an existing victim, follow this structure
+```json
+[
+    {
+        "victim_id" : 1,
+        "first_name": "Alice",
+        "last_name": "Jones",
+        "age": 32,
+        "marital_status": "single",
+        "prosecutor_id": 1
+    }
+]
+```
+- You can also update multiple victims
+```json
+[
+    {
+        "victim_id" : 1,
+        "first_name": "Alice",
+        "last_name": "Jones",
+        "age": 32,
+        "marital_status": "single",
+        "prosecutor_id": 1
+    },
+       {
+        "victim_id" : 2,
+        "first_name": "Drake",
+        "last_name": "Jones",
+        "age": 32,
+        "marital_status": "single",
+        "prosecutor_id": 1
+    }
+]
+```
+#### Condition
+- for marital status, you can choose from single, married, divorce
+- If you try to add different rank, you'll be greeted by a http error
+
+### DELETE /victims
+- To delete a victims(s)
+```json
+{
+    "victim_id" : [1,2]
+}
+```
+## judges
+### GET /judges
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|last_name   |returns any resource(s) that matches the given value | last_name: Doe | NA |
+|age|returns any resource(s) that matches the given value| age : 20| only numeric value |
+|judge_id|returns any resource(s) that matches the given value| victim_id : 12| only numeric value |
+|sort_by|returns resources in ascending or descending order based on the parameter value|sort_by : judge_id.asc| asc = ascending, desc = descending|
+|page|returns the specified page|page : 1| default is 1|
+|pageSize|limit the number of items being displayed base on the value|pageSize : 1| default is 10|
+
+### GET/judges/{id}
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|NA|NA   |NA   |NA   |
+
+
+### POST /judges
+- to create a new judge, follow this body structure
+```json
+[    
+    {
+      "first_name": "bob6",
+      "last_name": "test6",
+      "age": 50
+    }
+]
+
+```
+
+- To create multiple judges
+```json
+[    
+    {
+      "first_name": "bob6",
+      "last_name": "test6",
+      "age": 50
+    },
+    {
+      "first_name": "bob8",
+      "last_name": "test10",
+      "age": 55
+    }
+]
+
+```
+#### Condition
+- NA
+  
+### PUT /judges
+- To update an existing victim, follow this structure
+```json
+[    
+    {
+        "judge_id" : 1,
+        "first_name": "bob6",
+        "last_name": "test6",
+        "age": 50
+    }
+]
+```
+- You can also update multiple victims
+```json
+[    
+    {
+        "judge_id" : 1,
+        "first_name": "bob6",
+        "last_name": "test6",
+        "age": 50
+    },
+     {
+        "judge_id" : 2,
+        "first_name": "bob6",
+        "last_name": "test6",
+        "age": 50
+    }
+]
+```
+#### Condition
+- NA
+
+### DELETE /judges
+- To delete judge(s)
+```json
+{
+    "judge_id" : [1,2]
+}
+```
+## crime scenes
+### GET /crime_scenes
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|street|returns any resource(s) that matches the given value | last_name: Doe | NA |
+|city|returns any resource(s) that matches the given value| age : 20| only numeric value |
+|crime_sceneID|returns any resource(s) that matches the given value| crime_sceneID : 12| only numeric value |
+|sort_by|returns resources in ascending or descending order based on the parameter value|sort_by : crime_sceneID.asc| asc = ascending, desc = descending|
+|page|returns the specified page|page : 1| default is 1|
+|pageSize|limit the number of items being displayed base on the value|pageSize : 1| default is 10|
+
+### GET/crime_scenes/{id}
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|NA|NA   |NA   |NA   |
+
+
+### POST /crime_scenes
+- to create a new judge, follow this body structure
+```json
+{
+    "province": "Washington",
+    "city": "Washington D.C",
+    "street": "Pennsylvania Avenue NW",
+    "building_number": "1600"
+}
+
+```
+#### Condition
+- NA
+  
+### PUT /crime_scenes
+- To update an existing crime scene, follow this structure
+```json
+[    
+    {
+        "crime_sceneID" : 1,
+        "province": "Washington",
+        "city": "Washington D.C",
+        "street": "Pennsylvania Avenue NW",
+        "building_number": "1600"
+    }
+]
+```
+- You can also update multiple crime scenes
+```json
+[    
+    {
+        "crime_sceneID" : 1,
+        "province": "Washington",
+        "city": "Washington D.C",
+        "street": "Pennsylvania Avenue NW",
+        "building_number": "1600"
+    },
+    {
+        "crime_sceneID" : 2,
+        "province": "Ontario",
+        "city": "Toronto",
+        "street": "Ottawa Street",
+        "building_number": "2233"
+    }
+]
+```
+#### Condition
+- NA
+
+### DELETE /crime_scenes
+- To delete crime scene(s)
+```json
+{
+    "crime_sceneID" : [1,2]
+}
+```
 # Teams ⚔
 - Jeffrey Grospe (Team Leader)
 - Md Saqliyan Islam
