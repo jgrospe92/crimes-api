@@ -119,42 +119,46 @@ class JudgesController extends BaseController
      * @param Response $response
      * @return mixed response
      */
-    public function createJudge(Request $request, Response $response)
+    public function createJudges(Request $request, Response $response)
     {
         // Retrieve data
         $data = $request->getParsedBody();
-
+    
         // check if body is empty or not an array, throw an exception otherwise
         if (empty($data) || !is_array($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
-
-        // Validate the received data
-        if (!ValidateHelper::validatePostMethods($data, "judge")) {
-            $exception = new HttpConflict($request);
-            $payload['statusCode'] = $exception->getCode();
-            $payload['error']['description'] = $exception->getDescription();
-            $payload['error']['message'] = $exception->getMessage();
-
-            return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+    
+        // Validate each judge in the received data
+        foreach ($data as $judge) {
+            if (!ValidateHelper::validatePostMethods($judge, "judge")) {
+                $exception = new HttpConflict($request);
+                $payload['statusCode'] = $exception->getCode();
+                $payload['error']['description'] = $exception->getDescription();
+                $payload['error']['message'] = $exception->getMessage();
+    
+                return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
+            }
         }
-
-        // Create a new judge
-        $newJudge = [
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'age' => $data['age']
-        ];
-
-        $this->judges_model->createJudge($newJudge);
-
-        $reponseMessage = "You have successfully created a new judge.";
+    
+        // Create the new judges
+        $newJudges = [];
+        foreach ($data as $judge) {
+            $newJudge = [
+                'first_name' => $judge['first_name'],
+                'last_name' => $judge['last_name'],
+                'age' => $judge['age']
+            ];
+            $this->judges_model->createJudge($newJudge);
+            $newJudges[] = $newJudge;
+        }
+    
+        $reponseMessage = "You have successfully created ".count($newJudges)." new judges.";
         $responseData = [
             'message' => $reponseMessage,
-            'judge' => $newJudge
+            'judges' => $newJudges
         ];
-        
-
+    
         return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_CREATED);
     }
 
@@ -167,7 +171,12 @@ class JudgesController extends BaseController
         if (empty($data) || !is_array($data)) {
             throw new HttpConflict($request, "Please provide required data");
         }
+        
+        // Check if the "judges" key exists and is not null
+        if (!isset($data['judges']) || $data['judges'] === null) {
+            throw new HttpConflict($request, "Please provide judges data");
 
+        }
         // Validate the received data for each judge
         foreach ($data['judges'] as $judge) {
             if (!ValidateHelper::validatePutMethods($judge, 'judge')) {
@@ -236,7 +245,7 @@ class JudgesController extends BaseController
      */
     private function validateFilters(Request $request, array $filters)
     {
-        $valid_filters = ['last_name', 'age', 'judge_id'];
+        $valid_filters = ['last_name', 'age', 'judge_id', 'sort_by'];
         foreach ($filters as $filter => $value) {
             if (!in_array($filter, $valid_filters)) {
                 throw new HttpBadRequest($request, "Invalid filter: $filter");
