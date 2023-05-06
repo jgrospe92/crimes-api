@@ -255,4 +255,40 @@ class CourtsController extends BaseController
             return $this->prepareOkResponse($response,$court_data);
         }   
     }
+
+    public function handleDeleteCourts(Request $request, Response $response)
+    {
+        
+        $court_data = $request->getParsedBody()['court_id'];
+        $court_ids = ['court_id' => $court_data];
+
+        if(empty($court_ids['court_id']) || !is_array($court_ids['court_id'])){
+            throw new HttpBadRequest($request, "the request body is invalid");
+        }
+        if(!ValidateHelper::arrayIsUnique($court_ids['court_id'])){
+            throw new HttpBadRequest($request, "id is not valid or unique");
+        }
+        foreach ($court_ids['court_id'] as $court_id) {
+            if(!ValidateHelper::validateId(['court_id' => $court_id])){
+                throw new HttpBadRequest($request, "id is not valid");
+            }
+            if(!$this->courts_model->checkIfResourceExists('courts', ['court_id' => $court_id])){
+                throw new HttpNotFound($request, "id does not exist");
+            }
+        }
+
+        $deletedCount = 0;
+        foreach ($court_ids['court_id'] as $court_id) {
+            $this->courts_model->handleDeleteCourts($court_id);
+            $deletedCount++;
+        }
+
+        $court_format = $deletedCount>1 ? 'courts' : 'court';
+        $responseMessage = [
+            'message' => "$deletedCount $court_format deleted successfully"
+        ];
+
+        return $this->prepareOkResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
+    }
+
 }

@@ -107,9 +107,9 @@ class VerdictsModel extends BaseModel
         return true;
     }
 
-    public function handleDeleteVerdictById(String $verdict_id)
+    public function handleDeleteVerdict($verdict_id)
     {
-        return $this->delete('verdict', ["verdict_id" => $verdict_id]);
+        return $this->delete('verdicts', ["verdict_id" => $verdict_id]);
     }
     
 }

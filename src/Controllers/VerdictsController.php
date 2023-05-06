@@ -159,12 +159,38 @@ class VerdictsController extends BaseController
         }
     }
 
-    public function handleDeleteVerdictById(Request $request, Response $response, array $args)
+    public function handleDeleteVerdict(Request $request, Response $response)
     {
-        $verdict_data = $request->getParsedBody();
-        foreach($verdict_data as $key => $verdict_id){
-            $this->verdicts_model->handleDeleteVerdictById($verdict_id);
+        $verdict_data = $request->getParsedBody()['verdict_id'];
+        $verdict_ids = ['verdict_id' => $verdict_data];
+
+        if(empty($verdict_ids['verdict_id']) || !is_array($verdict_ids['verdict_id'])){
+            throw new HttpBadRequest($request, "the request body is invalid");
         }
-        return $response->withStatus(StatusCodeInterface::STATUS_OK);
+        if(!ValidateHelper::arrayIsUnique($verdict_ids['verdict_id'])){
+            throw new HttpBadRequest($request, "id is not valid or unique");
+        }
+        
+        foreach ($verdict_ids['verdict_id'] as $verdict_id) {
+            if(!ValidateHelper::validateId(['verdict_id' => $verdict_id])){
+                throw new HttpBadRequest($request, "id is not valid");
+            }
+            if(!$this->verdicts_model->checkIfResourceExists('verdicts', ['verdict_id' => $verdict_id])){
+                throw new HttpNotFound($request, "id does not exist");
+            }
+        }
+
+        $deletedCount = 0;
+        foreach ($verdict_ids['verdict_id'] as $verdict_id) {
+            $this->verdicts_model->handleDeleteVerdict($verdict_id);
+            $deletedCount++;
+        }
+
+        $verdict_format = $deletedCount>1 ? 'verdicts' : 'verdict';
+        $responseMessage = [
+            'message' => "$deletedCount $verdict_format deleted successfully"
+        ];
+
+        return $this->prepareOkResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 }
