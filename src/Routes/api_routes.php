@@ -19,6 +19,7 @@ use Vanier\Api\Controllers\VictimsController;
 use Vanier\Api\Controllers\OffensesController;
 use Vanier\Api\Controllers\InvestigatorsController;
 use Vanier\Api\Controllers\HackzillaController;
+use Vanier\Api\Controllers\AuthenticationController;
 
 // Import the app instance into this file's scope.
 global $app;
@@ -114,7 +115,7 @@ $app->delete('/victims', [VictimsController::class, 'deleteVictims']);
 
 $app->get('/judges', [JudgesController::class, 'handleGetAllJudges']);
 $app->get('/judges/{judge_id}', [JudgesController::class, 'handleGetJudgeById']);
-$app->post('/judges', [JudgesController::class, 'createJudge']);
+$app->post('/judges', [JudgesController::class, 'createJudges']);
 $app->put('/judges', [JudgesController::class, 'updateJudges']);
 $app->delete('/judges', [JudgesController::class, 'deleteJudges']);
 
@@ -123,3 +124,8 @@ $app->get('/crime_scenes/{crime_sceneID}', [CrimeScenesController::class, 'handl
 $app->post('/crime_scenes', [CrimeScenesController::class, 'createCrimeScene']);
 $app->put('/crime_scenes', [CrimeScenesController::class, 'updateCrimeScenes']);
 $app->delete('/crime_scenes', [CrimeScenesController::class, 'deleteCrimeScenes']);
+
+// aa routes
+$app->post('/account', [AuthenticationController::class, 'handleCreateUserAccount']);
+$app->post('/token', [AuthenticationController::class, 'handleGetToken']);
+

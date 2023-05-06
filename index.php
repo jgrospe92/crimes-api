@@ -3,8 +3,17 @@
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Vanier\Api\exceptions\HttpErrorHandler;
+use Vanier\Api\Helpers\JWTManager;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
 use Vanier\Api\middleware\LoggerMiddleware;
+use Vanier\Api\Middleware\JWTAuthMiddleware;
+
+
+define('APP_BASE_DIR', __DIR__);
+// IMPORTANT: This file must be added to your .ignore file. 
+define('APP_ENV_CONFIG', 'config.env');
+
+define('APP_JWT_TOKEN_KEY', 'APP_JWT_TOKEN');
 
 define('APP_BASE_DIR', __DIR__);
 
@@ -26,6 +35,9 @@ $request = $serverRequestCreator->createServerRequestFromGlobals();
 $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
 //-- Add the routing and body parsing middleware.
 $app->addRoutingMiddleware();
+
+$jwt_secret = JWTManager::getSecretKey();
+$app->add(new JWTAuthMiddleware());
 // Parse json, form data and xml
 $app->addBodyParsingMiddleware();
 // content negotiation middleware
