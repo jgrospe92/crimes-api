@@ -8,8 +8,8 @@
   - [URI Relationship 👫](#uri-relationship-)
   - [composite resource 🎑](#composite-resource-)
   - [Authentication / Token 🔑](#authentication--token-)
-        - [Account creation (/account)](#account-creation-account)
-        - [Log In (/token)](#log-in-token)
+      - [Account creation (/account)](#account-creation-account)
+      - [Log In (/token)](#log-in-token)
   - [Remote Function](#remote-function)
       - [Filters](#filters)
   - [Rate Limit](#rate-limit)
@@ -123,7 +123,7 @@
 - Being able to choose a role, and give different acces to people with different roles(admin/user)
 - Admin will have access to everything (POST, PUT, DELETE, GET)
 - Users will only have access to GET
-##### Account creation (/account)
+#### Account creation (/account)
 ``` 
 {
   "first_name": "Bob",
@@ -133,7 +133,7 @@
   "role": "admin"
 }
 ```
-##### Log In (/token)
+#### Log In (/token)
 ``` 
 {
   "email": "bob@lee.com",
