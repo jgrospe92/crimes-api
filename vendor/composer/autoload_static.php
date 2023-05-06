@@ -43,6 +43,10 @@ class ComposerStaticInit02372c7f7c828659b19ff2ef46ab78e9
         array (
             'Monolog\\' => 8,
         ),
+        'H' => 
+        array (
+            'Hackzilla\\PasswordGenerator\\' => 28,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -116,6 +120,10 @@ class ComposerStaticInit02372c7f7c828659b19ff2ef46ab78e9
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Hackzilla\\PasswordGenerator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/hackzilla/password-generator',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

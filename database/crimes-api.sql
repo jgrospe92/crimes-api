@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 15, 2023 at 03:55 AM
+-- Generation Time: May 04, 2023 at 10:26 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -61,8 +61,6 @@ CREATE TABLE `ws_log` (
 --
 -- Table structure for table `cases`
 --
--- Creation: Apr 05, 2023 at 01:25 AM
---
 
 DROP TABLE IF EXISTS `cases`;
 CREATE TABLE `cases` (
@@ -80,7 +78,7 @@ CREATE TABLE `cases` (
 --
 
 INSERT INTO `cases` (`case_id`, `description`, `date_reported`, `misdemeanor`, `crime_sceneID`, `investigator_id`, `court_id`) VALUES
-(1, 'On April 6th, 2004, Jeremy Elbertson committed arson at the National Park of Las Vegas. Later found within Toronto living as a streamer on the streaming platform \'Twitch\', he has been arrested and will be trialed in court.', '2020-01-30 13:04:18', 0, 2, 1, 1),
+(1, 'On April 6th, 2004, Jeremy Elbertson committed arson at the National Park of Las Vegas. Later found within Toronto living as a streamer on the streaming platform \'Twitch\', he has been arrested and will be trialed in court.', '2020-01-30 13:04:18', 0, 2, 2, 1),
 (2, 'On September 21st, 2012, Rick Moranis was arrested for raping 25 year old Mario Mario in New York, where the victim was walking home with a sandwich he had just bought from a bodega.', '2014-09-23 10:39:16', 0, 3, 5, 5),
 (3, 'On April 1st, 2022, Andrew Tate murdered his best friend LeRock Johnson in an April Fools prank gone wrong.', '2023-03-17 00:26:51', 0, 1, 2, 3),
 (4, 'On November 9th, 2009, Cirno Fairy murdered Okuyasu Nijimura and Josuke Higashikata by freezing them to death in an industrial freezer.', '2009-11-10 10:56:24', 0, 5, 4, 3),
@@ -94,17 +92,12 @@ INSERT INTO `cases` (`case_id`, `description`, `date_reported`, `misdemeanor`, `
 (12, 'Updating case 12 for the seoncd time', '2023-04-06 08:04:18', 1, 2, 3, 2),
 (13, 'Test post cases....', '2023-04-06 08:04:18', 0, 2, 5, 3),
 (14, 'Test post cases....', '2023-04-06 08:04:18', 0, 2, 5, 3),
-(15, 'Freezing rain in montreal!! ....', '2023-04-06 08:04:18', 1, 2, 5, 2),
-(16, 'This is a new case', '2023-04-06 08:04:18', 1, 2, 3, 2),
-(18, 'This is a new case part 2', '2023-04-06 08:04:18', 1, 3, 3, 2),
-(19, 'delet duplicate victim_id', '2023-04-06 08:04:18', 1, 1, 13, 2);
+(15, 'Freezing rain in montreal!! ....', '2023-04-06 08:04:18', 1, 2, 5, 2);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cases_offenses`
---
--- Creation: Apr 07, 2023 at 02:50 AM
 --
 
 DROP TABLE IF EXISTS `cases_offenses`;
@@ -118,6 +111,8 @@ CREATE TABLE `cases_offenses` (
 --
 
 INSERT INTO `cases_offenses` (`case_id`, `offense_id`) VALUES
+(1, 1),
+(1, 6),
 (2, 3),
 (2, 5),
 (2, 5),
@@ -129,19 +124,12 @@ INSERT INTO `cases_offenses` (`case_id`, `offense_id`) VALUES
 (13, 2),
 (14, 5),
 (15, 2),
-(15, 6),
-(16, 6),
-(18, 6),
-(19, 1),
-(19, 2),
-(19, 3);
+(15, 6);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cases_victims`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `cases_victims`;
@@ -155,25 +143,20 @@ CREATE TABLE `cases_victims` (
 --
 
 INSERT INTO `cases_victims` (`case_id`, `victim_id`) VALUES
-(1, 6),
+(1, 1),
+(1, 5),
 (2, 4),
 (3, 3),
 (4, 1),
 (5, 5),
 (13, 4),
 (14, 4),
-(15, 1),
-(16, 1),
-(18, 1),
-(19, 1),
-(19, 3);
+(15, 1);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `courts`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `courts`;
@@ -203,8 +186,6 @@ INSERT INTO `courts` (`court_id`, `name`, `date`, `time`, `address_id`, `judge_i
 --
 -- Table structure for table `court_addresses`
 --
--- Creation: Apr 15, 2023 at 01:53 AM
---
 
 DROP TABLE IF EXISTS `court_addresses`;
 CREATE TABLE `court_addresses` (
@@ -230,8 +211,6 @@ INSERT INTO `court_addresses` (`address_id`, `city`, `street`, `postal_code`, `b
 
 --
 -- Table structure for table `crime_scenes`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `crime_scenes`;
@@ -259,8 +238,6 @@ INSERT INTO `crime_scenes` (`crime_sceneID`, `province`, `city`, `street`, `buil
 --
 -- Table structure for table `defendants`
 --
--- Creation: Apr 01, 2023 at 09:25 PM
---
 
 DROP TABLE IF EXISTS `defendants`;
 CREATE TABLE `defendants` (
@@ -287,8 +264,6 @@ INSERT INTO `defendants` (`defendant_id`, `first_name`, `last_name`, `age`, `spe
 --
 -- Table structure for table `investigators`
 --
--- Creation: Apr 01, 2023 at 09:25 PM
---
 
 DROP TABLE IF EXISTS `investigators`;
 CREATE TABLE `investigators` (
@@ -309,24 +284,17 @@ INSERT INTO `investigators` (`investigator_id`, `badge_number`, `first_name`, `l
 (3, '6521', 'Gustavo', 'Fring', 'Certified Fraud Examiner'),
 (4, '0421', 'Cole', 'Phelps', 'Board Certified Investigator'),
 (5, '9091', 'Chad Jeff', 'Bezos', 'Certified Forensic Investigator'),
-(6, '1585', 'Hank', 'Shrader', 'Certified Legal Investigator'),
-(7, '1585', 'Hank', 'Shrader', 'Certified Fraud Examiner'),
-(8, '1585', 'Hank', 'Shrader', 'Certified Forensic Investigator'),
 (9, '1535', 'Hank', 'Shrader', 'Board Certified Investigator'),
 (10, '15335', 'Hank', 'Shrader', 'Certified Legal Investigator'),
 (11, '3453', 'Hank', 'Shrader', 'Certified Legal Investigator'),
 (12, '1255', 'Hank', 'Shrader', 'Chief of Police'),
 (13, '13255', 'Hank', 'Shrader', 'Chief of Police'),
-(14, '1455', 'Hank', 'Shrader', 'Chief of Police'),
-(15, '1455432', 'Hank', 'Shrader', 'Chief of Police'),
-(16, '1455433', 'Hank', 'Shrader', 'Chief of Police');
+(14, '1455', 'Hank', 'Shrader', 'Chief of Police');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `judges`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `judges`;
@@ -352,8 +320,6 @@ INSERT INTO `judges` (`judge_id`, `first_name`, `last_name`, `age`) VALUES
 
 --
 -- Table structure for table `offenders`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `offenders`;
@@ -386,8 +352,6 @@ INSERT INTO `offenders` (`offender_id`, `first_name`, `last_name`, `age`, `marit
 --
 -- Table structure for table `offender_details`
 --
--- Creation: Apr 07, 2023 at 02:33 AM
---
 
 DROP TABLE IF EXISTS `offender_details`;
 CREATE TABLE `offender_details` (
@@ -407,18 +371,13 @@ INSERT INTO `offender_details` (`offender_id`, `case_id`) VALUES
 (7, 4),
 (3, 14),
 (7, 15),
-(7, 16),
-(7, 18),
-(1, 19),
-(2, 19),
-(3, 19);
+(4, 1),
+(2, 1);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `offenses`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `offenses`;
@@ -436,18 +395,17 @@ CREATE TABLE `offenses` (
 INSERT INTO `offenses` (`offense_id`, `name`, `description`, `classification`) VALUES
 (1, 'Arson', 'Felonies are serious crimes that are usually punishable by more than one year in prison. Examples of felonies include murder, rape, burglary, and drug trafficking.', 'Felony'),
 (2, 'Domestic Violence', 'Misdemeanors are less serious crimes that are usually punishable by less than one year in jail. Examples of misdemeanors include petty theft, disorderly conduct, and minor drug offenses.', 'Misdemeanor'),
-(3, 'Insider trading', 'White-collar crimes are nonviolent offenses that are typically committed in a professional or business setting. Examples of white-collar crimes include fraud, embezzlement, and insider trading.', 'White-collar crime'),
+(3, 'Inseider trading', 'White-collar crimes are nonviolent offenses that are typically committed in a professional or business setting. Examples of white-collar crimes include fraud, embezzlement, and insider trading.', 'White-collar crime'),
 (4, 'Homecide', 'Violent crimes involve the use of force or threat of force against another person. Examples of violent crimes include assault, battery, and homicide.', 'Violent crime'),
-(5, 'Roberry', 'Property crimes involve the taking or destruction of another person/s property. Examples of property crimes include theft, robbery, and arson.', 'Property crime'),
+(5, 'Roberry', 'Property crimes involve the taking or destruction of another person\'s property. Examples of property crimes include theft, robbery, and arson.', 'Property crime'),
 (6, 'Phishing', 'Cybercrimes are crimes that are committed using a computer or the internet. Examples of cybercrimes include hacking, identity theft, and online fraud', 'Cyber-crime'),
-(7, 'Drug trafficking', 'Drug crimes involve the possession, sale, or distribution of illegal drugs. Examples of drug crimes include drug possession, drug trafficking, and drug manufacturing.', 'Drug crime');
+(7, 'Drug trafficking', 'Drug crimes involve the possession, sale, or distribution of illegal drugs. Examples of drug crimes include drug possession, drug trafficking, and drug manufacturing.', 'Drug crime'),
+(8, 'Cryto Scam', 'A crypto scam is a fraudulent scheme that deceives people into investing in fake or illegitimate cryptocurrency projects with promises of high returns. Scammers often disappear with investors\' money, leaving them with no way to recover their funds, updated', 'Cyber-crime');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `prosecutors`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `prosecutors`;
@@ -475,8 +433,6 @@ INSERT INTO `prosecutors` (`prosecutor_id`, `first_name`, `last_name`, `age`, `s
 --
 -- Table structure for table `verdicts`
 --
--- Creation: Apr 01, 2023 at 09:25 PM
---
 
 DROP TABLE IF EXISTS `verdicts`;
 CREATE TABLE `verdicts` (
@@ -502,8 +458,6 @@ INSERT INTO `verdicts` (`verdict_id`, `name`, `description`, `sentence`, `fine`)
 
 --
 -- Table structure for table `victims`
---
--- Creation: Apr 01, 2023 at 09:25 PM
 --
 
 DROP TABLE IF EXISTS `victims`;
@@ -586,7 +540,8 @@ ALTER TABLE `defendants`
 -- Indexes for table `investigators`
 --
 ALTER TABLE `investigators`
-  ADD PRIMARY KEY (`investigator_id`);
+  ADD PRIMARY KEY (`investigator_id`),
+  ADD UNIQUE KEY `badge_number` (`badge_number`);
 
 --
 -- Indexes for table `judges`
@@ -641,7 +596,7 @@ ALTER TABLE `victims`
 -- AUTO_INCREMENT for table `cases`
 --
 ALTER TABLE `cases`
-  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `courts`
@@ -671,7 +626,7 @@ ALTER TABLE `defendants`
 -- AUTO_INCREMENT for table `investigators`
 --
 ALTER TABLE `investigators`
-  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `judges`
@@ -689,7 +644,7 @@ ALTER TABLE `offenders`
 -- AUTO_INCREMENT for table `offenses`
 --
 ALTER TABLE `offenses`
-  MODIFY `offense_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `offense_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `prosecutors`
@@ -741,13 +696,13 @@ ALTER TABLE `cases_victims`
 ALTER TABLE `courts`
   ADD CONSTRAINT `address_id_courts` FOREIGN KEY (`address_id`) REFERENCES `court_addresses` (`address_id`),
   ADD CONSTRAINT `judge_id_courts` FOREIGN KEY (`judge_id`) REFERENCES `judges` (`judge_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `verdict_id_courts` FOREIGN KEY (`verdict_id`) REFERENCES `verdicts` (`verdict_id`);
+  ADD CONSTRAINT `verdict_id_courts` FOREIGN KEY (`verdict_id`) REFERENCES `verdicts` (`verdict_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `offenders`
 --
 ALTER TABLE `offenders`
-  ADD CONSTRAINT `offenders_defendant_id_fk` FOREIGN KEY (`defendant_id`) REFERENCES `defendants` (`defendant_id`);
+  ADD CONSTRAINT `offenders_defendant_id_fk` FOREIGN KEY (`defendant_id`) REFERENCES `defendants` (`defendant_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `offender_details`
@@ -760,8 +715,8 @@ ALTER TABLE `offender_details`
 -- Constraints for table `victims`
 --
 ALTER TABLE `victims`
-  ADD CONSTRAINT `prosecuter_id_victims` FOREIGN KEY (`prosecutor_id`) REFERENCES `prosecutors` (`prosecutor_id`);
-COMMIT; 
+  ADD CONSTRAINT `prosecuter_id_victims` FOREIGN KEY (`prosecutor_id`) REFERENCES `prosecutors` (`prosecutor_id`) ON DELETE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

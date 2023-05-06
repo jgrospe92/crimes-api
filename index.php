@@ -5,7 +5,9 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use Vanier\Api\exceptions\HttpErrorHandler;
 use Vanier\Api\Helpers\JWTManager;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
+use Vanier\Api\middleware\LoggerMiddleware;
 use Vanier\Api\Middleware\JWTAuthMiddleware;
+
 
 define('APP_BASE_DIR', __DIR__);
 // IMPORTANT: This file must be added to your .ignore file. 
@@ -13,11 +15,14 @@ define('APP_ENV_CONFIG', 'config.env');
 
 define('APP_JWT_TOKEN_KEY', 'APP_JWT_TOKEN');
 
+define('APP_BASE_DIR', __DIR__);
 
 require __DIR__ . '/vendor/autoload.php';
- // Include the file that contains the application's global configuration settings,
- // database credentials, etc.
+// Include the file that contains the application's global configuration settings,
+// database credentials, etc.
 require_once __DIR__ . '/src/Config/app_config.php';
+
+
 
 //--Step 1) Instantiate a Slim app.
 $app = AppFactory::create();
@@ -35,15 +40,16 @@ $jwt_secret = JWTManager::getSecretKey();
 $app->add(new JWTAuthMiddleware());
 // Parse json, form data and xml
 $app->addBodyParsingMiddleware();
-
+// content negotiation middleware
+$app->add(new ContentNegotiationMiddleware());
 //-- Add error handling middleware.
 // NOTE: the error middleware MUST be added last.
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 $errorMiddleware->getDefaultErrorHandler()->forceContentType(APP_MEDIA_TYPE_JSON);
-$app->add(new ContentNegotiationMiddleware());
+// logging middleware
+$app->add(new LoggerMiddleware());
 
-// TODO: change the name of the subdirectory here.
 // You also need to change it in .htaccess
 $app->setBasePath("/crimes-api");
 

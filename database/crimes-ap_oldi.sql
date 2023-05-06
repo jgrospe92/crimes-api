@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 25, 2023 at 04:55 AM
+-- Generation Time: Apr 15, 2023 at 03:55 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -20,8 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `crimes-api`
 --
-DROP DATABASE IF EXISTS `crimes-api`;
-CREATE DATABASE `crimes-api`;
+CREATE DATABASE IF NOT EXISTS `crimes-api` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `crimes-api`;
 
 -- --------------------------------------------------------
@@ -29,7 +28,10 @@ USE `crimes-api`;
 --
 -- Table structure for table `cases`
 --
+-- Creation: Apr 05, 2023 at 01:25 AM
+--
 
+DROP TABLE IF EXISTS `cases`;
 CREATE TABLE `cases` (
   `case_id` int(11) NOT NULL,
   `description` text NOT NULL,
@@ -49,14 +51,30 @@ INSERT INTO `cases` (`case_id`, `description`, `date_reported`, `misdemeanor`, `
 (2, 'On September 21st, 2012, Rick Moranis was arrested for raping 25 year old Mario Mario in New York, where the victim was walking home with a sandwich he had just bought from a bodega.', '2014-09-23 10:39:16', 0, 3, 5, 5),
 (3, 'On April 1st, 2022, Andrew Tate murdered his best friend LeRock Johnson in an April Fools prank gone wrong.', '2023-03-17 00:26:51', 0, 1, 2, 3),
 (4, 'On November 9th, 2009, Cirno Fairy murdered Okuyasu Nijimura and Josuke Higashikata by freezing them to death in an industrial freezer.', '2009-11-10 10:56:24', 0, 5, 4, 3),
-(5, 'On February 14th, 2023, Doug Bowser was found dead in his house with a parasol in the back of his head. His murderer: Peach Toadstool.', '2023-02-14 22:08:49', 0, 4, 3, 2);
+(5, 'On February 14th, 2023, Doug Bowser was found dead in his house with a parasol in the back of his head. His murderer: Peach Toadstool.', '2023-02-14 22:08:49', 0, 4, 3, 2),
+(6, 'Hit and run accident', '2023-04-04 10:00:00', 1, 1, 2, 1),
+(7, 'On April 6th, 2004, Jeremy Elbertson committed arson at the National Park of Las Vegas. Later found within Toronto living as a streamer on the streaming platform \'Twitch\', he has been arrested and will be trialed in court.', '2020-01-30 13:04:18', 0, 2, 5, 1),
+(8, 'On arpil 06, there was a freezing rain....', '2023-04-06 08:04:18', 0, 2, 5, 1),
+(9, 'On arpil 06, there was a freezing rain....', '2023-04-06 08:04:18', 0, 2, 5, 1),
+(10, 'On arpil 06, there was a freezing rain....', '2023-04-06 08:04:18', 0, 2, 5, 1),
+(11, 'On arpil 06, there was a freezing rain....', '2023-04-06 08:04:18', 0, 2, 5, 1),
+(12, 'Updating case 12 for the seoncd time', '2023-04-06 08:04:18', 1, 2, 3, 2),
+(13, 'Test post cases....', '2023-04-06 08:04:18', 0, 2, 5, 3),
+(14, 'Test post cases....', '2023-04-06 08:04:18', 0, 2, 5, 3),
+(15, 'Freezing rain in montreal!! ....', '2023-04-06 08:04:18', 1, 2, 5, 2),
+(16, 'This is a new case', '2023-04-06 08:04:18', 1, 2, 3, 2),
+(18, 'This is a new case part 2', '2023-04-06 08:04:18', 1, 3, 3, 2),
+(19, 'delet duplicate victim_id', '2023-04-06 08:04:18', 1, 1, 13, 2);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cases_offenses`
 --
+-- Creation: Apr 07, 2023 at 02:50 AM
+--
 
+DROP TABLE IF EXISTS `cases_offenses`;
 CREATE TABLE `cases_offenses` (
   `case_id` int(11) NOT NULL,
   `offense_id` int(11) NOT NULL
@@ -67,18 +85,33 @@ CREATE TABLE `cases_offenses` (
 --
 
 INSERT INTO `cases_offenses` (`case_id`, `offense_id`) VALUES
-(1, 1),
 (2, 3),
+(2, 5),
+(2, 5),
 (3, 5),
 (4, 5),
-(5, 5);
+(5, 5),
+(11, 6),
+(12, 5),
+(13, 2),
+(14, 5),
+(15, 2),
+(15, 6),
+(16, 6),
+(18, 6),
+(19, 1),
+(19, 2),
+(19, 3);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cases_victims`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `cases_victims`;
 CREATE TABLE `cases_victims` (
   `case_id` int(11) NOT NULL,
   `victim_id` int(11) NOT NULL
@@ -93,14 +126,24 @@ INSERT INTO `cases_victims` (`case_id`, `victim_id`) VALUES
 (2, 4),
 (3, 3),
 (4, 1),
-(5, 5);
+(5, 5),
+(13, 4),
+(14, 4),
+(15, 1),
+(16, 1),
+(18, 1),
+(19, 1),
+(19, 3);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `courts`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `courts`;
 CREATE TABLE `courts` (
   `court_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -127,20 +170,23 @@ INSERT INTO `courts` (`court_id`, `name`, `date`, `time`, `address_id`, `judge_i
 --
 -- Table structure for table `court_addresses`
 --
+-- Creation: Apr 15, 2023 at 01:53 AM
+--
 
+DROP TABLE IF EXISTS `court_addresses`;
 CREATE TABLE `court_addresses` (
   `address_id` int(11) NOT NULL,
   `city` varchar(100) NOT NULL,
   `street` varchar(100) NOT NULL,
   `postal_code` varchar(15) NOT NULL,
-  `building_#` varchar(7) NOT NULL
+  `building_num` varchar(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `court_addresses`
 --
 
-INSERT INTO `court_addresses` (`address_id`, `city`, `street`, `postal_code`, `building_#`) VALUES
+INSERT INTO `court_addresses` (`address_id`, `city`, `street`, `postal_code`, `building_num`) VALUES
 (1, 'Toronto', ' University Ave', 'M5G 1T3', '361'),
 (2, 'Vancouver', 'Smithe St', 'V6Z 2E1', '800'),
 (3, 'Ottawa', 'Wellington St', 'K1A 0J1', '301 '),
@@ -152,7 +198,10 @@ INSERT INTO `court_addresses` (`address_id`, `city`, `street`, `postal_code`, `b
 --
 -- Table structure for table `crime_scenes`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `crime_scenes`;
 CREATE TABLE `crime_scenes` (
   `crime_sceneID` int(11) NOT NULL,
   `province` varchar(100) NOT NULL,
@@ -177,7 +226,10 @@ INSERT INTO `crime_scenes` (`crime_sceneID`, `province`, `city`, `street`, `buil
 --
 -- Table structure for table `defendants`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `defendants`;
 CREATE TABLE `defendants` (
   `defendant_id` int(11) NOT NULL,
   `first_name` varchar(100) NOT NULL,
@@ -202,7 +254,10 @@ INSERT INTO `defendants` (`defendant_id`, `first_name`, `last_name`, `age`, `spe
 --
 -- Table structure for table `investigators`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `investigators`;
 CREATE TABLE `investigators` (
   `investigator_id` int(11) NOT NULL,
   `badge_number` varchar(80) NOT NULL,
@@ -216,18 +271,32 @@ CREATE TABLE `investigators` (
 --
 
 INSERT INTO `investigators` (`investigator_id`, `badge_number`, `first_name`, `last_name`, `rank`) VALUES
-(1, '1585', 'Hank', 'Shrader', 'Chief of Police'),
-(2, '1802', 'Jessie', 'James', 'Police Captain'),
-(3, '6521', 'Gustavo', 'Fring', 'Police Detective'),
-(4, '0421', 'Cole', 'Phelps', 'Police Detective'),
-(5, '9091', 'Chad Jeff', 'Bezos', 'Police Lieutenant');
+(1, '1585', 'Hank', 'Shrader', 'Certified Legal Investigator'),
+(2, '1802', 'Jessie', 'James', 'Certified Forensic Investigator'),
+(3, '6521', 'Gustavo', 'Fring', 'Certified Fraud Examiner'),
+(4, '0421', 'Cole', 'Phelps', 'Board Certified Investigator'),
+(5, '9091', 'Chad Jeff', 'Bezos', 'Certified Forensic Investigator'),
+(6, '1585', 'Hank', 'Shrader', 'Certified Legal Investigator'),
+(7, '1585', 'Hank', 'Shrader', 'Certified Fraud Examiner'),
+(8, '1585', 'Hank', 'Shrader', 'Certified Forensic Investigator'),
+(9, '1535', 'Hank', 'Shrader', 'Board Certified Investigator'),
+(10, '15335', 'Hank', 'Shrader', 'Certified Legal Investigator'),
+(11, '3453', 'Hank', 'Shrader', 'Certified Legal Investigator'),
+(12, '1255', 'Hank', 'Shrader', 'Chief of Police'),
+(13, '13255', 'Hank', 'Shrader', 'Chief of Police'),
+(14, '1455', 'Hank', 'Shrader', 'Chief of Police'),
+(15, '1455432', 'Hank', 'Shrader', 'Chief of Police'),
+(16, '1455433', 'Hank', 'Shrader', 'Chief of Police');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `judges`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `judges`;
 CREATE TABLE `judges` (
   `judge_id` int(11) NOT NULL,
   `first_name` varchar(100) NOT NULL,
@@ -251,7 +320,10 @@ INSERT INTO `judges` (`judge_id`, `first_name`, `last_name`, `age`) VALUES
 --
 -- Table structure for table `offenders`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `offenders`;
 CREATE TABLE `offenders` (
   `offender_id` int(11) NOT NULL,
   `first_name` varchar(100) NOT NULL,
@@ -268,8 +340,8 @@ CREATE TABLE `offenders` (
 --
 
 INSERT INTO `offenders` (`offender_id`, `first_name`, `last_name`, `age`, `marital_status`, `arrest_date`, `arrest_timestamp`, `defendant_id`) VALUES
-(1, 'John', 'Bastista', 30, 'married', '2022-02-14', '21:04:56',3),
-(2, 'Mike', 'Gustos', 41, 'single', '2023-91-22', '16:56:57',3),
+(1, 'John', 'Bastista', 30, 'married', '2022-02-14', '21:04:56', 3),
+(2, 'Mike', 'Gustos', 41, 'single', '0000-00-00', '16:56:57', 3),
 (3, 'Jeremy', 'Elbertson', 36, 'single', '2020-01-30', '12:07:57', 3),
 (4, 'Andrew', 'Tate', 41, 'married', '2022-04-01', '16:56:57', 1),
 (5, 'Peach', 'Toadstool', 24, 'married', '2023-02-14', '23:56:57', 4),
@@ -281,7 +353,10 @@ INSERT INTO `offenders` (`offender_id`, `first_name`, `last_name`, `age`, `marit
 --
 -- Table structure for table `offender_details`
 --
+-- Creation: Apr 07, 2023 at 02:33 AM
+--
 
+DROP TABLE IF EXISTS `offender_details`;
 CREATE TABLE `offender_details` (
   `offender_id` int(11) NOT NULL,
   `case_id` int(11) NOT NULL
@@ -293,17 +368,27 @@ CREATE TABLE `offender_details` (
 
 INSERT INTO `offender_details` (`offender_id`, `case_id`) VALUES
 (3, 1),
-(6, 2),
 (4, 3),
+(5, 5),
+(6, 2),
 (7, 4),
-(5, 5);
+(3, 14),
+(7, 15),
+(7, 16),
+(7, 18),
+(1, 19),
+(2, 19),
+(3, 19);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `offenses`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `offenses`;
 CREATE TABLE `offenses` (
   `offense_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -316,18 +401,23 @@ CREATE TABLE `offenses` (
 --
 
 INSERT INTO `offenses` (`offense_id`, `name`, `description`, `classification`) VALUES
-(1, 'Arson', 'The willful and malicious burning of property or nature.', 'Felony'),
-(2, 'Domestic Violence', 'Violent or abusive acts towards ones spouse, offspring or close relatives.', 'Misdemeanor'),
-(3, 'Rape', 'Sexual acts towards a non-consenting victim.', 'Misdemeanor'),
-(4, 'Fraud', 'Intentional deception to gain something of value, usually money.', 'Misdemeanor'),
-(5, 'Homicide', 'The act of killing another person, whether intentionally or accidentally.', 'Felony');
+(1, 'Arson', 'Felonies are serious crimes that are usually punishable by more than one year in prison. Examples of felonies include murder, rape, burglary, and drug trafficking.', 'Felony'),
+(2, 'Domestic Violence', 'Misdemeanors are less serious crimes that are usually punishable by less than one year in jail. Examples of misdemeanors include petty theft, disorderly conduct, and minor drug offenses.', 'Misdemeanor'),
+(3, 'Insider trading', 'White-collar crimes are nonviolent offenses that are typically committed in a professional or business setting. Examples of white-collar crimes include fraud, embezzlement, and insider trading.', 'White-collar crime'),
+(4, 'Homecide', 'Violent crimes involve the use of force or threat of force against another person. Examples of violent crimes include assault, battery, and homicide.', 'Violent crime'),
+(5, 'Roberry', 'Property crimes involve the taking or destruction of another person/s property. Examples of property crimes include theft, robbery, and arson.', 'Property crime'),
+(6, 'Phishing', 'Cybercrimes are crimes that are committed using a computer or the internet. Examples of cybercrimes include hacking, identity theft, and online fraud', 'Cyber-crime'),
+(7, 'Drug trafficking', 'Drug crimes involve the possession, sale, or distribution of illegal drugs. Examples of drug crimes include drug possession, drug trafficking, and drug manufacturing.', 'Drug crime');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `prosecutors`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `prosecutors`;
 CREATE TABLE `prosecutors` (
   `prosecutor_id` int(11) NOT NULL,
   `first_name` varchar(100) NOT NULL,
@@ -352,12 +442,15 @@ INSERT INTO `prosecutors` (`prosecutor_id`, `first_name`, `last_name`, `age`, `s
 --
 -- Table structure for table `verdicts`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `verdicts`;
 CREATE TABLE `verdicts` (
   `verdict_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
-  `sentence` varchar(150) DEFAULT NULL,
+  `sentence` int(11) DEFAULT NULL,
   `fine` int(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -366,18 +459,21 @@ CREATE TABLE `verdicts` (
 --
 
 INSERT INTO `verdicts` (`verdict_id`, `name`, `description`, `sentence`, `fine`) VALUES
-(1, 'Guilty', 'The defendant has been found guilty of the crime.', '25 years in prison', 1000),
-(2, 'Not Guilty', 'The defendant has been found not guilty of the crime.', 'None', 0),
-(3, 'Partially Guilty', 'The defendant has been found partially guilty of the crime.', '5 years in prison', 500),
-(4, 'Innocent', 'The defendant has been proven to be innocent of the crime.', 'None', 0),
-(5, 'Mistrial', 'The trial has ended without a verdict due to a mistrial.', 'None', 0);
+(1, 'Guilty', 'The defendant has been found guilty of the crime.', 25, 1000),
+(2, 'Not Guilty', 'The defendant has been found not guilty of the crime.', 0, 0),
+(3, 'Partially Guilty', 'The defendant has been found partially guilty of the crime.', 5, 500),
+(4, 'Innocent', 'The defendant has been proven to be innocent of the crime.', 0, 0),
+(5, 'Mistrial', 'The trial has ended without a verdict due to a mistrial.', 0, 0);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `victims`
 --
+-- Creation: Apr 01, 2023 at 09:25 PM
+--
 
+DROP TABLE IF EXISTS `victims`;
 CREATE TABLE `victims` (
   `victim_id` int(11) NOT NULL,
   `first_name` varchar(100) NOT NULL,
@@ -476,8 +572,8 @@ ALTER TABLE `offenders`
 -- Indexes for table `offender_details`
 --
 ALTER TABLE `offender_details`
-  ADD PRIMARY KEY (`offender_id`),
-  ADD KEY `offender_detail_case_id_fk` (`case_id`);
+  ADD KEY `offender_detail_case_id_fk` (`case_id`),
+  ADD KEY `offender_index` (`offender_id`) USING BTREE;
 
 --
 -- Indexes for table `offenses`
@@ -512,7 +608,7 @@ ALTER TABLE `victims`
 -- AUTO_INCREMENT for table `cases`
 --
 ALTER TABLE `cases`
-  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `courts`
@@ -542,7 +638,7 @@ ALTER TABLE `defendants`
 -- AUTO_INCREMENT for table `investigators`
 --
 ALTER TABLE `investigators`
-  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `judges`
@@ -560,7 +656,7 @@ ALTER TABLE `offenders`
 -- AUTO_INCREMENT for table `offenses`
 --
 ALTER TABLE `offenses`
-  MODIFY `offense_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `offense_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `prosecutors`
@@ -588,7 +684,7 @@ ALTER TABLE `victims`
 -- Constraints for table `cases`
 --
 ALTER TABLE `cases`
-  ADD CONSTRAINT `cases_court_id_fk` FOREIGN KEY (`court_id`) REFERENCES `courts` (`court_id`),
+  ADD CONSTRAINT `cases_court_id_fk` FOREIGN KEY (`court_id`) REFERENCES `courts` (`court_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cases_crime_scenes_fk` FOREIGN KEY (`crime_sceneID`) REFERENCES `crime_scenes` (`crime_sceneID`) ON DELETE CASCADE,
   ADD CONSTRAINT `cases_investigator_id_fk` FOREIGN KEY (`investigator_id`) REFERENCES `investigators` (`investigator_id`) ON DELETE CASCADE;
 
@@ -596,8 +692,8 @@ ALTER TABLE `cases`
 -- Constraints for table `cases_offenses`
 --
 ALTER TABLE `cases_offenses`
-  ADD CONSTRAINT `case_id_index` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `offense_id` FOREIGN KEY (`offense_id`) REFERENCES `offenses` (`offense_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `case_id_index` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `offense_id` FOREIGN KEY (`offense_id`) REFERENCES `offenses` (`offense_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `cases_victims`
@@ -611,7 +707,7 @@ ALTER TABLE `cases_victims`
 --
 ALTER TABLE `courts`
   ADD CONSTRAINT `address_id_courts` FOREIGN KEY (`address_id`) REFERENCES `court_addresses` (`address_id`),
-  ADD CONSTRAINT `judge_id_courts` FOREIGN KEY (`judge_id`) REFERENCES `judges` (`judge_id`),
+  ADD CONSTRAINT `judge_id_courts` FOREIGN KEY (`judge_id`) REFERENCES `judges` (`judge_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `verdict_id_courts` FOREIGN KEY (`verdict_id`) REFERENCES `verdicts` (`verdict_id`);
 
 --
@@ -624,15 +720,15 @@ ALTER TABLE `offenders`
 -- Constraints for table `offender_details`
 --
 ALTER TABLE `offender_details`
-  ADD CONSTRAINT `case_id_details` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`),
-  ADD CONSTRAINT `offender_id_details` FOREIGN KEY (`offender_id`) REFERENCES `offenders` (`offender_id`);
+  ADD CONSTRAINT `case_id_details` FOREIGN KEY (`case_id`) REFERENCES `cases` (`case_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `offender_id_details` FOREIGN KEY (`offender_id`) REFERENCES `offenders` (`offender_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `victims`
 --
 ALTER TABLE `victims`
   ADD CONSTRAINT `prosecuter_id_victims` FOREIGN KEY (`prosecutor_id`) REFERENCES `prosecutors` (`prosecutor_id`);
-COMMIT;
+COMMIT; 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

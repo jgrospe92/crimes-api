@@ -37,3 +37,6 @@ define('HEADERS_CONTENT_TYPE', "Content-Type");
 define('APP_MEDIA_TYPE_JSON', "application/json");
 define('APP_MEDIA_TYPE_XML', "application/xml");
 define('APP_MEDIA_TYPE_YAML', "application/yaml");
+
+// log path
+define('APP_LOG_DIR', APP_BASE_DIR . '/logs');

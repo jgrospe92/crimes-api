@@ -159,17 +159,28 @@ class InvestigatorsController extends BaseController
                 $payload['error']['description'] = $exception->getDescription();
                 $payload['error']['message'] = $exception->getMessage();
                 $payload['reason'] = $investigator;
-
                 return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
             }
-            $this->investigator_model->createInvestigator($investigator);
+            try {
+
+                $this->investigator_model->createInvestigator($investigator);
+            } catch (Exception $e) {
+                throw new HttpBadRequest($request, "duplicate badge number , please refer to the documentation");
+            }
         }
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
     }
 
+    /**
+     * Summary of handlePutInvestigators
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @throws \Vanier\Api\exceptions\HttpConflict
+     * @return Response
+     */
     public function handlePutInvestigators(Request $request, Response $response)
-    {   
+    {
         // retrieve data
         $data = $request->getParsedBody();
         // check if body is empty, throw an exception otherwise
@@ -177,16 +188,13 @@ class InvestigatorsController extends BaseController
             throw new HttpConflict($request, "Please provide required data");
         }
         // validate data
-        foreach($data as $investigator)
-        {
-            if (!ValidateHelper::validatePutMethods($investigator, 'investigator'))
-            {
+        foreach ($data as $investigator) {
+            if (!ValidateHelper::validatePutMethods($investigator, 'investigator')) {
                 $exception = new HttpConflict($request);
                 return $this->parsedError($response, $investigator,  $exception, StatusCodeInterface::STATUS_CONFLICT);
             }
-
             // validate if the investigator_id exists
-            if (!$this->investigator_model->checkIfResourceExists('investigators', ['investigator_id'=>$investigator['investigator_id']])){
+            if (!$this->investigator_model->checkIfResourceExists('investigators', ['investigator_id' => $investigator['investigator_id']])) {
 
                 $exception = new HttpConflict($request);
                 $exception->setDescription("investigator_id is invalid");
@@ -194,9 +202,57 @@ class InvestigatorsController extends BaseController
             }
             // update the resource
             $this->investigator_model->updateInvestigator($investigator);
-
         }
 
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_CREATED);
+    }
+
+    /**
+     * Summary of handleDeleteInvestigators
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @throws \Vanier\Api\exceptions\HttpConflict
+     * @return Response
+     */
+    public function handleDeleteInvestigators(Request $request, Response $response)
+    {
+        $data = $request->getParsedBody()['investigator_id'];
+        $investigator_ids = ['id' => $data];
+
+        // Check if ids are provided
+        if (empty($investigator_ids['id']) || !is_array($investigator_ids['id'])) {
+            throw new HttpConflict($request, "Please provide a valid id");
+        }
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($investigator_ids['id'])) {
+            throw new HttpConflict($request, "Id is not valid/unique");
+        }
+        // Check if each ID exists before deleting
+
+        foreach ($investigator_ids['id'] as $investigator_id) {
+            // validate if the investigator_id is a valid number
+            if (!ValidateHelper::validateNumIsPositive($investigator_id)) {
+                $msg = "The provided ID : " . "{" . $investigator_id . "} is not valid number";
+                throw new HttpConflict($request, $msg);
+            }
+            // validate if the investigator_id exists
+            if (!$this->investigator_model->checkIfResourceExists('investigators', ['investigator_id' => $investigator_id])) {
+                throw new HttpConflict($request, "Investigator with id : $investigator_id does not exist");
+            }
+        }
+        // delete case
+        $deletedCount = 0;
+        foreach ($investigator_ids['id'] as $id) {
+            $this->investigator_model->deleteInvestigator(($id));
+            $deletedCount++;
+        }
+
+        // Prepare response message
+        $format =  $deletedCount > 1 ? "investigators" : "investigator";
+        $responseMessage = [
+            "message" => "You have successfully deleted $deletedCount $format.",
+        ];
+
+        return $this->preparedResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
     }
 }
