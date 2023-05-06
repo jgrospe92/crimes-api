@@ -108,6 +108,11 @@ class CourtAddressesModel extends BaseModel
         return $this->update($this->table_name, $address, ["address_id" => $address_id]);
     }
 
+    public function handleDeleteAddress($address_id)
+    {
+        return $this->delete($this->table_name, ["address_id" => $address_id]);
+    }
+
     public function checkIfResourceExists($table, $whereClause): bool
     {
         if (!$this->getById($table, $whereClause)) {

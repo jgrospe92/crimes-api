@@ -262,6 +262,12 @@ class CasesController extends BaseController
             throw new HttpNotFound($request, 'please check you parameter or consult the documentation');
         }
 
+        // concat news data at the end after cases!!!
+
+        $news_data = new NewsController();
+        $data['news'] = $news_data->getNews();
+
+
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
     }

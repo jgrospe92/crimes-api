@@ -161,4 +161,37 @@ class CourtAddressesController extends BaseController
         }
     }
 
+    public function handleDeleteAddress(Request $request, Response $response, array $args)
+    {
+        $address_data = $request->getParsedBody()['address_id'];
+        $address_ids = ['address_id' => $address_data];
+
+        if(empty($address_ids['address_id']) || !is_array($address_ids['address_id'])){
+            throw new HttpBadRequest($request, "the request body is invalid");
+        }
+        if(!ValidateHelper::arrayIsUnique($address_ids['address_id'])){
+            throw new HttpBadRequest($request, "id is not valid or unique");
+        }
+        foreach ($address_ids['address_id'] as $address_id) {
+            if(!ValidateHelper::validateId(['address_id' => $address_id])){
+                throw new HttpBadRequest($request, "id is not valid");
+            }
+            if(!$this->court_addresses_model->checkIfResourceExists('court_addresses', ['address_id' => $address_id])){
+                throw new HttpNotFound($request, "id does not exist");
+            }
+        }
+
+        $deletedCount = 0;
+        foreach ($address_ids['address_id'] as $address_id) {
+            $this->court_addresses_model->handleDeleteAddress($address_id);
+            $deletedCount++;
+        }
+
+        $address_format = $deletedCount > 1 ? 'addresses' : 'address';
+        $responseMessage = [
+            'message' => "$deletedCount $address_format deleted successfully"
+        ];
+        return $this->prepareOkResponse($response, $responseMessage, StatusCodeInterface::STATUS_OK);
+    }
+
 }

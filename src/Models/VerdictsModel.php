@@ -106,4 +106,10 @@ class VerdictsModel extends BaseModel
         }
         return true;
     }
+
+    public function handleDeleteVerdict($verdict_id)
+    {
+        return $this->delete('verdicts', ["verdict_id" => $verdict_id]);
+    }
+    
 }

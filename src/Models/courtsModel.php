@@ -147,9 +147,9 @@ class CourtsModel extends BaseModel
         return $this->update('courts',$court, ["court_id" => $court_id]);
     }
 
-    public function handleDeleteCourtsById(array $courts)
+    public function handleDeleteCourts($court_id)
     {
-        # code...
+        return $this->delete('courts', ["court_id" => $court_id]);
     }
 
     public function checkIfResourceExists($table, $whereClause): bool
