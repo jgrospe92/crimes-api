@@ -116,7 +116,28 @@
 - /news-api
 
 ## Authentication / Token 🔑
-- coming soon
+- Being able to choose a role, and give different acces to people with different roles(admin/user)
+- Admin will have access to everything (POST, PUT, DELETE, GET)
+- Users will only have access to GET
+##### Account creation (/account)
+``` 
+{
+  "first_name": "Bob",
+  "last_name": "Lee",
+  "email": "bob@lee.com",
+  "password" "123abc",
+  "role": "admin"
+}
+```
+##### Log In (/token)
+``` 
+{
+  "email": "bob@lee.com",
+  "password" "123abc"
+}
+```
+- This will give you a token if the email and password is correct
+- Token must be pasted and sent embedded in the request as a bearer token which is located in Thunder Client's **Auth**
 
 ## Rate Limit
 - coming soon
