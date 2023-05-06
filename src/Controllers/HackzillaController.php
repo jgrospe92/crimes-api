@@ -29,7 +29,7 @@ class HackzillaController extends BaseController
         }
 
         // validate length
-        if (!ValidateHelper::validatePasswordLength($data)) {
+        if (!ValidateHelper::validatePasswordGen($data)) {
             $exception = new HttpConflict($request);
             $payload['statusCode'] = $exception->getCode();
             $payload['error']['description'] = $exception->getDescription();
