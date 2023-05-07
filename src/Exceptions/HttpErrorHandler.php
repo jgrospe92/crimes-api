@@ -108,7 +108,7 @@ class HttpErrorHandler extends ErrorHandler
         // Log the error        
         $logger = AppLoggingHelper::getErrorsLogger();
         $context["message"] = $message;       
-        $logger->error("STATUS CODE " . $statusCode, ["context" => $context["message"]]);
+        $logger->error("STATUS CODE " . $statusCode, [$context["message"]]);
 
         return $response;
     }
