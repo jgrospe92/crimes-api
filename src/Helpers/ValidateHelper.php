@@ -61,7 +61,7 @@ class ValidateHelper
      * @param mixed $dataParams
      * @return bool
      */
-    public static function validatePasswordLength(array $dataParams)
+    public static function validatePasswordGen(array $dataParams)
     {
         $rules =
             [

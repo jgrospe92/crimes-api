@@ -8,6 +8,10 @@
   - [URI Relationship 👫](#uri-relationship-)
   - [composite resource 🎑](#composite-resource-)
   - [Authentication / Token 🔑](#authentication--token-)
+      - [Account creation (/account)](#account-creation-account)
+      - [Log In (/token)](#log-in-token)
+  - [Remote Function](#remote-function)
+      - [Filters](#filters)
   - [Rate Limit](#rate-limit)
   - [Versioning](#versioning)
   - [Base Uri 🕶](#base-uri-)
@@ -119,25 +123,51 @@
 - Being able to choose a role, and give different acces to people with different roles(admin/user)
 - Admin will have access to everything (POST, PUT, DELETE, GET)
 - Users will only have access to GET
-##### Account creation (/account)
+#### Account creation (/account)
 ``` 
 {
   "first_name": "Bob",
   "last_name": "Lee",
   "email": "bob@lee.com",
-  "password" "123abc",
+  "password": "123abc",
   "role": "admin"
 }
 ```
-##### Log In (/token)
+#### Log In (/token)
 ``` 
 {
   "email": "bob@lee.com",
-  "password" "123abc"
+  "password": "123abc"
 }
 ```
 - This will give you a token if the email and password is correct
 - Token must be pasted and sent embedded in the request as a bearer token which is located in Thunder Client's **Auth**
+
+## Remote Function
+- You can randomly generate password using password-generator
+- To access the remote function resource, use this uri `/password-generator`
+- Use this body structure
+
+```json
+{
+    "generate" :  1,
+    "length" : 12,
+    "lowercase": 1,
+    "uppercase": 1,
+    "random numbers" : 1,
+    "random symbols" : 1
+}
+```
+#### Filters
+|  Parameter | Description   | condition|
+|---|---|--|
+| generate  |  the number of random generated password(s) | max value is 10 |
+|length | specify the size of the password | from 6 to 24 |
+|lowercase | includes lowercase characters | 0 = false, 1 = true|
+|uppercase | includes uppercase characters | 0 = false, 1 = true|
+|random numbers | includes numbers | 0 = false, 1 = true|
+|random symbols | includes symbols | 0 = false, 1 = true|
+
 
 ## Rate Limit
 - coming soon

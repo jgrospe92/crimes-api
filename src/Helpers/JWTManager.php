@@ -27,7 +27,7 @@ class JWTManager
     public static function DecodeToken(string $parsed_token, string $algo): array
     {
         //self::getSecretKey();
-        $jwt_secret = $_ENV['SECRET_KEY'];        
+        $jwt_secret = $_ENV['SECRET_KEY'];
         //echo $parsed_token;exit;
         //$decoded_token = (array) JWT::decode($parsed_token, $jwt_secret, $algo);
         $decoded_token = (array) JWT::decode($parsed_token, new Key($jwt_secret, $algo));
