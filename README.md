@@ -66,7 +66,18 @@
     - [PUT /crime\_scenes](#put-crime_scenes)
       - [Condition](#condition-9)
     - [DELETE /crime\_scenes](#delete-crime_scenes)
-- [Teams ⚔](#teams-)
+  - [courts](#courts)
+    - [GET /courts](#get-courts)
+    - [GET /courts/{id}](#get-courtsid)
+    - [POST /courts](#post-courts)
+    - [PUT /courts](#put-courts)
+    - [DELETE /courts](#delete-courts)
+  - [verdicts](#verdicts)
+    - [GET /verdicts](#get-verdicts)
+    - [POST /verdicts](#post-verdicts)
+    - [PUT /verdicts](#put-verdicts)
+    - [DELETE /verdicts](#delete-verdicts)
+- [Team ⚔](#team-)
 - [Teacher 🎓](#teacher-)
 
 
@@ -742,7 +753,206 @@
     "crime_sceneID" : [1,2]
 }
 ```
-# Teams ⚔
+## courts
+
+### GET /courts
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|name|returns any resource(s) that matches the given value |name: Court of Appeal|NA|
+|time|returns any resource(s) that match the given value | time: 06:11:14 |NA|
+|address_id|returns any resource(s) that match the given value|address_id: 1|NA|
+|judge_id|returns any resource(s) that match the given value|judge_id: 1|NA|
+|verdict_id|returns any resource(s) that match the given value|verdict_id: 1|NA|
+
+### GET /courts/{id}
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|NA|NA|NA|NA|
+
+### POST /courts
+
+- to create a new court, follow this body structure:
+  
+```json
+[
+    {
+        "name": "Test Court",
+        "date": "2323-12-12",
+        "time": "06:11:14",
+        "address_id": 1,
+        "judge_id": 1,
+        "verdict_id": 1
+    }
+]
+```
+
+- to create multiple courts at once:
+
+```json
+[
+    {
+        "name": "Test Court",
+        "date": "2323-12-12",
+        "time": "06:11:14",
+        "address_id": 1,
+        "judge_id": 1,
+        "verdict_id": 1
+    },
+    {
+        "name": "Test Court 2",
+        "date": "2323-12-12",
+        "time": "06:11:14",
+        "address_id": 1,
+        "judge_id": 2,
+        "verdict_id": 2
+    }
+]
+```
+
+### PUT /courts
+
+-to update an existing court:
+
+```json
+[
+    {
+        "court_id": 1,
+        "name": "test Court",
+        "date": "2323-12-12",
+        "time": "06:11:14",
+        "address_id": 1,
+        "judge_id": 1,
+        "verdict_id": 1
+    }
+]
+```
+
+- to update multiple courts at once:
+
+```json
+[
+    {
+        "court_id": 1,
+        "name": "test Court",
+        "date": "2323-12-12",
+        "time": "06:11:14",
+        "address_id": 1,
+        "judge_id": 1,
+        "verdict_id": 1
+    },
+    {
+        "court_id": 2,
+        "name": "test2 Court",
+        "date": "2323-12-12",
+        "time": "06:11:14",
+        "address_id": 2,
+        "judge_id": 2,
+        "verdict_id": 2
+    }
+]
+```
+
+### DELETE /courts
+
+- to delete a court(s):
+  
+```json
+  "court_id" : [1,2]
+```
+
+## verdicts
+
+### GET /verdicts
+
+|**Parameter**   |**Description**   |**Example**| **Condition** |
+|---|---|---|--|
+|name|returns any resource(s) that matches the given value|name: Guilty |NA|
+|description|returns any resource(s) that matches the given value| description: the defendant as been... |NA|
+|sentence|returns any resource(s) that matches the given value|sentence: 25|NA|
+|fine|returns any resource(s) that matches the given value|fine: 500|default null|
+
+### POST /verdicts
+
+- to create new verdicts:
+
+```json
+[
+    {
+        "name": "test create",
+        "description": "The trial has ended without a verdict due to a mistrial.",
+        "sentence": 2,
+        "fine": 1000
+    }
+]
+```
+
+- to create multiple verdicts at once:
+
+```json
+[
+    {
+        "name": "test create",
+        "description": "The trial has ended without a verdict due to a mistrial.",
+        "sentence": 2,
+        "fine": 1000
+    },
+    {
+        "name": "test create 2",
+        "description": "The trial has ended without a verdict due to a mistrial.",
+        "sentence": 2,
+        "fine": 1000
+    }
+]
+```
+
+### PUT /verdicts
+
+- to update existing verdict:
+
+```json
+[
+    {
+        "verdict_id": 1,
+        "name": "test update",
+        "description": "The trial has ended without a verdict due to a mistrial.",
+        "sentence": 2,
+        "fine": 1000
+    }
+]
+```
+
+- to update multiple existing verdicts:
+
+```json
+[
+    {
+        "verdict_id": 1,
+        "name": "test update",
+        "description": "The trial has ended without a verdict due to a mistrial.",
+        "sentence": 2,
+        "fine": 1000
+    },
+    {
+        "verdict_id": 2,
+        "name": "test update 2",
+        "description": "The trial has ended without a verdict due to a mistrial.",
+        "sentence": 2,
+        "fine": 1000
+    }
+]
+```
+
+### DELETE /verdicts
+
+- to delete a verdict(s)
+
+```json
+[
+    "verdict_id": [1,2]
+]
+```
+
+# Team ⚔
 - Jeffrey Grospe (Team Leader)
 - Md Saqliyan Islam
 - Alex Nguyen
