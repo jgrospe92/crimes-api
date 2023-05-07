@@ -2,6 +2,7 @@
 
 namespace Vanier\Api\Controllers;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\Controllers\BaseController;
@@ -83,9 +84,15 @@ class AuthenticationController extends BaseController
         }
         // Data was provided, we attempt to create an account for the user.
         $user_model = new UserModel();
-        $new_user = $user_model->createUser($user_data);
+        try {
+
+            $new_user = $user_model->createUser($user_data);
+        } catch (Exception $e) {
+            throw new HttpConflict($request, 'Failed to create the new user. User already exists');
+        }
+
         //--
-        if ($new_user) {
+        if (!$new_user) {
             throw new HttpConflict($request, 'Failed to create the new user.');
         } else {
             $responseData = [

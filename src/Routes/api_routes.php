@@ -28,11 +28,14 @@ global $app;
 // The callbacks must be implemented in a controller class.
 // The Vanier\Api must be used as namespace prefix. 
 
+// TEST ROUTE
+$app->get('/test', function ($request, Response $response, array $args) {
+    return $response->getBody()->write(("hello"));
+});
+
 // ROUTE: /
 $app->get('/', [AboutController::class, 'handleAboutApi']);
 
-// PASSWORD GENERATOR
-$app->post('/password-generator', [HackzillaController::class, 'handlePasswordGenerator']);
 // Routes : cases
 $app->get('/cases/{case_id}', [CasesController::class, 'handleGetCaseById']);
 $app->get('/cases', [CasesController::class, 'handleGetCases']);
@@ -129,3 +132,5 @@ $app->delete('/crime_scenes', [CrimeScenesController::class, 'deleteCrimeScenes'
 $app->post('/account', [AuthenticationController::class, 'handleCreateUserAccount']);
 $app->post('/token', [AuthenticationController::class, 'handleGetToken']);
 
+// PASSWORD GENERATOR
+$app->post('/password-generator', [HackzillaController::class, 'handlePasswordGenerator']);

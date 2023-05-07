@@ -7,6 +7,7 @@ use Monolog\Processor\UidProcessor;
 use Monolog\Processor\WebProcessor;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
+use Slim\Handlers\Strategies\RequestResponseArgs;
 use Vanier\Api\exceptions\HttpErrorHandler;
 use Vanier\Api\Helpers\JWTManager;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
@@ -27,6 +28,7 @@ require_once __DIR__ . '/src/Config/app_config.php';
 
 //--Step 1) Instantiate a Slim app.
 $app = AppFactory::create();
+$routeCollector = $app->getRouteCollector();
 // add callable
 $callableResolver = $app->getCallableResolver();
 $responseFactory = $app->getResponseFactory();
@@ -38,8 +40,12 @@ $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
 // Parse json, form data and xml, first stack
 $app->addBodyParsingMiddleware();
 
-//-- Add the routing and body parsing middleware, second stack
+
+
+//-- Add the routing , second stack
 $app->addRoutingMiddleware();
+
+// TEST
 
 // logger middleware, third stack
 $logger = new LoggerMiddleware();
@@ -49,6 +55,7 @@ $app->add($logger);
 $jwt_secret = JWTManager::getSecretKey();
 $app->add(new JWTAuthMiddleware());
 
+
 //-- Add error handling middleware.
 // NOTE: the error middleware MUST be added last.
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
@@ -57,8 +64,6 @@ $errorMiddleware->getDefaultErrorHandler()->forceContentType(APP_MEDIA_TYPE_JSON
 
 // content negotiation middleware, end of stack
 $app->add(new ContentNegotiationMiddleware());
-
-
 
 //---
 // You also need to change it in .htaccess
