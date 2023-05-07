@@ -1,0 +1,1 @@
+[2023-05-06T20:45:02.869398-04:00] CREATE.NOTICE: STATUS CODE 201 {"context":"resource updated successfully"} {"uid":"6367b2e","url":"/crimes-api/investigators","ip":"::1","http_method":"PUT","server":"localhost","referrer":null}
