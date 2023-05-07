@@ -1,4 +1,0 @@
-[2023-05-06T20:40:11.276788-04:00] ERRORS.ERROR: STATUS CODE 401 {"context":"Expired token"} {"uid":"cb71bce","url":"/crimes-api/cases?asdadasd=aasd","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-06T20:40:21.132361-04:00] ERRORS.ERROR: STATUS CODE 401 {"context":"Expired token"} {"uid":"f5e2a8c","url":"/crimes-api/cases","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-06T20:43:30.775806-04:00] ERRORS.ERROR: STATUS CODE 401 {"context":"Wrong number of segments"} {"uid":"c5a9424","url":"/crimes-api/investigators","ip":"::1","http_method":"PUT","server":"localhost","referrer":null}
-[2023-05-06T20:43:38.724114-04:00] ERRORS.ERROR: STATUS CODE 409 {"context":{"description":"investigator_id is invalid","message":"This request is poorly structured, please check the documentations"}} {"uid":"c593e9e","url":"/crimes-api/investigators","ip":"::1","http_method":"PUT","server":"localhost","referrer":null}

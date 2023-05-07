@@ -1,3 +1,7 @@
 
 database/.DS_Store
 .env
+
+### all log files
+*.log
+
