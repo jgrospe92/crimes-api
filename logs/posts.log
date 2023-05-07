@@ -1,3 +1,0 @@
-[2023-05-06T20:41:50.663269-04:00] CREATE.NOTICE: STATUS CODE 200 {"context":"resource added successfully"} {"uid":"2c48465","url":"/crimes-api/account","ip":"::1","http_method":"POST","server":"localhost","referrer":null}
-[2023-05-06T20:41:59.253497-04:00] CREATE.NOTICE: STATUS CODE 200 {"context":"resource added successfully"} {"uid":"13ed51c","url":"/crimes-api/token","ip":"::1","http_method":"POST","server":"localhost","referrer":null}
-[2023-05-06T20:44:14.652576-04:00] CREATE.NOTICE: STATUS CODE 201 {"context":"resource added successfully"} {"uid":"1b269cc","url":"/crimes-api/investigators","ip":"::1","http_method":"POST","server":"localhost","referrer":null}
