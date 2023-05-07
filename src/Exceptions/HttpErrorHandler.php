@@ -1,4 +1,5 @@
 <?php
+
 namespace Vanier\Api\exceptions;
 
 use Psr\Http\Message\ResponseInterface;
@@ -17,6 +18,15 @@ use Vanier\Api\exceptions\HttpConflict;
 use Exception;
 use Throwable;
 
+// Logger
+use Monolog\Level;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\FirePHPHandler;
+use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
+use DateTimeZone;
+
 /**
  * Summary of HttpErrorHandler
  */
@@ -32,7 +42,7 @@ class HttpErrorHandler extends ErrorHandler
     public const NOT_ACCEPTABLE = "NOT_ACCEPTABLE";
     public const UNPROCESSABLE_CONTENT = "UNPROCESSABLE_CONTENT";
     public const CONFLICT = "CONFLICT";
-    
+
     /**
      * Summary of respond
      * @return ResponseInterface
@@ -49,7 +59,7 @@ class HttpErrorHandler extends ErrorHandler
             $statusCode = $exception->getCode();
             $description = $exception->getDescription();
             $message = $exception->getMessage();
-            
+
 
             if ($exception instanceof HttpNotFound) {
                 $type = self::RESOURCE_NOT_FOUND;
@@ -63,11 +73,11 @@ class HttpErrorHandler extends ErrorHandler
                 $type = self::BAD_REQUEST;
             } elseif ($exception instanceof HttpNotImplementedException) {
                 $type = self::NOT_IMPLEMENTED;
-            } elseif ($exception instanceof HttpNotAcceptableException){
+            } elseif ($exception instanceof HttpNotAcceptableException) {
                 $type = self::NOT_ACCEPTABLE;
-            }elseif ($exception instanceof HttpUnprocessableContent){
+            } elseif ($exception instanceof HttpUnprocessableContent) {
                 $type = self::UNPROCESSABLE_CONTENT;
-            }elseif($exception instanceof HttpConflict){
+            } elseif ($exception instanceof HttpConflict) {
                 $type = self::CONFLICT;
             }
         }
@@ -88,12 +98,23 @@ class HttpErrorHandler extends ErrorHandler
                 'message' => $message,
             ],
         ];
-        
+
         $payload = json_encode($error, JSON_PRETTY_PRINT);
-        
-        $response = $this->responseFactory->createResponse($statusCode)->withHeader("Content-type", "application/json");        
+
+        $response = $this->responseFactory->createResponse($statusCode)->withHeader("Content-type", "application/json");
         $response->getBody()->write($payload);
-        
+
+        // Log the error
+        $filename = '/errors.log';
+        $logger = new Logger('ERRORS');
+        $logger->setTimezone(new DateTimeZone('America/Toronto'));
+        $logger->pushProcessor(new UidProcessor());
+        $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::ERROR);
+        $log_handler->pushProcessor(new WebProcessor());
+        $context["message"] = $message;
+        $logger->pushHandler($log_handler);
+        $logger->error("STATUS CODE " . $statusCode, ["context" => $context["message"]]);
+
         return $response;
     }
 }

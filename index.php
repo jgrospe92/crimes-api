@@ -1,5 +1,10 @@
 <?php
 
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Vanier\Api\exceptions\HttpErrorHandler;
@@ -20,8 +25,6 @@ require __DIR__ . '/vendor/autoload.php';
 // database credentials, etc.
 require_once __DIR__ . '/src/Config/app_config.php';
 
-
-
 //--Step 1) Instantiate a Slim app.
 $app = AppFactory::create();
 // add callable
@@ -31,23 +34,33 @@ $responseFactory = $app->getResponseFactory();
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
-//-- Add the routing and body parsing middleware.
+
+// Parse json, form data and xml, first stack
+$app->addBodyParsingMiddleware();
+
+//-- Add the routing and body parsing middleware, second stack
 $app->addRoutingMiddleware();
 
+// logger middleware, third stack
+$logger = new LoggerMiddleware();
+$app->add($logger);
+
+// AA middleware, fourth stack
 $jwt_secret = JWTManager::getSecretKey();
 $app->add(new JWTAuthMiddleware());
-// Parse json, form data and xml
-$app->addBodyParsingMiddleware();
-// content negotiation middleware
-$app->add(new ContentNegotiationMiddleware());
+
 //-- Add error handling middleware.
 // NOTE: the error middleware MUST be added last.
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 $errorMiddleware->getDefaultErrorHandler()->forceContentType(APP_MEDIA_TYPE_JSON);
-// logging middleware
-$app->add(new LoggerMiddleware());
 
+// content negotiation middleware, end of stack
+$app->add(new ContentNegotiationMiddleware());
+
+
+
+//---
 // You also need to change it in .htaccess
 $app->setBasePath("/crimes-api");
 
