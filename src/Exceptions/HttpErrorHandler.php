@@ -118,18 +118,7 @@ class HttpErrorHandler extends ErrorHandler
         $logger->error("STATUS CODE " . $statusCode, ["context" => $context["message"]]);
 
 
-        // instantiate data for logging
-        $user_db_log = new UserDBLogController();
-        if ($_SESSION['email']) {
-            $email = $_SESSION['email'];
-            $user_id =  $_SESSION['user_id'];
-            $logged_at =  $_SESSION['logged_at'];
-        }
-        if ($_SESSION['email']) {
 
-            $data = ['email' => $email, 'user_action' => $uniqueID->getUid(), 'logged_at' => $logged_at, 'user_id' => $user_id];
-            $user_db_log->handleDBLogger($data);
-        }
 
         return $response;
     }
