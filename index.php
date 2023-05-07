@@ -1,19 +1,29 @@
 <?php
 
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Vanier\Api\exceptions\HttpErrorHandler;
+use Vanier\Api\Helpers\JWTManager;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
 use Vanier\Api\middleware\LoggerMiddleware;
+use Vanier\Api\Middleware\JWTAuthMiddleware;
+
 
 define('APP_BASE_DIR', __DIR__);
+// IMPORTANT: This file must be added to your .ignore file. 
+define('APP_ENV_CONFIG', 'config.env');
+
+define('APP_JWT_TOKEN_KEY', 'APP_JWT_TOKEN');
 
 require __DIR__ . '/vendor/autoload.php';
 // Include the file that contains the application's global configuration settings,
 // database credentials, etc.
 require_once __DIR__ . '/src/Config/app_config.php';
-
-
 
 //--Step 1) Instantiate a Slim app.
 $app = AppFactory::create();
@@ -24,20 +34,33 @@ $responseFactory = $app->getResponseFactory();
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
-//-- Add the routing and body parsing middleware.
-$app->addRoutingMiddleware();
-// Parse json, form data and xml
+
+// Parse json, form data and xml, first stack
 $app->addBodyParsingMiddleware();
-// content negotiation middleware
-$app->add(new ContentNegotiationMiddleware());
+
+//-- Add the routing and body parsing middleware, second stack
+$app->addRoutingMiddleware();
+
+// logger middleware, third stack
+$logger = new LoggerMiddleware();
+$app->add($logger);
+
+// AA middleware, fourth stack
+$jwt_secret = JWTManager::getSecretKey();
+$app->add(new JWTAuthMiddleware());
+
 //-- Add error handling middleware.
 // NOTE: the error middleware MUST be added last.
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 $errorMiddleware->getDefaultErrorHandler()->forceContentType(APP_MEDIA_TYPE_JSON);
-// logging middleware
-$app->add(new LoggerMiddleware());
 
+// content negotiation middleware, end of stack
+$app->add(new ContentNegotiationMiddleware());
+
+
+
+//---
 // You also need to change it in .htaccess
 $app->setBasePath("/crimes-api");
 

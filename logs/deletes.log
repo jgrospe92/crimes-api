@@ -1,2 +1,0 @@
-[2023-05-06T17:34:57.187094-04:00] CREATE.WARNING: STATUS CODE 200 {"context":{"message":"1 court deleted successfully"}} {"uid":"1e26293","url":"/crimes-api/courts","ip":"127.0.0.1","http_method":"DELETE","server":"localhost","referrer":null}
-[2023-05-06T18:02:54.441380-04:00] CREATE.WARNING: STATUS CODE 200 {"context":{"message":"1 address deleted successfully"}} {"uid":"30a66dd","url":"/crimes-api/court_addresses","ip":"127.0.0.1","http_method":"DELETE","server":"localhost","referrer":null}
