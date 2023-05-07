@@ -13,6 +13,7 @@ use Vanier\Api\Helpers\JWTManager;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
 use Vanier\Api\middleware\LoggerMiddleware;
 use Vanier\Api\Middleware\JWTAuthMiddleware;
+use Vanier\Api\middleware\SessionMiddleware;
 
 
 define('APP_BASE_DIR', __DIR__);
@@ -40,7 +41,8 @@ $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
 // Parse json, form data and xml, first stack
 $app->addBodyParsingMiddleware();
 
-
+// start session
+$app->add(new SessionMiddleware());
 
 //-- Add the routing , second stack
 $app->addRoutingMiddleware();

@@ -10,6 +10,7 @@ use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler;
 // Add custom exceptions
+use Vanier\Api\Controllers\UserDBLogController;
 use Vanier\Api\exceptions\HttpNotAcceptableException;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
@@ -108,12 +109,27 @@ class HttpErrorHandler extends ErrorHandler
         $filename = '/errors.log';
         $logger = new Logger('ERRORS');
         $logger->setTimezone(new DateTimeZone('America/Toronto'));
-        $logger->pushProcessor(new UidProcessor());
+        $uniqueID = new UidProcessor();
+        $logger->pushProcessor($uniqueID);
         $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::ERROR);
         $log_handler->pushProcessor(new WebProcessor());
         $context["message"] = $message;
         $logger->pushHandler($log_handler);
         $logger->error("STATUS CODE " . $statusCode, ["context" => $context["message"]]);
+
+
+        // instantiate data for logging
+        $user_db_log = new UserDBLogController();
+        if ($_SESSION['email']) {
+            $email = $_SESSION['email'];
+            $user_id =  $_SESSION['user_id'];
+            $logged_at =  $_SESSION['logged_at'];
+        }
+        if ($_SESSION['email']) {
+
+            $data = ['email' => $email, 'user_action' => $uniqueID->getUid(), 'logged_at' => $logged_at, 'user_id' => $user_id];
+            $user_db_log->handleDBLogger($data);
+        }
 
         return $response;
     }

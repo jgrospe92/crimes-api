@@ -32,7 +32,7 @@ class UserModel extends BaseModel
     public function verifyEmail($email)
     {
         $sql = "SELECT * FROM $this->table_name WHERE email= :email";
-        return $this->run($sql, [":email" => $email])->fetchAll();
+        return $this->run($sql, [":email" => $email])->fetch();
     }
 
     /**
@@ -43,18 +43,18 @@ class UserModel extends BaseModel
     public function verifyPassword($email, $input_password)
     {
         $sql = "SELECT * FROM $this->table_name WHERE email= :email";
-        $row = $this->run($sql, [":email" => $email])->fetchAll();
+        $row = $this->run($sql, [":email" => $email])->fetch();
         if ($row && is_array($row)) {
-            if (password_verify($input_password, $row[0]['password'])) {
+            if (password_verify($input_password, $row['password'])) {
                 $payload = array(
-                    "user_id" => isset($row[0]['id']) ? $row[0]['id'] : null,
-                    "email" => isset($row[0]['email']) ? $row[0]['email'] : null,
-                    "role" => isset($row[0]['role']) ? $row[0]['role'] : 'user'
+                    "user_id" => isset($row['user_id']) ? $row['user_id'] : null,
+                    "email" => isset($row['email']) ? $row['email'] : null,
+                    "role" => isset($row['role']) ? $row['role'] : 'user'
                 );
                 return $payload;
             }
         }
-        return null;
+        return $row;
     }
 
     /**
