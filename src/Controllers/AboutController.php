@@ -11,9 +11,9 @@ class AboutController extends BaseController
     public function handleAboutApi(Request $request, Response $response, array $uri_args)
     {
         $data = array(
-            'about' => 'Welcome, this is a Web services that provides fake crimes information all around the world',
+            'about' => 'Welcome, this is a Web services that provides fictional crimes information all around the world',
             'version' => 'v1',
-            'resources' => ['cases', 'offenders','victims','defendants','prosecutors','investigators','courts','verdicts','judges'],
+            'resources' => ['/cases', '/offenders','/victims','/defendants','/prosecutors','/investigators','/courts','/verdicts','/judges'],
             'Developers' => ['Jeffrey','Saqliyan','Theodore', 'Alex']
         );                
         return $this->prepareOkResponse($response, $data);

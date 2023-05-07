@@ -35,9 +35,6 @@ $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
 
-// Parse json, form data and xml, first stack
-$app->addBodyParsingMiddleware();
-
 //-- Add the routing and body parsing middleware, second stack
 $app->addRoutingMiddleware();
 
@@ -47,8 +44,10 @@ $app->add($logger);
 
 // AA middleware, fourth stack
 $jwt_secret = JWTManager::getSecretKey();
-$app->add(new JWTAuthMiddleware());
+//$app->add(new JWTAuthMiddleware());
 
+// Must be added before last. Parse json, form data and xml, first stack
+$app->addBodyParsingMiddleware();
 //-- Add error handling middleware.
 // NOTE: the error middleware MUST be added last.
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);

@@ -17,6 +17,7 @@ use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
+use Vanier\Api\Helpers\AppLoggingHelper;
 
 /**
  * Summary of ContentNegotiationMiddleware
@@ -24,6 +25,11 @@ use Monolog\Handler\FirePHPHandler;
 class  LoggerMiddleware implements MiddlewareInterface
 {
 
+    public const LOG_CHANNEL_ACCESS = 'ACCESS';
+    public const LOG_CHANNEL_CREATE = 'CREATE';
+    public const LOG_CHANNEL_UPDATE = 'UPDATE';
+    public const LOG_CHANNEL_DELETE = 'DELETE';
+    public const LOG_CHANNEL_ERRORS = 'ERRORS';
     /**
      * Summary of __construct
      */
@@ -45,60 +51,49 @@ class  LoggerMiddleware implements MiddlewareInterface
         $http_method = $request->getMethod();
         if ($status_code == StatusCodeInterface::STATUS_OK || $status_code == StatusCodeInterface::STATUS_CREATED) {
             switch ($http_method) {
-                case 'GET':
-                    $filename = '/access.log';
-                    $logger = new Logger('ACCESS');
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $logger->pushProcessor(new UidProcessor());
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::INFO);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->info("STATUS CODE " . $status_code, ["context" => "resource accessed successful"]);
+                case 'GET':    
+                    $logger = AppLoggingHelper::CreateAppLogger([
+                       'file_path'=>  APP_LOG_FILE_ACCESS,
+                       'channel_name' => self::LOG_CHANNEL_ACCESS,
+                       'log_level' =>Logger::INFO
+                    ]);                    
+                    $logger->info("STATUS CODE " . $status_code, ["resource accessed successful"]);
                     break;
 
                 case 'POST':
-                    $filename = '/posts.log';
-                    $logger = new Logger("CREATE");
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $logger->pushProcessor(new UidProcessor());
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::NOTICE);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->notice("STATUS CODE " . $status_code, ["context" => "resource added successfully"]);
+                    $logger = AppLoggingHelper::CreateAppLogger([
+                        'file_path'=>  APP_LOG_FILE_POSTS,
+                        'channel_name' => self::LOG_CHANNEL_CREATE,
+                        'log_level' =>Logger::NOTICE
+                     ]);                    
+                    $logger->notice("STATUS CODE " . $status_code, [ "resource added successfully"]);
                     break;
                 case 'PUT':
-                    $filename = '/updates.log';
-                    $logger = new Logger("CREATE");
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $logger->pushProcessor(new UidProcessor());
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::NOTICE);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->notice("STATUS CODE " . $status_code, ["context" => "resource updated successfully"]);
+                    $logger = AppLoggingHelper::CreateAppLogger([
+                        'file_path'=>  APP_LOG_FILE_UPDATES,
+                        'channel_name' => self::LOG_CHANNEL_UPDATE,
+                        'log_level' =>Logger::NOTICE
+                     ]);
+                    $logger->notice("STATUS CODE " . $status_code, ["resource updated successfully"]);
                     break;
                 case 'DELETE':
-                    $filename = '/deletes.log';
-                    $logger = new Logger("CREATE");
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $logger->pushProcessor(new UidProcessor());
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::WARNING);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->warning("STATUS CODE " . $status_code, ["context" => $data]);
+                    $logger = AppLoggingHelper::CreateAppLogger([
+                        'file_path'=>  APP_LOG_FILE_DELETES,
+                        'channel_name' => self::LOG_CHANNEL_DELETE,
+                        'log_level' =>Logger::WARNING
+                     ]);                    
+                    $logger->warning("STATUS CODE " . $status_code, [$data]);
                     break;
             }
         } else {
-            $filename = '/errors.log';
-            $logger = new Logger('ERRORS');
-            $logger->setTimezone(new DateTimeZone('America/Toronto'));
-            $logger->pushProcessor(new UidProcessor());
-            $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::ERROR);
-            $log_handler->pushProcessor(new WebProcessor());
+            $logger = AppLoggingHelper::CreateAppLogger([
+                'file_path'=>  APP_LOG_FILE_ERRORS,
+                'channel_name' => self::LOG_CHANNEL_ERRORS,
+                'log_level' =>Logger::ERROR
+             ]);  
             $context["message"] = $data['error'];
-            $logger->pushHandler($log_handler);
-            $logger->error("STATUS CODE " . $status_code, ["context" => $context["message"]]);
+            $logger->error("STATUS CODE " . $status_code, [$context["message"]]);
         }
-
         return  $response;
     }
 }
