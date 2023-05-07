@@ -1,1 +1,21 @@
 [2023-05-07T17:41:04.682399-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"3601c96","url":"/crimes-api/sd","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-07T18:17:48.641815-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"34ed209","url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-07T18:18:13.534331-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"c25e460","url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-07T18:18:13.702230-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"006e3ae","url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-07T18:18:13.836522-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"25b4b51","url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-07T18:18:13.988723-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"6c8aa19","url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-07T18:18:14.148664-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"664373e","url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-07T18:18:14.730404-04:00] ERRORS.ERROR: STATUS CODE 404 {"context":"Not found."} {"uid":"6bad316","url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:19:59 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:19:59 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:19:59 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:19:59 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:19:59 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:19:59 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:19:59 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:20:00 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:20:00 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:20:53 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:20:53 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:20:54 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-5-7, 6:20:54 pm] ERRORS.ERROR > msg: STATUS CODE 404 context: {"context":"Not found."} data: {"url":"/crimes-api/er","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}

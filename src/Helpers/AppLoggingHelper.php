@@ -10,6 +10,11 @@ use Monolog\Processor\WebProcessor;
 
 class AppLoggingHelper
 {
+    public const LOG_CHANNEL_ACCESS = 'ACCESS';
+    public const LOG_CHANNEL_CREATE = 'CREATE';
+    public const LOG_CHANNEL_UPDATE = 'UPDATE';
+    public const LOG_CHANNEL_DELETE = 'DELETE';
+    public const LOG_CHANNEL_ERRORS = 'ERRORS';
     private  $logger = null;
 
     private array $options = [];
@@ -41,9 +46,53 @@ class AppLoggingHelper
     {
         return $this->logger;
     }
-    public static function CreateAppLogger($options)
+    public static function getAccessLogger()
     {
-        $helper = new AppLoggingHelper($options);
+        $helper = new AppLoggingHelper([
+            'file_path'=>  APP_LOG_FILE_ACCESS,
+            'channel_name' => self::LOG_CHANNEL_ACCESS,
+            'log_level' =>Logger::INFO
+         ]);
+        $logger =  $helper->getAppLogger();
+        return $logger;
+    }
+    public static function getCreateLogger()
+    {
+        $helper = new AppLoggingHelper([
+            'file_path'=>  APP_LOG_FILE_POSTS,
+            'channel_name' => self::LOG_CHANNEL_CREATE,
+            'log_level' =>Logger::NOTICE
+         ]);
+        $logger =  $helper->getAppLogger();
+        return $logger;
+    }
+    public static function getUpdateLogger()
+    {
+        $helper = new AppLoggingHelper([
+            'file_path'=>  APP_LOG_FILE_UPDATES,
+            'channel_name' => self::LOG_CHANNEL_UPDATE,
+            'log_level' =>Logger::NOTICE
+         ]);
+        $logger =  $helper->getAppLogger();
+        return $logger;
+    }
+    public static function getDeleteLogger()
+    {
+        $helper = new AppLoggingHelper([
+            'file_path'=>  APP_LOG_FILE_DELETES,
+            'channel_name' => self::LOG_CHANNEL_DELETE,
+            'log_level' =>Logger::WARNING
+         ]);
+        $logger =  $helper->getAppLogger();
+        return $logger;
+    }
+    public static function getErrorsLogger()
+    {
+        $helper = new AppLoggingHelper([
+            'file_path'=>  APP_LOG_FILE_ERRORS,
+            'channel_name' => self::LOG_CHANNEL_ERRORS,
+            'log_level' =>Logger::ERROR
+         ]);
         $logger =  $helper->getAppLogger();
         return $logger;
     }

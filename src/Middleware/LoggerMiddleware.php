@@ -24,12 +24,6 @@ use Vanier\Api\Helpers\AppLoggingHelper;
  */
 class  LoggerMiddleware implements MiddlewareInterface
 {
-
-    public const LOG_CHANNEL_ACCESS = 'ACCESS';
-    public const LOG_CHANNEL_CREATE = 'CREATE';
-    public const LOG_CHANNEL_UPDATE = 'UPDATE';
-    public const LOG_CHANNEL_DELETE = 'DELETE';
-    public const LOG_CHANNEL_ERRORS = 'ERRORS';
     /**
      * Summary of __construct
      */
@@ -51,46 +45,26 @@ class  LoggerMiddleware implements MiddlewareInterface
         $http_method = $request->getMethod();
         if ($status_code == StatusCodeInterface::STATUS_OK || $status_code == StatusCodeInterface::STATUS_CREATED) {
             switch ($http_method) {
-                case 'GET':    
-                    $logger = AppLoggingHelper::CreateAppLogger([
-                       'file_path'=>  APP_LOG_FILE_ACCESS,
-                       'channel_name' => self::LOG_CHANNEL_ACCESS,
-                       'log_level' =>Logger::INFO
-                    ]);                    
+                case 'GET':
+                    $logger = AppLoggingHelper::getAccessLogger();
                     $logger->info("STATUS CODE " . $status_code, ["resource accessed successful"]);
                     break;
 
                 case 'POST':
-                    $logger = AppLoggingHelper::CreateAppLogger([
-                        'file_path'=>  APP_LOG_FILE_POSTS,
-                        'channel_name' => self::LOG_CHANNEL_CREATE,
-                        'log_level' =>Logger::NOTICE
-                     ]);                    
-                    $logger->notice("STATUS CODE " . $status_code, [ "resource added successfully"]);
+                    $logger = AppLoggingHelper::getCreateLogger();
+                    $logger->notice("STATUS CODE " . $status_code, ["resource added successfully"]);
                     break;
                 case 'PUT':
-                    $logger = AppLoggingHelper::CreateAppLogger([
-                        'file_path'=>  APP_LOG_FILE_UPDATES,
-                        'channel_name' => self::LOG_CHANNEL_UPDATE,
-                        'log_level' =>Logger::NOTICE
-                     ]);
+                    $logger = AppLoggingHelper::getUpdateLogger();
                     $logger->notice("STATUS CODE " . $status_code, ["resource updated successfully"]);
                     break;
                 case 'DELETE':
-                    $logger = AppLoggingHelper::CreateAppLogger([
-                        'file_path'=>  APP_LOG_FILE_DELETES,
-                        'channel_name' => self::LOG_CHANNEL_DELETE,
-                        'log_level' =>Logger::WARNING
-                     ]);                    
+                    $logger = AppLoggingHelper::getDeleteLogger();
                     $logger->warning("STATUS CODE " . $status_code, [$data]);
                     break;
             }
         } else {
-            $logger = AppLoggingHelper::CreateAppLogger([
-                'file_path'=>  APP_LOG_FILE_ERRORS,
-                'channel_name' => self::LOG_CHANNEL_ERRORS,
-                'log_level' =>Logger::ERROR
-             ]);  
+            $logger = AppLoggingHelper::getErrorsLogger();
             $context["message"] = $data['error'];
             $logger->error("STATUS CODE " . $status_code, [$context["message"]]);
         }
