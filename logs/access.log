@@ -1,3 +1,0 @@
-[2023-05-06T20:27:59.096539-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"469c94d","url":"/crimes-api/cases","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-06T20:42:44.493669-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"83bc81a","url":"/crimes-api/offenses","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
-[2023-05-06T20:43:06.756341-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"7052347","url":"/crimes-api/investigators?sort_by=investigator_id.desc","ip":"::1","http_method":"GET","server":"localhost","referrer":null}
