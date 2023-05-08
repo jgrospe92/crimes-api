@@ -8,6 +8,7 @@ use Monolog\Formatter\JsonFormatter;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Processor\UidProcessor;
 use Monolog\Processor\WebProcessor;
+use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Server\MiddlewareInterface;
@@ -17,6 +18,7 @@ use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
+use Vanier\Api\Controllers\UserDBLogController;
 use Vanier\Api\Helpers\AppLoggingHelper;
 
 /**
@@ -43,6 +45,7 @@ class  LoggerMiddleware implements MiddlewareInterface
         $status_code = $response->getStatusCode();
         $data = json_decode($response->getBody(), JSON_PRETTY_PRINT);
         $http_method = $request->getMethod();
+
         if ($status_code == StatusCodeInterface::STATUS_OK || $status_code == StatusCodeInterface::STATUS_CREATED) {
             switch ($http_method) {
                 case 'GET':

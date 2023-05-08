@@ -2,6 +2,9 @@
 
 namespace Vanier\Api\Controllers;
 
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Vanier\Api\Controllers\BaseController;
@@ -42,7 +45,7 @@ class AuthenticationController extends BaseController
         if (!$db_user) {
             throw new HttpNotFound($request, 'The provided email does not match our records.');
         }
-        // Now we verify if the provided passowrd.
+        // Now we verify if the provided password.
         $db_user = $user_model->verifyPassword($email, $password);
         if (!$db_user) {
             throw new HttpUnprocessableContent($request, 'The provided password was invalid.');
@@ -55,6 +58,12 @@ class AuthenticationController extends BaseController
             "email" => $db_user["email"],
             "role" => $db_user["role"]
         ];
+
+        // create session variable
+        $dateNow = date('Y-m-d H:i:s');
+        $_SESSION['user_id'] =  $jwt_user_info['user_id'];
+        $_SESSION['email'] = $jwt_user_info['email'];
+        $_SESSION['logged_at'] = $dateNow;
         //$expires_in = time() + 60 * 60;
         $expires_in = time() + 3600; // Expires in 1 hour.
         $user_jwt = JWTManager::generateToken($jwt_user_info, $expires_in);
@@ -83,9 +92,15 @@ class AuthenticationController extends BaseController
         }
         // Data was provided, we attempt to create an account for the user.
         $user_model = new UserModel();
-        $new_user = $user_model->createUser($user_data);
+        try {
+
+            $new_user = $user_model->createUser($user_data);
+        } catch (Exception $e) {
+            throw new HttpConflict($request, 'Failed to create the new user. User already exists');
+        }
+
         //--
-        if ($new_user) {
+        if (!$new_user) {
             throw new HttpConflict($request, 'Failed to create the new user.');
         } else {
             $responseData = [

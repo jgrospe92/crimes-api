@@ -10,6 +10,7 @@ use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler;
 // Add custom exceptions
+use Vanier\Api\Controllers\UserDBLogController;
 use Vanier\Api\exceptions\HttpNotAcceptableException;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
@@ -107,8 +108,11 @@ class HttpErrorHandler extends ErrorHandler
 
         // Log the error        
         $logger = AppLoggingHelper::getErrorsLogger();
-        $context["message"] = $message;       
+        $context["message"] = $message;
         $logger->error("STATUS CODE " . $statusCode, [$context["message"]]);
+
+
+
 
         return $response;
     }

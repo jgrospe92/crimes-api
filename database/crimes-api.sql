@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 04, 2023 at 10:26 PM
+-- Generation Time: May 07, 2023 at 08:10 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -24,39 +24,6 @@ CREATE DATABASE IF NOT EXISTS `crimes-api` DEFAULT CHARACTER SET utf8mb4 COLLATE
 USE `crimes-api`;
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `ws_users`
---
--- Creation: Apr 29, 2023 at 07:41 AM
---
-CREATE TABLE `ws_users` (
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `first_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `last_name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT '2022-12-01 03:11:50'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-ALTER TABLE ws_users ADD role VARCHAR(10);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ws_users`
---
--- Creation: Apr 29, 2023 at 07:41 AM
---
-
-CREATE TABLE `ws_log` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `email` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-  `user_action` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `logged_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `user_id` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 --
 -- Table structure for table `cases`
@@ -289,7 +256,8 @@ INSERT INTO `investigators` (`investigator_id`, `badge_number`, `first_name`, `l
 (11, '3453', 'Hank', 'Shrader', 'Certified Legal Investigator'),
 (12, '1255', 'Hank', 'Shrader', 'Chief of Police'),
 (13, '13255', 'Hank', 'Shrader', 'Chief of Police'),
-(14, '1455', 'Hank', 'Shrader', 'Chief of Police');
+(14, '2125', 'Dwight Update', 'Schrute', 'Certified Fraud Examiner'),
+(21, '2611', 'Dwight', 'Schrute', 'Certified Legal Investigator');
 
 -- --------------------------------------------------------
 
@@ -482,6 +450,45 @@ INSERT INTO `victims` (`victim_id`, `first_name`, `last_name`, `age`, `marital_s
 (5, 'Doug', 'Bowser Koopa', 41, 'divorced', 3),
 (6, 'No', 'One', 0, 'single', NULL);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ws_log`
+--
+
+DROP TABLE IF EXISTS `ws_log`;
+CREATE TABLE `ws_log` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `user_action` varchar(255) NOT NULL,
+  `logged_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ws_users`
+--
+
+DROP TABLE IF EXISTS `ws_users`;
+CREATE TABLE `ws_users` (
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `role` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ws_users`
+--
+
+INSERT INTO `ws_users` (`user_id`, `first_name`, `last_name`, `email`, `password`, `created_at`, `role`) VALUES
+(15, 'Test', 'Me', 'jgrospe@gmail.com', '$2y$15$bBnvKQpN40E49EIMwkK7yuymU/LKQ3lLr1TluojnHY3YgJrsU02da', '2023-05-07 06:05:54', 'admin');
+
 --
 -- Indexes for dumped tables
 --
@@ -589,6 +596,20 @@ ALTER TABLE `victims`
   ADD KEY `victims_prosecutors_index` (`prosecutor_id`);
 
 --
+-- Indexes for table `ws_log`
+--
+ALTER TABLE `ws_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ws_log_user_id_PK` (`user_id`);
+
+--
+-- Indexes for table `ws_users`
+--
+ALTER TABLE `ws_users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -626,7 +647,7 @@ ALTER TABLE `defendants`
 -- AUTO_INCREMENT for table `investigators`
 --
 ALTER TABLE `investigators`
-  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `investigator_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `judges`
@@ -663,6 +684,18 @@ ALTER TABLE `verdicts`
 --
 ALTER TABLE `victims`
   MODIFY `victim_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `ws_log`
+--
+ALTER TABLE `ws_log`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ws_users`
+--
+ALTER TABLE `ws_users`
+  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
@@ -716,6 +749,12 @@ ALTER TABLE `offender_details`
 --
 ALTER TABLE `victims`
   ADD CONSTRAINT `prosecuter_id_victims` FOREIGN KEY (`prosecutor_id`) REFERENCES `prosecutors` (`prosecutor_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `ws_log`
+--
+ALTER TABLE `ws_log`
+  ADD CONSTRAINT `ws_log_user_id_PK` FOREIGN KEY (`user_id`) REFERENCES `ws_users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
