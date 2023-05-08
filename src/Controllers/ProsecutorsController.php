@@ -152,7 +152,7 @@ class ProsecutorsController extends BaseController
         // Throw a HttpNotFound error if data is empty
         if (!$data['prosecutors']) { throw new HttpNotFoundException($request); }
 
-        return $this->prepareOkResponse($response, $data);
+        return $this->preparedResponse($response, $data);
     }
 
     /**
@@ -171,26 +171,47 @@ class ProsecutorsController extends BaseController
         { 
             throw new HttpBadRequestException($request, 'No data to be added.');
         }
-
+        
+        // Validation loop
         foreach ($data as $prosecutor)
         {
-            // Check if $data is empty
+            // Check if $data is empty of objects
             if (!$prosecutor)
             {
                 throw new HttpBadRequestException($request, 'No data to be added.');
             }
 
-            foreach ($data as $prosecutor) 
+            if (!ValidateHelper::validatePostMethods($prosecutor, "prosecutor")) 
             {
-                if (!ValidateHelper::validatePostMethods($prosecutor, "prosecutor")) 
-                {
-                    throw new HttpBadRequestException($request, 'Either you are missing needed columns, or you are passing in invalid values. Refer to documentation.');
-                }
-                $this->prosecutor_model->postProsecutor($prosecutor);
+                throw new HttpBadRequestException($request, 'Either you are missing needed columns, or you are passing in invalid values. Refer to documentation.');
             }
         }
 
-        return $response->withStatus(StatusCodeInterface::STATUS_CREATED);
+        $names = "";
+        $arr_size = count($data);
+        $i = 0;
+
+        // Creation loop
+        foreach ($data as $prosecutor)
+        {
+            $this->prosecutor_model->postProsecutor($prosecutor); 
+            if ($arr_size == 1) 
+            {
+                $names .= $prosecutor["first_name"] . " " . $prosecutor["last_name"] . " ";
+            } 
+            elseif (++$i === $arr_size) 
+            {
+                $names .= "and " . $prosecutor["first_name"] . " " . $prosecutor["last_name"] . " ";
+            } 
+            else 
+            {
+                $names .= $prosecutor["first_name"] . " " . $prosecutor["last_name"] . ", ";
+            }
+        }
+
+        // Prepare response message
+        $message = ["message" => "Prosecutors " . $names . "have been created."];
+        return $this->preparedResponse($response, $message, StatusCodeInterface::STATUS_CREATED);
     }
 
     /**
@@ -211,9 +232,10 @@ class ProsecutorsController extends BaseController
             throw new HttpBadRequestException($request, 'No data to be added.');
         }
 
+        // Validation loop
         foreach ($data as $prosecutor)
         {
-            // Check if $data is empty
+            // Check if $data is empty of objects
             if (!$prosecutor)
             {
                 throw new HttpBadRequestException($request, 'No data to be added.');
@@ -228,14 +250,84 @@ class ProsecutorsController extends BaseController
             {
                 throw new HttpNotFoundException($request, 'Either the requested prosecutor does not exist, or it has been deleted.');
             }
-            $this->prosecutor_model->putProsecutor($prosecutor);
         }
 
-        return $response->withStatus(StatusCodeInterface::STATUS_OK);
+        $names = "";
+        $arr_size = count($data);
+        $i = 0;
+
+        // Updating loop
+        foreach ($data as $prosecutor)
+        {
+            $this->prosecutor_model->putProsecutor($prosecutor);
+            if ($arr_size == 1) 
+            {
+                $names .= $prosecutor["prosecutor_id"] . " ";
+            } 
+            elseif (++$i === $arr_size) 
+            {
+                $names .= "and " . $prosecutor["prosecutor_id"] . " ";
+            } 
+            else 
+            {
+                $names .= $prosecutor["prosecutor_id"] . ", ";
+            }
+        }
+
+        // Prepare response message
+        $message = ["message" => "Prosecutors " . $names . "have been updated."];
+        return $this->preparedResponse($response, $message);
     }
 
-    public function handleDeleteProsecutor(Request $request, Response $response)
+    public function handleDeleteProsecutors(Request $request, Response $response)
     {
-        
+        $data = $request->getParsedBody()['prosecutor_id'];
+
+        // Check if the JSON body is empty
+        if (!$data || !is_array($data))
+        {
+            throw new HttpBadRequestException($request, "No data to be deleted.");
+        }
+
+        // Validate if each ID is valid and unique
+        if (!ValidateHelper::arrayIsUnique($data)) 
+        {
+            throw new HttpBadRequestException($request, "One or more IDs are duplicated.");
+        }
+
+        $names = "";
+        $arr_size = count($data);
+        $i = 0;
+
+        // Validation loop
+        foreach ($data as $prosecutor_id)
+        {
+            if (!$this->prosecutor_model->checkIfResourceExists('prosecutors', ['prosecutor_id' => $prosecutor_id]))
+            {
+                throw new HttpNotFoundException($request, 'One or more prosecutors do not exist, or they have been deleted.');
+            }
+        }
+
+        // Deletion loop
+        foreach ($data as $prosecutor_id)
+        {
+            $this->prosecutor_model->deleteProsecutor($prosecutor_id);
+            if ($arr_size == 1) 
+            {
+                $names .= $prosecutor_id . " ";
+            } 
+            elseif (++$i === $arr_size) 
+            {
+                $names .= "and " . $prosecutor_id . " ";
+            } 
+            else 
+            {
+                $names .= $prosecutor_id . ", ";
+            }
+        }
+
+        // Prepare response message
+        $message = ["message" => "Prosecutors " . $names . "have been deleted."];
+        return $this->preparedResponse($response, $message);
     }
 }

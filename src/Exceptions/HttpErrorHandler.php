@@ -27,6 +27,7 @@ use Monolog\Handler\FirePHPHandler;
 use Monolog\Processor\UidProcessor;
 use Monolog\Processor\WebProcessor;
 use DateTimeZone;
+use Vanier\Api\Helpers\AppLoggingHelper;
 
 /**
  * Summary of HttpErrorHandler
@@ -105,17 +106,10 @@ class HttpErrorHandler extends ErrorHandler
         $response = $this->responseFactory->createResponse($statusCode)->withHeader("Content-type", "application/json");
         $response->getBody()->write($payload);
 
-        // Log the error
-        $filename = '/errors.log';
-        $logger = new Logger('ERRORS');
-        $logger->setTimezone(new DateTimeZone('America/Toronto'));
-        $uniqueID = new UidProcessor();
-        $logger->pushProcessor($uniqueID);
-        $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::ERROR);
-        $log_handler->pushProcessor(new WebProcessor());
+        // Log the error        
+        $logger = AppLoggingHelper::getErrorsLogger();
         $context["message"] = $message;
-        $logger->pushHandler($log_handler);
-        $logger->error("STATUS CODE " . $statusCode, ["context" => $context["message"]]);
+        $logger->error("STATUS CODE " . $statusCode, [$context["message"]]);
 
 
 

@@ -18,15 +18,14 @@ use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
-use Vanier\Api\Handlers\PDOHandler;
 use Vanier\Api\Controllers\UserDBLogController;
+use Vanier\Api\Helpers\AppLoggingHelper;
 
 /**
  * Summary of ContentNegotiationMiddleware
  */
 class  LoggerMiddleware implements MiddlewareInterface
 {
-
     /**
      * Summary of __construct
      */
@@ -57,92 +56,28 @@ class  LoggerMiddleware implements MiddlewareInterface
         if ($status_code == StatusCodeInterface::STATUS_OK || $status_code == StatusCodeInterface::STATUS_CREATED) {
             switch ($http_method) {
                 case 'GET':
-                    $filename = '/access.log';
-                    $logger = new Logger('ACCESS');
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $uniqueID = new UidProcessor();
-                    $logger->pushProcessor($uniqueID);
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::INFO);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->info("STATUS CODE " . $status_code, ["context" => "resource accessed successful"]);
-
-                    // instantiate data for logging
-                    $data = ['email' => $email, 'user_action' => $uniqueID->getUid(), 'logged_at' => $logged_at, 'user_id' => $user_id];
-                    $user_db_log->handleDBLogger($data);
+                    $logger = AppLoggingHelper::getAccessLogger();
+                    $logger->info("STATUS CODE " . $status_code, ["resource accessed successful"]);
                     break;
 
                 case 'POST':
-                    $filename = '/posts.log';
-                    $logger = new Logger("CREATE");
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $uniqueID = new UidProcessor();
-                    $logger->pushProcessor($uniqueID);
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::NOTICE);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->notice("STATUS CODE " . $status_code, ["context" => "resource added successfully"]);
-
-                    // instantiate data for logging
-                    $data = ['email' => $email, 'user_action' => $uniqueID->getUid(), 'logged_at' => $logged_at, 'user_id' => $user_id];
-                    $user_db_log->handleDBLogger($data);
-
+                    $logger = AppLoggingHelper::getCreateLogger();
+                    $logger->notice("STATUS CODE " . $status_code, ["resource added successfully"]);
                     break;
                 case 'PUT':
-                    $filename = '/updates.log';
-                    $logger = new Logger("UPDATE");
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $uniqueID = new UidProcessor();
-                    $logger->pushProcessor($uniqueID);
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::NOTICE);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->notice("STATUS CODE " . $status_code, ["context" => "resource updated successfully"]);
-
-                    // instantiate data for logging
-                    $data = ['email' => $email, 'user_action' => $uniqueID->getUid(), 'logged_at' => $logged_at, 'user_id' => $user_id];
-                    $user_db_log->handleDBLogger($data);
-
-
+                    $logger = AppLoggingHelper::getUpdateLogger();
+                    $logger->notice("STATUS CODE " . $status_code, ["resource updated successfully"]);
                     break;
                 case 'DELETE':
-                    $filename = '/deletes.log';
-                    $logger = new Logger("DELETE");
-                    $logger->setTimezone(new DateTimeZone('America/Toronto'));
-                    $uniqueID = new UidProcessor();
-                    $logger->pushProcessor($uniqueID);
-                    $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::WARNING);
-                    $log_handler->pushProcessor(new WebProcessor());
-                    $logger->pushHandler($log_handler);
-                    $logger->warning("STATUS CODE " . $status_code, ["context" => $data]);
-
-                    // instantiate data for logging
-                    $data = ['email' => $email, 'user_action' => $uniqueID->getUid(), 'logged_at' => $logged_at, 'user_id' => $user_id];
-                    $user_db_log->handleDBLogger($data);
-
-
+                    $logger = AppLoggingHelper::getDeleteLogger();
+                    $logger->warning("STATUS CODE " . $status_code, [$data]);
                     break;
             }
         } else {
-            $filename = '/errors.log';
-            $logger = new Logger('ERRORS');
-            $logger->setTimezone(new DateTimeZone('America/Toronto'));
-            $uniqueID = new UidProcessor();
-            $logger->pushProcessor($uniqueID);
-            $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::ERROR);
-            $log_handler->pushProcessor(new WebProcessor());
+            $logger = AppLoggingHelper::getErrorsLogger();
             $context["message"] = $data['error'];
-            $logger->pushHandler($log_handler);
-            $logger->error("STATUS CODE " . $status_code, ["context" => $context["message"]]);
-
-            // instantiate data for logging
-            if ($_SESSION['email']) {
-
-                $data = ['email' => $email, 'user_action' => $uniqueID->getUid(), 'logged_at' => $logged_at, 'user_id' => $user_id];
-                $user_db_log->handleDBLogger($data);
-            }
+            $logger->error("STATUS CODE " . $status_code, [$context["message"]]);
         }
-
         return  $response;
     }
 }

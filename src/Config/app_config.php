@@ -40,3 +40,9 @@ define('APP_MEDIA_TYPE_YAML', "application/yaml");
 
 // log path
 define('APP_LOG_DIR', APP_BASE_DIR . '/logs');
+// Path and names of the log files.
+define('APP_LOG_FILE_ACCESS', APP_LOG_DIR . '/access.log');
+define('APP_LOG_FILE_POSTS', APP_LOG_DIR . '/posts.log');
+define('APP_LOG_FILE_UPDATES', APP_LOG_DIR . '/updates.log');
+define('APP_LOG_FILE_DELETES', APP_LOG_DIR . '/deletes.log');
+define('APP_LOG_FILE_ERRORS', APP_LOG_DIR . '/errors.log');
