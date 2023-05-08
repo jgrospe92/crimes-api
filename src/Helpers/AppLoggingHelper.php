@@ -98,4 +98,6 @@ class AppLoggingHelper
         $logger =  $helper->getAppLogger();
         return $logger;
     }
+
+    // TODO ADD THE DB LOGGING LOGIC
 }

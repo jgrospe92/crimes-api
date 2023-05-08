@@ -41,9 +41,6 @@ $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
 // Parse json, form data and xml, first stack
 $app->addBodyParsingMiddleware();
 
-// start session
-$app->add(new SessionMiddleware());
-
 //-- Add the routing , second stack
 //-- Add the routing and body parsing middleware, second stack
 $app->addRoutingMiddleware();
@@ -58,7 +55,7 @@ $app->add($logger);
 $jwt_secret = JWTManager::getSecretKey();
 $app->add(new JWTAuthMiddleware());
 
-// Must be added before last. Parse json, form data and xml, first stack
+// Must be added before last. Parse json, form data and xml
 $app->addBodyParsingMiddleware();
 //-- Add error handling middleware.
 // NOTE: the error middleware MUST be added last.

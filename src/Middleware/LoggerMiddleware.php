@@ -45,13 +45,6 @@ class  LoggerMiddleware implements MiddlewareInterface
         $status_code = $response->getStatusCode();
         $data = json_decode($response->getBody(), JSON_PRETTY_PRINT);
         $http_method = $request->getMethod();
-        // Get the session variables
-        $user_db_log = new UserDBLogController();
-        if (isset($_SESSION['email'])) {
-            $email = $_SESSION['email'];
-            $user_id =  $_SESSION['user_id'];
-            $logged_at =  $_SESSION['logged_at'];
-        }
 
         if ($status_code == StatusCodeInterface::STATUS_OK || $status_code == StatusCodeInterface::STATUS_CREATED) {
             switch ($http_method) {
