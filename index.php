@@ -56,7 +56,7 @@ $app->add($logger);
 
 // AA middleware, fourth stack
 $jwt_secret = JWTManager::getSecretKey();
-//$app->add(new JWTAuthMiddleware());
+$app->add(new JWTAuthMiddleware());
 
 // Must be added before last. Parse json, form data and xml, first stack
 $app->addBodyParsingMiddleware();

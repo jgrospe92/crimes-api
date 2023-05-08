@@ -54,7 +54,7 @@ class UserModel extends BaseModel
                 return $payload;
             }
         }
-        return $row;
+        return null;
     }
 
     /**

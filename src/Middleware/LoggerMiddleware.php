@@ -47,7 +47,7 @@ class  LoggerMiddleware implements MiddlewareInterface
         $http_method = $request->getMethod();
         // Get the session variables
         $user_db_log = new UserDBLogController();
-        if ($_SESSION['email']) {
+        if (isset($_SESSION['email'])) {
             $email = $_SESSION['email'];
             $user_id =  $_SESSION['user_id'];
             $logged_at =  $_SESSION['logged_at'];
