@@ -28,11 +28,14 @@ global $app;
 // The callbacks must be implemented in a controller class.
 // The Vanier\Api must be used as namespace prefix. 
 
+// TEST ROUTE
+$app->get('/test', function ($request, Response $response, array $args) {
+    return $response->getBody()->write(("hello"));
+});
+
 // ROUTE: /
 $app->get('/', [AboutController::class, 'handleAboutApi']);
 
-// PASSWORD GENERATOR
-$app->post('/password-generator', [HackzillaController::class, 'handlePasswordGenerator']);
 // Routes : cases
 $app->get('/cases/{case_id}', [CasesController::class, 'handleGetCaseById']);
 $app->get('/cases', [CasesController::class, 'handleGetCases']);
@@ -94,18 +97,21 @@ $app->get('/offenders/{offender_id}/defendants', [OffendersController::class, 'h
 $app->get('/offenders/{offender_id}/cases', [OffendersController::class, 'handleGetCaseOfOffender']);
 $app->post('/offenders', [OffendersController::class, 'handlePostOffenders']);
 $app->put('/offenders', [OffendersController::class, 'handlePutOffenders']);
+$app->delete('/offenders', [OffendersController::class, 'handleDeleteOffenders']);
 
 // Prosecutors Routes
 $app->get('/prosecutors', [ProsecutorsController::class, 'handleGetAllProsecutors']);
 $app->get('/prosecutors/{prosecutor_id}', [ProsecutorsController::class, 'handleGetProsecutorById']);
 $app->post('/prosecutors', [ProsecutorsController::class, 'handlePostProsecutors']);
 $app->put('/prosecutors', [ProsecutorsController::class, 'handlePutProsecutors']);
+$app->delete('/prosecutors', [ProsecutorsController::class, 'handleDeleteProsecutors']);
 
 // Defendants Routes
 $app->get('/defendants', [DefendantsController::class, 'handleGetAllDefendants']);
 $app->get('/defendants/{defendant_id}', [DefendantsController::class, 'handleGetDefendantById']);
 $app->post('/defendants', [DefendantsController::class, 'handlePostDefendants']);
 $app->put('/defendants', [DefendantsController::class, 'handlePutDefendants']);
+$app->delete('/defendants', [DefendantsController::class, 'handleDeleteDefendants']);
 
 $app->get('/victims', [VictimsController::class, 'handleGetAllVictims']);
 $app->get('/victims/{victim_id}', [VictimsController::class, 'handleGetVictimById']);
@@ -129,3 +135,5 @@ $app->delete('/crime_scenes', [CrimeScenesController::class, 'deleteCrimeScenes'
 $app->post('/account', [AuthenticationController::class, 'handleCreateUserAccount']);
 $app->post('/token', [AuthenticationController::class, 'handleGetToken']);
 
+// PASSWORD GENERATOR
+$app->post('/password-generator', [HackzillaController::class, 'handlePasswordGenerator']);

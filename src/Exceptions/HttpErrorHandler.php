@@ -2,6 +2,7 @@
 
 namespace Vanier\Api\exceptions;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
@@ -10,6 +11,7 @@ use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler;
 // Add custom exceptions
+use Vanier\Api\Controllers\UserDBLogController;
 use Vanier\Api\exceptions\HttpNotAcceptableException;
 use Vanier\Api\exceptions\HttpBadRequest;
 use Vanier\Api\exceptions\HttpUnprocessableContent;
@@ -26,6 +28,7 @@ use Monolog\Handler\FirePHPHandler;
 use Monolog\Processor\UidProcessor;
 use Monolog\Processor\WebProcessor;
 use DateTimeZone;
+use Vanier\Api\Helpers\AppLoggingHelper;
 
 /**
  * Summary of HttpErrorHandler
@@ -100,20 +103,14 @@ class HttpErrorHandler extends ErrorHandler
         ];
 
         $payload = json_encode($error, JSON_PRETTY_PRINT);
-
         $response = $this->responseFactory->createResponse($statusCode)->withHeader("Content-type", "application/json");
         $response->getBody()->write($payload);
-
         // Log the error
-        $filename = '/errors.log';
-        $logger = new Logger('ERRORS');
-        $logger->setTimezone(new DateTimeZone('America/Toronto'));
-        $logger->pushProcessor(new UidProcessor());
-        $log_handler = new StreamHandler(APP_LOG_DIR . $filename, Logger::ERROR);
-        $log_handler->pushProcessor(new WebProcessor());
+        $params = $this->request->getServerParams();
+        var_dump($this->request->getAttribute($params['HTTP_AUTHORIZATION']));
+        $logger = AppLoggingHelper::getErrorsLoggerLocal();
         $context["message"] = $message;
-        $logger->pushHandler($log_handler);
-        $logger->error("STATUS CODE " . $statusCode, ["context" => $context["message"]]);
+        $logger->error("STATUS CODE " . $statusCode, [$context["message"]]);
 
         return $response;
     }

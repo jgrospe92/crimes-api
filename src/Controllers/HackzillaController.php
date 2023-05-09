@@ -22,7 +22,6 @@ class HackzillaController extends BaseController
     public function handlePasswordGenerator(Request $request, Response $response)
     {
         $data = $request->getParsedBody();
-
         // check if body is empty, throw an exception otherwise
         if (!isset($data)) {
             throw new HttpConflict($request, "Please provide required data");
