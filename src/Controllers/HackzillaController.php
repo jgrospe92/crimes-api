@@ -43,8 +43,8 @@ class HackzillaController extends BaseController
         $length = $data['length'];
         $hasLowerCase = $data['lowercase'] ? true : false;
         $hasUpperCase = $data['uppercase'] ? true : false;
-        $hasRandomNumbers = $data['random numbers'] ? true : false;
-        $hasRandomSymbol = $data['random symbols'] ? true : false;
+        $hasRandomNumbers = $data['random_numbers'] ? true : false;
+        $hasRandomSymbol = $data['random_symbols'] ? true : false;
         $generate = $data['generate'];
 
         $generator
