@@ -1,19 +1,14 @@
 <?php
 
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Monolog\Processor\UidProcessor;
-use Monolog\Processor\WebProcessor;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
-use Slim\Handlers\Strategies\RequestResponseArgs;
 use Vanier\Api\exceptions\HttpErrorHandler;
 use Vanier\Api\Helpers\JWTManager;
 use Vanier\Api\middleware\ContentNegotiationMiddleware;
 use Vanier\Api\middleware\LoggerMiddleware;
 use Vanier\Api\Middleware\JWTAuthMiddleware;
-use Vanier\Api\middleware\SessionMiddleware;
+
 
 // iff config.env exists doesn't exists, create it
 $file = 'config.env';
