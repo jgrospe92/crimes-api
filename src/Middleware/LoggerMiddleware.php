@@ -45,29 +45,30 @@ class  LoggerMiddleware implements MiddlewareInterface
         $status_code = $response->getStatusCode();
         $data = json_decode($response->getBody(), JSON_PRETTY_PRINT);
         $http_method = $request->getMethod();
+        $token_payload = $request->getAttribute(APP_JWT_TOKEN_KEY);
 
         if ($status_code == StatusCodeInterface::STATUS_OK || $status_code == StatusCodeInterface::STATUS_CREATED) {
             switch ($http_method) {
                 case 'GET':
-                    $logger = AppLoggingHelper::getAccessLogger();
+                    $logger = AppLoggingHelper::getAccessLogger($token_payload);
                     $logger->info("STATUS CODE " . $status_code, ["resource accessed successful"]);
                     break;
 
                 case 'POST':
-                    $logger = AppLoggingHelper::getCreateLogger();
+                    $logger = AppLoggingHelper::getCreateLogger($token_payload);
                     $logger->notice("STATUS CODE " . $status_code, ["resource added successfully"]);
                     break;
                 case 'PUT':
-                    $logger = AppLoggingHelper::getUpdateLogger();
+                    $logger = AppLoggingHelper::getUpdateLogger($token_payload);
                     $logger->notice("STATUS CODE " . $status_code, ["resource updated successfully"]);
                     break;
                 case 'DELETE':
-                    $logger = AppLoggingHelper::getDeleteLogger();
+                    $logger = AppLoggingHelper::getDeleteLogger($token_payload);
                     $logger->warning("STATUS CODE " . $status_code, [$data]);
                     break;
             }
         } else {
-            $logger = AppLoggingHelper::getErrorsLogger();
+            $logger = AppLoggingHelper::getErrorsLogger($token_payload);
             $context["message"] = $data['error'];
             $logger->error("STATUS CODE " . $status_code, [$context["message"]]);
         }

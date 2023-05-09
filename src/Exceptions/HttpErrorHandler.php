@@ -2,6 +2,7 @@
 
 namespace Vanier\Api\exceptions;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
@@ -102,17 +103,14 @@ class HttpErrorHandler extends ErrorHandler
         ];
 
         $payload = json_encode($error, JSON_PRETTY_PRINT);
-
         $response = $this->responseFactory->createResponse($statusCode)->withHeader("Content-type", "application/json");
         $response->getBody()->write($payload);
-
-        // Log the error        
-        $logger = AppLoggingHelper::getErrorsLogger();
+        // Log the error
+        $params = $this->request->getServerParams();
+        var_dump($this->request->getAttribute($params['HTTP_AUTHORIZATION']));
+        $logger = AppLoggingHelper::getErrorsLoggerLocal();
         $context["message"] = $message;
         $logger->error("STATUS CODE " . $statusCode, [$context["message"]]);
-
-
-
 
         return $response;
     }

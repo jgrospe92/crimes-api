@@ -30,8 +30,8 @@ class WSLoggingModel extends BaseModel
      */
     public function logUserAction($jwt_payload, $uer_action)
     {
-        $log_data["user_id"] = $jwt_payload["id"];
-        $log_data["email"] = $jwt_payload["email"];
+        $log_data["user_id"] = $jwt_payload["user_id"] ?? '';
+        $log_data["email"] = $jwt_payload["email"] ?? '';
         $log_data["user_action"] = $uer_action;
         $log_data["logged_at"] = $this->getCurrentDateAndTime();
 
