@@ -1,6 +1,7 @@
 <?php
 
 namespace Vanier\Api\Models;
+
 use DateTime;
 use DateTimeZone;
 
@@ -9,11 +10,13 @@ use DateTimeZone;
  *
  * @author Sleiman Rabah
  */
-class WSLoggingModel extends BaseModel {
+class WSLoggingModel extends BaseModel
+{
 
     private $table_name = "ws_log";
 
-    function __construct() {
+    function __construct()
+    {
         // Call the parent class and initialize the database connection settings.
         parent::__construct();
     }
@@ -25,11 +28,13 @@ class WSLoggingModel extends BaseModel {
      * @param array $log_data The data to be logged in the DB.
      * @return array
      */
-    public function logUserAction($jwt_payload, $uer_action) {
-        $log_data["user_id"] = $jwt_payload["id"];
-        $log_data["email"] = $jwt_payload["email"];
+    public function logUserAction($jwt_payload, $uer_action)
+    {
+        $log_data["user_id"] = $jwt_payload["user_id"] ?? '';
+        $log_data["email"] = $jwt_payload["email"] ?? '';
         $log_data["user_action"] = $uer_action;
         $log_data["logged_at"] = $this->getCurrentDateAndTime();
+
         return $this->insert($this->table_name, $log_data);
     }
 
@@ -41,7 +46,8 @@ class WSLoggingModel extends BaseModel {
      * 
      * @return string
      */
-    private function getCurrentDateAndTime() {
+    private function getCurrentDateAndTime()
+    {
         // By setting the time zone, we ensure that the produced time 
         // is accurate.
         $tz_object = new DateTimeZone('America/Toronto');
@@ -49,5 +55,4 @@ class WSLoggingModel extends BaseModel {
         $datetime->setTimezone($tz_object);
         return $datetime->format('Y\-m\-d\ h:i:s');
     }
-
 }

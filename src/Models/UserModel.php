@@ -1,6 +1,7 @@
 <?php
 
 namespace Vanier\Api\Models;
+
 use DateTime;
 use DateTimeZone;
 
@@ -9,7 +10,8 @@ use DateTimeZone;
  *
  * @author Sleiman Rabah
  */
-class UserModel extends BaseModel {
+class UserModel extends BaseModel
+{
 
     private $table_name = "ws_users";
 
@@ -17,7 +19,8 @@ class UserModel extends BaseModel {
      * A model class for the `ws_users` database table.
      * It exposes operations for creating and authenticating in users.
      */
-    function __construct() {
+    function __construct()
+    {
         // Call the parent class and initialize the database connection settings.
         parent::__construct();
     }
@@ -26,9 +29,10 @@ class UserModel extends BaseModel {
      * Verifies the provided user's email address.
      * @param string $email the email address of the registered user.
      */
-    public function verifyEmail($email) {
+    public function verifyEmail($email)
+    {
         $sql = "SELECT * FROM $this->table_name WHERE email= :email";
-        return $this->run($sql, [":email" => $email])->fetchAll();
+        return $this->run($sql, [":email" => $email])->fetch();
     }
 
     /**
@@ -36,15 +40,16 @@ class UserModel extends BaseModel {
      * @param string $email the email address of the registered user. 
      * @param string $input_password the password  of the registered user.
      */
-    public function verifyPassword($email, $input_password) {
+    public function verifyPassword($email, $input_password)
+    {
         $sql = "SELECT * FROM $this->table_name WHERE email= :email";
-        $row = $this->run($sql, [":email" => $email])->fetchAll();
+        $row = $this->run($sql, [":email" => $email])->fetch();
         if ($row && is_array($row)) {
-            if (password_verify($input_password, $row[0]['password'])) {
+            if (password_verify($input_password, $row['password'])) {
                 $payload = array(
-                    "user_id" => isset($row[0]['id']) ? $row[0]['id'] : null,
-                    "email" => isset($row[0]['email']) ? $row[0]['email'] : null,
-                    "role" => isset($row[0]['role']) ? $row[0]['role'] : 'user'
+                    "user_id" => isset($row['user_id']) ? $row['user_id'] : null,
+                    "email" => isset($row['email']) ? $row['email'] : null,
+                    "role" => isset($row['role']) ? $row['role'] : 'user'
                 );
                 return $payload;
             }
@@ -57,14 +62,17 @@ class UserModel extends BaseModel {
      * Requires a first_name, last_name, email and a password
      * @param array $new_user
      */
-    public function createUser($new_user) {
+    public function createUser($data)
+    {
         //-- 1) Add the value of the required created at (date and time) field.        
         $new_user["created_at"] = $this->getCurrentDateAndTime();
         //-- 2) We need to hash the password! 
-        $new_user["password"] = $this->getHashedPassword($new_user["password"]);
-        
-        $new_user["role"] = $new_user["role"];
-        //var_dump($new_user);exit;
+        $new_user["password"] = $this->getHashedPassword($data["password"]);
+        $new_user['first_name'] = $data['first_name'];
+        $new_user['last_name'] = $data['last_name'];
+        $new_user['email'] = $data['email'];
+        $new_user["role"] = $data["role"];
+
         return $this->insert($this->table_name, $new_user);
     }
 
@@ -74,7 +82,8 @@ class UserModel extends BaseModel {
      * @param string $password_to_hash the user password that needs to be hashed
      * @return string the hashed password.
      */
-    private function getHashedPassword($password_to_hash) {
+    private function getHashedPassword($password_to_hash)
+    {
         //@see: https://www.php.net/manual/en/function.password-hash.php
         $options = ['cost' => 15];
         $hash = password_hash($password_to_hash, PASSWORD_DEFAULT, $options);
@@ -89,7 +98,8 @@ class UserModel extends BaseModel {
      * 
      * @return string
      */
-    private function getCurrentDateAndTime() {
+    private function getCurrentDateAndTime()
+    {
         // By setting the time zone, we ensure that the produced time 
         // is accurate.
         $tz_object = new DateTimeZone('America/Toronto');
@@ -97,5 +107,4 @@ class UserModel extends BaseModel {
         $datetime->setTimezone($tz_object);
         return $datetime->format('Y\-m\-d\ h:i:s');
     }
-
 }

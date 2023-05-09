@@ -2,6 +2,7 @@
 
 namespace Vanier\Api\Middleware;
 
+use Firebase\JWT\ExpiredException;
 use LogicException;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -26,7 +27,8 @@ class JWTAuthMiddleware implements MiddlewareInterface
         //-- 1) Routes to ignore. 
         // We need to ignore the routes that enables client applications
         // to create an account and request a JWT token.
-        if (strpos($uri, 'account') !== false || strpos($uri, 'token') !== false) {
+        if (strpos($uri, 'account') !== false || strpos($uri, 'token') !== false || strpos($uri, 'password-generator') !== false) {
+
             return $handler->handle($request);
         }
         //-- 2) Retrieve the token from the request Authorization's header. 
