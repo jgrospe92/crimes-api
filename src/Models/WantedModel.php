@@ -16,7 +16,7 @@ class WantedModel extends WebServiceInvoker
     {
 
         $uri = 'https://api.fbi.gov/wanted/';
-        $items = $this->invokeUri($uri, 'v1/list')['items'];
+        $items = $this->invokeUri($uri, 'v1')['items'];
 
         $data = [];
         foreach ($items as $key => $item) {
