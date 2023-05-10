@@ -18,6 +18,7 @@ use Vanier\Api\Helpers\ValidateHelper;
 
 // Models
 use Vanier\Api\Models\OffendersModel;
+use Vanier\Api\Controllers\WantedController;
 
 /**
  * Summary of OffendersController
@@ -180,6 +181,10 @@ class OffendersController extends BaseController
 
         // Throw a HttpNotFound error if data is empty
         if (!$data['offenders']) { throw new HttpNotFoundException($request); }
+
+        $wanted_controller = new WantedController();
+        $wanted_data = $wanted_controller->getWanted();
+        $data['wanted'] = array_slice($wanted_data, 0, 15);
 
         return $this->prepareOkResponse($response, $data);
     }

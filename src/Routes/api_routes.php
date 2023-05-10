@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 use Vanier\Api\Controllers\AboutController;
+use Vanier\Api\Controllers\NewsController;
 use Vanier\Api\Controllers\VerdictsController;
 use Vanier\Api\Controllers\CasesController;
 use Vanier\Api\Controllers\CourtAddressesController;
@@ -20,6 +21,8 @@ use Vanier\Api\Controllers\OffensesController;
 use Vanier\Api\Controllers\InvestigatorsController;
 use Vanier\Api\Controllers\HackzillaController;
 use Vanier\Api\Controllers\AuthenticationController;
+
+use Vanier\Api\Controllers\WantedController;
 
 // Import the app instance into this file's scope.
 global $app;
