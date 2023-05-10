@@ -10,6 +10,7 @@ use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Monolog\Processor\WebProcessor;
 use Vanier\Api\Models\WSLoggingModel;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AppLoggingHelper
 {
@@ -73,11 +74,7 @@ class AppLoggingHelper
             'log_level' => Logger::NOTICE
         ]);
         $logger =  $helper->getAppLogger();
-
-
         $helper->logToDB($jwt_payload, $helper->uid);
-
-
         return $logger;
     }
     public static function getUpdateLogger($jwt_payload)
@@ -140,8 +137,18 @@ class AppLoggingHelper
         $log_id = $uid->getUid();
         // try catch to avoid null reference with the token_payload
         try {
-
             $logging_model->logUserAction($token_payload, $log_id);
+        } catch (Exception $e) {
+        }
+    }
+
+    public static function errorLogToDB($token_payload, $action)
+    {
+        $logging_model = new WSLoggingModel();
+        // try catch to avoid null reference with the token_payload
+        try {
+
+            $logging_model->logUserAction($token_payload, $action);
         } catch (Exception $e) {
         }
     }

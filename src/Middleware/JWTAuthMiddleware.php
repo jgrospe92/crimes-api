@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpForbiddenException;
 use Slim\Exception\HttpUnauthorizedException;
 use UnexpectedValueException;
-
+use Vanier\Api\Helpers\AppLoggingHelper;
 use Vanier\Api\Helpers\JWTManager;
 
 class JWTAuthMiddleware implements MiddlewareInterface
@@ -45,7 +45,7 @@ class JWTAuthMiddleware implements MiddlewareInterface
             // Errors having to do with environmental setup or malformed JWT Keys
             throw new HttpUnauthorizedException($request, $e->getMessage(), $e);
         } catch (UnexpectedValueException $e) {
-            // Errors having to do with JWT signature and claims
+            // Errors having to do with JWT signature and claims / expired token / wrong number of segments
             throw new HttpUnauthorizedException($request, $e->getMessage(), $e);
         }
 
@@ -54,6 +54,8 @@ class JWTAuthMiddleware implements MiddlewareInterface
         if (in_array($method, ['POST', 'PUT', 'DELETE'])) {
             $role = $decoded_token['role'] ?? 'oye';
             if ($role != 'admin') {
+                $payload = 'Insufficient permission! : ' . $request->getMethod() . ' ' . $request->getUri();
+                AppLoggingHelper::errorLogToDB($decoded_token, $payload);
                 throw new HttpForbiddenException($request, 'Insufficient permission!');
             }
         }
@@ -64,6 +66,7 @@ class JWTAuthMiddleware implements MiddlewareInterface
         //var_dump($decoded_token);exit;
         //-- 6) Don't remove the following lines: we need to pass the request to the next
         //      middleware in the middleware stack. 
+
         return $handler->handle($request);
     }
 }

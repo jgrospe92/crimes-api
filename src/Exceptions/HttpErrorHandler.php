@@ -105,9 +105,13 @@ class HttpErrorHandler extends ErrorHandler
         $payload = json_encode($error, JSON_PRETTY_PRINT);
         $response = $this->responseFactory->createResponse($statusCode)->withHeader("Content-type", "application/json");
         $response->getBody()->write($payload);
-        // Log the error
-        $params = $this->request->getServerParams();
-        var_dump($this->request->getAttribute($params['HTTP_AUTHORIZATION']));
+        $jwt_token =  $this->request->getAttribute(APP_JWT_TOKEN_KEY);
+        if ($jwt_token) {
+            $logger = AppLoggingHelper::getErrorsLogger($jwt_token);
+            $context["message"] = $message;
+            $logger->error("STATUS CODE " . $statusCode, [$context["message"]]);
+            return $response;
+        }
         $logger = AppLoggingHelper::getErrorsLoggerLocal();
         $context["message"] = $message;
         $logger->error("STATUS CODE " . $statusCode, [$context["message"]]);

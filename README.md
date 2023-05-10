@@ -165,8 +165,8 @@
     "length" : 12,
     "lowercase": 1,
     "uppercase": 1,
-    "random numbers" : 1,
-    "random symbols" : 1
+    "random_numbers" : 1,
+    "random_symbols" : 1
 }
 ```
 #### Filters
