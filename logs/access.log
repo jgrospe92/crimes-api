@@ -24,3 +24,4 @@
 [2023-05-09T12:54:53.144704-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"e1eb02b","url":"/crimes-api/wanted-api","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
 [2023-05-09T13:10:04.704949-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"8d29211","url":"/crimes-api/wanted-api","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
 [2023-05-09T13:13:19.783594-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"0da0c1d","url":"/crimes-api/wanted-api","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-10T16:55:58.190400-04:00] ACCESS.INFO: STATUS CODE 200 {"context":"resource accessed successful"} {"uid":"b7d69db","url":"/crimes-api/offenders","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}

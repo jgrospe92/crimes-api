@@ -2,26 +2,39 @@
 
 namespace Vanier\Api\Controllers;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Vanier\Api\Helpers\WebServiceInvoker;
 
-// Models
-use Vanier\Api\Models\WantedModel;
-
-class WantedController extends BaseController
+class WantedController extends WebServiceInvoker
 {
-
-    private $wanted_model;
 
     public function __construct()
     {
-        $this->wanted_model = new WantedModel();
+        parent::__construct();
     }
 
-    public function handleGetWanted(Request $request, Response $response)
+    public function getWanted()
     {
-        $data = $this->wanted_model->getWanted();
+        $uri = 'https://api.fbi.gov/wanted/';
+        $items = $this->invokeUri($uri, 'v1')['items'];
 
-        return $this->preparedResponse($response, $data);
+        $data = [];
+        foreach ($items as $key => $item) {
+            $data[$key]['title']            = $item['title'];
+            $data[$key]['aliases']          = $item['aliases'];
+            $data[$key]['description']      = $item['description'];
+            $data[$key]['subjects']         = $item['subjects'];
+            $data[$key]['field_offices']    = $item['field_offices'];
+            $data[$key]['caution']          = $item['caution'];
+            $data[$key]['sex']              = $item['sex'];
+            $data[$key]['race']             = $item['race'];
+            $data[$key]['weight']           = $item['weight'];
+            $data[$key]['hair_raw']         = $item['hair_raw'];
+            $data[$key]['eyes']             = $item['eyes'];
+            $data[$key]['scars_and_marks']  = $item['scars_and_marks'];
+            $data[$key]['reward_text']      = $item['reward_text'];
+            $data[$key]['status']           = $item['status'];
+        }
+
+        return $data;
     }
 }

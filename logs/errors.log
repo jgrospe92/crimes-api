@@ -64,3 +64,4 @@
 [2023-05-09T12:38:19.960658-04:00] ERRORS.ERROR: STATUS CODE 500 {"context":"Opps something went wrong"} {"uid":"593797f","url":"/crimes-api/wanted-api","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
 [2023-05-09T12:38:26.834133-04:00] ERRORS.ERROR: STATUS CODE 500 {"context":"Opps something went wrong"} {"uid":"5a1405d","url":"/crimes-api/wanted-api","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
 [2023-05-09T12:41:08.278728-04:00] ERRORS.ERROR: STATUS CODE 500 {"context":"Opps something went wrong"} {"uid":"c265b3d","url":"/crimes-api/wanted-api","ip":"127.0.0.1","http_method":"GET","server":"localhost","referrer":null}
+[2023-05-10T16:55:54.002511-04:00] ERRORS.ERROR: STATUS CODE 500 {"context":"Opps something went wrong"} {"uid":"d71cb4a","url":"/crimes-api/offenders","ip":"127.0.0.1","http_method":"POST","server":"localhost","referrer":null}

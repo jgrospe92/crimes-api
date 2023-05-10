@@ -135,6 +135,3 @@ $app->delete('/crime_scenes', [CrimeScenesController::class, 'deleteCrimeScenes'
 $app->post('/account', [AuthenticationController::class, 'handleCreateUserAccount']);
 $app->post('/token', [AuthenticationController::class, 'handleGetToken']);
 
-// Composite Resources
-$app->get('/wanted-api', [WantedController::class, 'handleGetWanted']);
-
