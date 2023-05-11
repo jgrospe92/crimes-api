@@ -267,7 +267,10 @@ class CasesController extends BaseController
         $news_data = new NewsController();
         $data['news'] = $news_data->getNews();
 
-
+        $wanted_controller = new WantedController();
+        $wanted_data = $wanted_controller->getWanted();
+        $data['wanted'] = array_slice($wanted_data, 0, 15);
+        
         // return parsed data
         return $this->preparedResponse($response, $data, StatusCodeInterface::STATUS_OK);
     }
