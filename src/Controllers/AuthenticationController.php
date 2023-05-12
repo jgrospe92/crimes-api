@@ -86,21 +86,42 @@ class AuthenticationController extends BaseController
         if (empty($user_data)) {
             throw new HttpBadRequest($request, 'No data was provided in the request.');
         }
+        
         // Check if the role field is included in the request body
         if (!isset($user_data['role'])) {
             throw new HttpBadRequest($request, 'Role field is missing in the request.');
         }
-        // Data was provided, we attempt to create an account for the user.
+        
+        // Check if the email field is included in the request body
+        if (!isset($user_data['email'])) {
+            throw new HttpBadRequest($request, 'Email field is missing in the request.');
+        }
+        
+        // Perform validation for role and email
+        $role = $user_data['role'];
+        $email = $user_data['email'];
+        
+        // Validate the role field
+        // For example, if the role field should be one of ['admin', 'user']
+        $allowed_roles = ['admin', 'user'];
+        if (!in_array($role, $allowed_roles)) {
+            throw new HttpBadRequest($request, 'Invalid role specified.');
+        }
+        
+        // Validate the email field using a regular expression
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new HttpBadRequest($request, 'Invalid email address');
+        }
+        
+        // Data was provided and validated, we attempt to create an account for the user.
         $user_model = new UserModel();
         try {
-
             $new_user = $user_model->createUser($user_data);
         } catch (Exception $e) {
             throw new HttpConflict($request, 'Failed to create the new user. User already exists');
         }
 
-        //--
-        if (!$new_user) {
+        if ($new_user) {
             throw new HttpConflict($request, 'Failed to create the new user.');
         } else {
             $responseData = [
@@ -109,4 +130,5 @@ class AuthenticationController extends BaseController
             return $this->preparedResponse($response, $responseData, StatusCodeInterface::STATUS_OK);
         }
     }
+
 }
