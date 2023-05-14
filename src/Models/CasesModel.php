@@ -300,6 +300,7 @@ class CasesModel extends BaseModel
         unset($cases['offense_id']);
         unset($cases['victim_id']);
         unset($cases['offender_id']);
+        unset($cases['case_id']);
         $case_id = $this->insert("cases", $cases);
         // insert the rest to the junction table
         foreach ($offense_ids as $id) {

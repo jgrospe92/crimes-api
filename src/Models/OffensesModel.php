@@ -101,6 +101,7 @@ class OffensesModel extends BaseModel
      */
     public function createOffenses($offense)
     {
+        unset($offense['offense_id']);
         return $this->insert('offenses', $offense);
     }
 

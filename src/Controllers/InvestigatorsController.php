@@ -162,7 +162,6 @@ class InvestigatorsController extends BaseController
                 return $this->prepareErrorResponse($response, $payload, StatusCodeInterface::STATUS_CONFLICT);
             }
             try {
-
                 $this->investigator_model->createInvestigator($investigator);
             } catch (Exception $e) {
                 throw new HttpBadRequest($request, "duplicate badge number , please refer to the documentation");

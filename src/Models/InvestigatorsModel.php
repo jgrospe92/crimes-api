@@ -97,6 +97,7 @@ class InvestigatorsModel extends BaseModel
      */
     public function createInvestigator($investigator)
     {
+        unset($investigator['Investigator_id']);
         return $this->insert('investigators', $investigator);
     }
 
