@@ -1,7 +1,7 @@
 # Crimes-api 👮‍♂️
 
 - [Crimes-api 👮‍♂️](#crimes-api-️)
-  - [Project Overview 📃](#project-overview-)
+  - [Crimes-api Overview 📃](#crimes-api-overview-)
   - [Api Version ✨](#api-version-)
   - [Project Features 🏆](#project-features-)
   - [Resources ⛑](#resources-)
@@ -77,12 +77,11 @@
     - [POST /verdicts](#post-verdicts)
     - [PUT /verdicts](#put-verdicts)
     - [DELETE /verdicts](#delete-verdicts)
-- [Team ⚔](#team-)
-- [Teacher 🎓](#teacher-)
+- [Developers ⚔](#developers-)
 
 
-## Project Overview 📃
-- Our project, developed for the Web Services course in computer science, is aimed at creating a professional-grade RESTful API that will provide extensive information about crimes. The API will consist of several resources covering various aspects of crimes, including cases, offenders, victims, defendants, prosecutors, investigators, courts, verdicts, and judges.
+## Crimes-api Overview 📃
+- We created a professional-grade RESTful API that will provide extensive information about crimes. The API will consist of several resources covering various aspects of crimes, including cases, offenders, victims, defendants, prosecutors, investigators, courts, verdicts, and judges.
 
 ## Api Version ✨
 - V1 and v2
@@ -952,13 +951,10 @@
 ]
 ```
 
-# Team ⚔
+# Developers ⚔
 - Jeffrey Grospe (Team Leader)
 - Md Saqliyan Islam
 - Alex Nguyen
 - Theodore Tsimiklis
 
-
-# Teacher 🎓
-- SLEIMAN RABAH (Vanier College Teacher)
 
