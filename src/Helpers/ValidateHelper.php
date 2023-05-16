@@ -70,8 +70,8 @@ class ValidateHelper
                     ['length'],
                     ['lowercase'],
                     ['uppercase'],
-                    ['random numbers'],
-                    ['random symbols'],
+                    ['random_numbers'],
+                    ['random_symbols'],
                     ['generate']
                 ],
                 'min' =>
@@ -79,8 +79,8 @@ class ValidateHelper
                     ['length', 6],
                     ['lowercase', 0],
                     ['uppercase', 0],
-                    ['random numbers', 0],
-                    ['random symbols', 0],
+                    ['random_numbers', 0],
+                    ['random_symbols', 0],
                     ['generate', 1]
                 ],
                 'max' =>
@@ -88,8 +88,8 @@ class ValidateHelper
                     ['length', 24],
                     ['lowercase', 1],
                     ['uppercase', 1],
-                    ['random numbers', 1],
-                    ['random symbols', 1],
+                    ['random_numbers', 1],
+                    ['random_symbols', 1],
                     ['generate', 10]
                 ]
             ];
