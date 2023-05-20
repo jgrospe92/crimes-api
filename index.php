@@ -69,7 +69,7 @@ $app->add(new ContentNegotiationMiddleware());
 
 //---
 // You also need to change it in .htaccess
-$app->setBasePath("/crimes-api");
+$app->setBasePath("/crimes-api-v1");
 
 // Here we include the file that contains the application routes. 
 // NOTE: your routes must be managed in the api_routes.php file.
